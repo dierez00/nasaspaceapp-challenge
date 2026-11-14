@@ -24,7 +24,7 @@ def test_rejects_a_test_without_a_source():
 
 def test_assumed_pressure_must_be_flagged_for_review():
     record = json.loads((DATA_DIR / "PSI-99.json").read_text(encoding="utf-8"))
-    record["tests"][0]["needs_review"] = False
+    record["tests"][0].update(pressure_status="assumed", needs_review=False)
 
     with pytest.raises(ValidationError, match="needs_review"):
         Experiment.model_validate(record)

@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0",
+  "id": "PSI-100",
+  "title": "Spacecraft Fire Experiment-III",
+  "acronym": "SAFFIRE-III",
+  "doi": "10.60555/040q-4h36",
+  "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-100",
+  "research_area": "Combustion Science",
+  "sub_research_area": "Spacecraft Fire Safety",
+  "platform": "Cygnus spacecraft (after unberthing from ISS)",
+  "start_date": "2017-04-18",
+  "end_date": null,
+  "principal_investigator": "David L. Urban",
+  "summary": "Two large-scale 40.6 cm x 94 cm cotton-fiberglass (SIBAL) fabric samples burned in a 30 cm/s air flow (concurrent and opposed) aboard an uncrewed Cygnus spacecraft to investigate low-gravity fire growth and spread rates.",
+  "tests": [
+    {
+      "test_id": "S1",
+      "material": "Cotton-Fiberglass (SIBAL)",
+      "material_class": "fabric",
+      "thickness_mm": 3.3,
+      "o2_percent": 21.0,
+      "o2_percent_range": null,
+      "o2_status": "assumed",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 30.0,
+      "flow_direction": "concurrent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Thickness reported as .33 cm (= 3.3 mm) in source table; typical SIBAL fabric is ~0.33 mm to 0.37 mm, so this may be a unit typo in the PSI table. O2 and pressure not reported in table; assumed nominal ISS cabin conditions (21% O2, 101.3 kPa). Sensor telemetry shows initial O2 ~19.9% and pressure ~14.4 psia (~99.3 kPa). Complete burn inferred from thermocouple cascade and radiometer heat flux across the entire sample length.",
+      "source": {
+        "file": "PSI-100_Experimental table_SAFFIRE-3.csv",
+        "locator": "row Sample Number = S1"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "S2",
+      "material": "Cotton-Fiberglass (SIBAL)",
+      "material_class": "fabric",
+      "thickness_mm": 3.3,
+      "o2_percent": 21.0,
+      "o2_percent_range": null,
+      "o2_status": "assumed",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 30.0,
+      "flow_direction": "opposed",
+      "outcome": "partial_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Thickness reported as .33 cm (= 3.3 mm) in source table; typical SIBAL fabric is ~0.33 mm to 0.37 mm, so this may be a unit typo in the PSI table. O2 and pressure not reported in table; assumed nominal ISS cabin conditions (21% O2, 101.3 kPa). Sensor telemetry shows initial O2 ~19.8% and pressure ~14.4 psia (~99.3 kPa). Partial burn inferred from radiometer activation between t=68s and t=132s, plume temp rise, and test termination when flow stopped at t=130s before downstream thermocouples reached elevated temperatures.",
+      "source": {
+        "file": "PSI-100_Experimental table_SAFFIRE-3.csv",
+        "locator": "row Sample Number = S2"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    }
+  ],
+  "sources": [
+    {
+      "file": "PSI-100_Experimental table_SAFFIRE-3.csv",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-100"
+    },
+    {
+      "file": "PSI-100_Science Documents_SAFFIRE-I and SAFFIRE-III Readme.docx",
+      "url": null
+    },
+    {
+      "file": "PSI-100_Engineering Documents_SAFFIRE-III Operations.pdf",
+      "url": null
+    },
+    {
+      "file": "PSI-100_Science Documents_SAFFIRE Objectives, Development and Status.pdf",
+      "url": null
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "extracted_by": "claude",
+    "reviewed_by": null
+  }
+}
+

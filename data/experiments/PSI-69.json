@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "id": "PSI-69",
   "title": "Flame Extinguishment Experiment",
   "acronym": "FLEX",
@@ -15,6 +15,9 @@
   "tests": [
     {
       "test_id": "20CAL08",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -41,6 +44,9 @@
     },
     {
       "test_id": "20CAL10",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -67,6 +73,9 @@
     },
     {
       "test_id": "20CAL12",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -93,6 +102,9 @@
     },
     {
       "test_id": "30CAL02",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -119,6 +131,9 @@
     },
     {
       "test_id": "30CAL03",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -145,6 +160,9 @@
     },
     {
       "test_id": "40CAL01",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -171,6 +189,9 @@
     },
     {
       "test_id": "20CAL13",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -197,6 +218,9 @@
     },
     {
       "test_id": "30CAL06",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -223,6 +247,9 @@
     },
     {
       "test_id": "30CAL07",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -249,6 +276,9 @@
     },
     {
       "test_id": "256F002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -275,6 +305,9 @@
     },
     {
       "test_id": "256R001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -301,6 +334,9 @@
     },
     {
       "test_id": "264F003",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -327,6 +363,9 @@
     },
     {
       "test_id": "256R002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -353,6 +392,9 @@
     },
     {
       "test_id": "256F007",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -379,6 +421,9 @@
     },
     {
       "test_id": "256F008",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -405,6 +450,9 @@
     },
     {
       "test_id": "256F009",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -431,6 +479,9 @@
     },
     {
       "test_id": "240R003",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -457,6 +508,9 @@
     },
     {
       "test_id": "248F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -483,6 +537,9 @@
     },
     {
       "test_id": "196F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -509,6 +566,9 @@
     },
     {
       "test_id": "192F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -535,6 +595,9 @@
     },
     {
       "test_id": "192F002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -561,6 +624,9 @@
     },
     {
       "test_id": "192F003",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -587,6 +653,9 @@
     },
     {
       "test_id": "196F002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -613,6 +682,9 @@
     },
     {
       "test_id": "196F003",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -639,6 +711,9 @@
     },
     {
       "test_id": "191R001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -665,6 +740,9 @@
     },
     {
       "test_id": "191F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -691,6 +769,9 @@
     },
     {
       "test_id": "195F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -717,6 +798,9 @@
     },
     {
       "test_id": "195F002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -743,6 +827,9 @@
     },
     {
       "test_id": "178R001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -769,6 +856,9 @@
     },
     {
       "test_id": "178F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -795,6 +885,9 @@
     },
     {
       "test_id": "182F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -821,6 +914,9 @@
     },
     {
       "test_id": "182F002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -847,6 +943,9 @@
     },
     {
       "test_id": "177R002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -873,6 +972,9 @@
     },
     {
       "test_id": "177F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -899,6 +1001,9 @@
     },
     {
       "test_id": "181F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -925,6 +1030,9 @@
     },
     {
       "test_id": "190R002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -951,6 +1059,9 @@
     },
     {
       "test_id": "220R001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -977,6 +1088,9 @@
     },
     {
       "test_id": "220R002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1003,6 +1117,9 @@
     },
     {
       "test_id": "224F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1029,6 +1146,9 @@
     },
     {
       "test_id": "219R001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1055,6 +1175,9 @@
     },
     {
       "test_id": "219F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1081,6 +1204,9 @@
     },
     {
       "test_id": "223F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1107,6 +1233,9 @@
     },
     {
       "test_id": "223F002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1133,6 +1262,9 @@
     },
     {
       "test_id": "206F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1159,6 +1291,9 @@
     },
     {
       "test_id": "206R001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1185,6 +1320,9 @@
     },
     {
       "test_id": "205R001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1211,6 +1349,9 @@
     },
     {
       "test_id": "209F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1237,6 +1378,9 @@
     },
     {
       "test_id": "205F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1263,6 +1407,9 @@
     },
     {
       "test_id": "209F003",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1289,6 +1436,9 @@
     },
     {
       "test_id": "209F004",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1315,6 +1465,9 @@
     },
     {
       "test_id": "209F005",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1341,6 +1494,9 @@
     },
     {
       "test_id": "210F002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1367,6 +1523,9 @@
     },
     {
       "test_id": "209F002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1393,6 +1552,9 @@
     },
     {
       "test_id": "190F003",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1419,6 +1581,9 @@
     },
     {
       "test_id": "218F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1445,6 +1610,9 @@
     },
     {
       "test_id": "194F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1471,6 +1639,9 @@
     },
     {
       "test_id": "303F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1497,6 +1668,9 @@
     },
     {
       "test_id": "176F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1523,6 +1697,9 @@
     },
     {
       "test_id": "176R001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1549,6 +1726,9 @@
     },
     {
       "test_id": "204F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1575,6 +1755,9 @@
     },
     {
       "test_id": "204R001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1601,6 +1784,9 @@
     },
     {
       "test_id": "301F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1627,6 +1813,9 @@
     },
     {
       "test_id": "301F002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1653,6 +1842,9 @@
     },
     {
       "test_id": "302F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1679,6 +1871,9 @@
     },
     {
       "test_id": "189R001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1705,6 +1900,9 @@
     },
     {
       "test_id": "189F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1731,6 +1929,9 @@
     },
     {
       "test_id": "189F002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1757,6 +1958,9 @@
     },
     {
       "test_id": "189R003",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1783,6 +1987,9 @@
     },
     {
       "test_id": "193R002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1809,6 +2016,9 @@
     },
     {
       "test_id": "193F001 (FLEX Test #70)",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1835,6 +2045,9 @@
     },
     {
       "test_id": "189R002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1861,6 +2074,9 @@
     },
     {
       "test_id": "193R001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1887,6 +2103,9 @@
     },
     {
       "test_id": "193F001 (FLEX Test #73)",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1913,6 +2132,9 @@
     },
     {
       "test_id": "221F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1939,6 +2161,9 @@
     },
     {
       "test_id": "203R002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1965,6 +2190,9 @@
     },
     {
       "test_id": "203F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1991,6 +2219,9 @@
     },
     {
       "test_id": "175R001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2017,6 +2248,9 @@
     },
     {
       "test_id": "175F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2043,6 +2277,9 @@
     },
     {
       "test_id": "179F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2069,6 +2306,9 @@
     },
     {
       "test_id": "207F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2095,6 +2335,9 @@
     },
     {
       "test_id": "207F002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2121,6 +2364,9 @@
     },
     {
       "test_id": "304F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2147,6 +2393,9 @@
     },
     {
       "test_id": "304F002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2173,6 +2422,9 @@
     },
     {
       "test_id": "304R001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2199,6 +2451,9 @@
     },
     {
       "test_id": "304R002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2225,6 +2480,9 @@
     },
     {
       "test_id": "305F002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2251,6 +2509,9 @@
     },
     {
       "test_id": "305F003",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2277,6 +2538,9 @@
     },
     {
       "test_id": "053R001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2303,6 +2567,9 @@
     },
     {
       "test_id": "053F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2329,6 +2596,9 @@
     },
     {
       "test_id": "141R001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2355,6 +2625,9 @@
     },
     {
       "test_id": "141F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2381,6 +2654,9 @@
     },
     {
       "test_id": "061F002",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2407,6 +2683,9 @@
     },
     {
       "test_id": "149F001",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2433,6 +2712,9 @@
     },
     {
       "test_id": "C08H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2459,6 +2741,9 @@
     },
     {
       "test_id": "C08H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2485,6 +2770,9 @@
     },
     {
       "test_id": "C08H301",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2511,6 +2799,9 @@
     },
     {
       "test_id": "C08M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2537,6 +2828,9 @@
     },
     {
       "test_id": "C09M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2563,6 +2857,9 @@
     },
     {
       "test_id": "C09M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2589,6 +2886,9 @@
     },
     {
       "test_id": "C09H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2615,6 +2915,9 @@
     },
     {
       "test_id": "C09H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2641,6 +2944,9 @@
     },
     {
       "test_id": "C10H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2667,6 +2973,9 @@
     },
     {
       "test_id": "C10H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2693,6 +3002,9 @@
     },
     {
       "test_id": "C08M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2719,6 +3031,9 @@
     },
     {
       "test_id": "C08M301",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2745,6 +3060,9 @@
     },
     {
       "test_id": "C09M401",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2771,6 +3089,9 @@
     },
     {
       "test_id": "C08M401",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2797,6 +3118,9 @@
     },
     {
       "test_id": "C09M301",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2823,6 +3147,9 @@
     },
     {
       "test_id": "C10M102",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2849,6 +3176,9 @@
     },
     {
       "test_id": "C10M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2875,6 +3205,9 @@
     },
     {
       "test_id": "C10M303",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2901,6 +3234,9 @@
     },
     {
       "test_id": "C10M401",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2927,6 +3263,9 @@
     },
     {
       "test_id": "C11M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2953,6 +3292,9 @@
     },
     {
       "test_id": "C11M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2979,6 +3321,9 @@
     },
     {
       "test_id": "C11M301",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3005,6 +3350,9 @@
     },
     {
       "test_id": "C11M401",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3031,6 +3379,9 @@
     },
     {
       "test_id": "C11H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3057,6 +3408,9 @@
     },
     {
       "test_id": "C11H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3083,6 +3437,9 @@
     },
     {
       "test_id": "C12H103",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3109,6 +3466,9 @@
     },
     {
       "test_id": "C12H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3135,6 +3495,9 @@
     },
     {
       "test_id": "C12M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3161,6 +3524,9 @@
     },
     {
       "test_id": "C12M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3187,6 +3553,9 @@
     },
     {
       "test_id": "C12M301",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3213,6 +3582,9 @@
     },
     {
       "test_id": "C12M401",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3239,6 +3611,9 @@
     },
     {
       "test_id": "C13M103",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3265,6 +3640,9 @@
     },
     {
       "test_id": "C13M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3291,6 +3669,9 @@
     },
     {
       "test_id": "C13M301",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3317,6 +3698,9 @@
     },
     {
       "test_id": "C13M401",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3343,6 +3727,9 @@
     },
     {
       "test_id": "C13H102",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3369,6 +3756,9 @@
     },
     {
       "test_id": "C13H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3395,6 +3785,9 @@
     },
     {
       "test_id": "C21H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3421,6 +3814,9 @@
     },
     {
       "test_id": "C21H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3447,6 +3843,9 @@
     },
     {
       "test_id": "C21H301",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3473,6 +3872,9 @@
     },
     {
       "test_id": "C21H401",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3499,6 +3901,9 @@
     },
     {
       "test_id": "C21H501",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3525,6 +3930,9 @@
     },
     {
       "test_id": "C21H302",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3551,6 +3959,9 @@
     },
     {
       "test_id": "C21H303",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3577,6 +3988,9 @@
     },
     {
       "test_id": "C21H304",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3603,6 +4017,9 @@
     },
     {
       "test_id": "C21H305",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3629,6 +4046,9 @@
     },
     {
       "test_id": "C14M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3655,6 +4075,9 @@
     },
     {
       "test_id": "C14M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3681,6 +4104,9 @@
     },
     {
       "test_id": "C14M301",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3707,6 +4133,9 @@
     },
     {
       "test_id": "C14M302",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3733,6 +4162,9 @@
     },
     {
       "test_id": "C01M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3759,6 +4191,9 @@
     },
     {
       "test_id": "C01M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3785,6 +4220,9 @@
     },
     {
       "test_id": "C01M301",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3811,6 +4249,9 @@
     },
     {
       "test_id": "C13M102",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3837,6 +4278,9 @@
     },
     {
       "test_id": "C01H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3863,6 +4307,9 @@
     },
     {
       "test_id": "C01H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3889,6 +4336,9 @@
     },
     {
       "test_id": "C01H302",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3915,6 +4365,9 @@
     },
     {
       "test_id": "C03M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3941,6 +4394,9 @@
     },
     {
       "test_id": "C03M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3967,6 +4423,9 @@
     },
     {
       "test_id": "C03M301",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3993,6 +4452,9 @@
     },
     {
       "test_id": "C03H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4019,6 +4481,9 @@
     },
     {
       "test_id": "C03H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4045,6 +4510,9 @@
     },
     {
       "test_id": "C03H401",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4071,6 +4539,9 @@
     },
     {
       "test_id": "C05M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4097,6 +4568,9 @@
     },
     {
       "test_id": "C05M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4123,6 +4597,9 @@
     },
     {
       "test_id": "C05M301",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4149,6 +4626,9 @@
     },
     {
       "test_id": "C05M401",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4175,6 +4655,9 @@
     },
     {
       "test_id": "C06M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4201,6 +4684,9 @@
     },
     {
       "test_id": "C06M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4227,6 +4713,9 @@
     },
     {
       "test_id": "C06M301",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4253,6 +4742,9 @@
     },
     {
       "test_id": "C06M401",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4279,6 +4771,9 @@
     },
     {
       "test_id": "C03H302",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4305,6 +4800,9 @@
     },
     {
       "test_id": "C07M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4331,6 +4829,9 @@
     },
     {
       "test_id": "C07M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4357,6 +4858,9 @@
     },
     {
       "test_id": "C15M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4383,6 +4887,9 @@
     },
     {
       "test_id": "C15M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4409,6 +4916,9 @@
     },
     {
       "test_id": "C15M301",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4435,6 +4945,9 @@
     },
     {
       "test_id": "C03H501",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4461,6 +4974,9 @@
     },
     {
       "test_id": "C03H601",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4487,6 +5003,9 @@
     },
     {
       "test_id": "C03H701",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4513,6 +5032,9 @@
     },
     {
       "test_id": "C08H502",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4539,6 +5061,9 @@
     },
     {
       "test_id": "C08H601",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4565,6 +5090,9 @@
     },
     {
       "test_id": "C08M501",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4591,6 +5119,9 @@
     },
     {
       "test_id": "C08M601",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4617,6 +5148,9 @@
     },
     {
       "test_id": "C09H501",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4643,6 +5177,9 @@
     },
     {
       "test_id": "C09H601",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4669,6 +5206,9 @@
     },
     {
       "test_id": "C02H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4695,6 +5235,9 @@
     },
     {
       "test_id": "C02H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4721,6 +5264,9 @@
     },
     {
       "test_id": "C02H202",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4747,6 +5293,9 @@
     },
     {
       "test_id": "C09M501",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4773,6 +5322,9 @@
     },
     {
       "test_id": "C09M502",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4799,6 +5351,9 @@
     },
     {
       "test_id": "C09M601",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4825,6 +5380,9 @@
     },
     {
       "test_id": "C09M701",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4851,6 +5409,9 @@
     },
     {
       "test_id": "C02M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4877,6 +5438,9 @@
     },
     {
       "test_id": "C02M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4903,6 +5467,9 @@
     },
     {
       "test_id": "C03M501",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4929,6 +5496,9 @@
     },
     {
       "test_id": "C03M601",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4955,6 +5525,9 @@
     },
     {
       "test_id": "C03M701",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4981,6 +5554,9 @@
     },
     {
       "test_id": "C04M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5007,6 +5583,9 @@
     },
     {
       "test_id": "C04M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5033,6 +5612,9 @@
     },
     {
       "test_id": "C04H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5059,6 +5641,9 @@
     },
     {
       "test_id": "C04H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5085,6 +5670,9 @@
     },
     {
       "test_id": "C01H501",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5111,6 +5699,9 @@
     },
     {
       "test_id": "C01H601",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5137,6 +5728,9 @@
     },
     {
       "test_id": "C01H701",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5163,6 +5757,9 @@
     },
     {
       "test_id": "C01M501",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5189,6 +5786,9 @@
     },
     {
       "test_id": "C01M602",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5215,6 +5815,9 @@
     },
     {
       "test_id": "C01M603",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5241,6 +5844,9 @@
     },
     {
       "test_id": "N01M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5267,6 +5873,9 @@
     },
     {
       "test_id": "N01M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5293,6 +5902,9 @@
     },
     {
       "test_id": "N01H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5319,6 +5931,9 @@
     },
     {
       "test_id": "N01H102",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5345,6 +5960,9 @@
     },
     {
       "test_id": "N01H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5371,6 +5989,9 @@
     },
     {
       "test_id": "N01H202",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5397,6 +6018,9 @@
     },
     {
       "test_id": "N01H301",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5423,6 +6047,9 @@
     },
     {
       "test_id": "N02H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5449,6 +6076,9 @@
     },
     {
       "test_id": "N02H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5475,6 +6105,9 @@
     },
     {
       "test_id": "N02H203",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5501,6 +6134,9 @@
     },
     {
       "test_id": "N03H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5527,6 +6163,9 @@
     },
     {
       "test_id": "N04H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5553,6 +6192,9 @@
     },
     {
       "test_id": "N04H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5579,6 +6221,9 @@
     },
     {
       "test_id": "N04M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5605,6 +6250,9 @@
     },
     {
       "test_id": "N04M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5631,6 +6279,9 @@
     },
     {
       "test_id": "N05M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5657,6 +6308,9 @@
     },
     {
       "test_id": "N05M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5683,6 +6337,9 @@
     },
     {
       "test_id": "N06M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5709,6 +6366,9 @@
     },
     {
       "test_id": "N06M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5735,6 +6395,9 @@
     },
     {
       "test_id": "N06M202",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5761,6 +6424,9 @@
     },
     {
       "test_id": "H01M102",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5787,6 +6453,9 @@
     },
     {
       "test_id": "H01M104",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5813,6 +6482,9 @@
     },
     {
       "test_id": "H01H102",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5839,6 +6511,9 @@
     },
     {
       "test_id": "H02M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5865,6 +6540,9 @@
     },
     {
       "test_id": "H03M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5891,6 +6569,9 @@
     },
     {
       "test_id": "H03M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5917,6 +6598,9 @@
     },
     {
       "test_id": "N01H401",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5943,6 +6627,9 @@
     },
     {
       "test_id": "N01H502",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5969,6 +6656,9 @@
     },
     {
       "test_id": "N01H601",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5995,6 +6685,9 @@
     },
     {
       "test_id": "H02H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6021,6 +6714,9 @@
     },
     {
       "test_id": "H03H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6047,6 +6743,9 @@
     },
     {
       "test_id": "H03H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6073,6 +6772,9 @@
     },
     {
       "test_id": "H03H202",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6099,6 +6801,9 @@
     },
     {
       "test_id": "H04H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6125,6 +6830,9 @@
     },
     {
       "test_id": "H04H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6151,6 +6859,9 @@
     },
     {
       "test_id": "H04H302",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6177,6 +6888,9 @@
     },
     {
       "test_id": "H04H303",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6203,6 +6917,9 @@
     },
     {
       "test_id": "H04M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6229,6 +6946,9 @@
     },
     {
       "test_id": "H04M202",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6255,6 +6975,9 @@
     },
     {
       "test_id": "H05M102",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6281,6 +7004,9 @@
     },
     {
       "test_id": "H05M202",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6307,6 +7033,9 @@
     },
     {
       "test_id": "H05H103",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6333,6 +7062,9 @@
     },
     {
       "test_id": "H06M102",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6359,6 +7091,9 @@
     },
     {
       "test_id": "H06M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6385,6 +7120,9 @@
     },
     {
       "test_id": "H07M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6411,6 +7149,9 @@
     },
     {
       "test_id": "H07M202",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6437,6 +7178,9 @@
     },
     {
       "test_id": "H08M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6463,6 +7207,9 @@
     },
     {
       "test_id": "H10H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6489,6 +7236,9 @@
     },
     {
       "test_id": "H11H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6515,6 +7265,9 @@
     },
     {
       "test_id": "H10M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6541,6 +7294,9 @@
     },
     {
       "test_id": "H10M102",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6567,6 +7323,9 @@
     },
     {
       "test_id": "H11M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6593,6 +7352,9 @@
     },
     {
       "test_id": "H11M102",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6619,6 +7381,9 @@
     },
     {
       "test_id": "H12M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6645,6 +7410,9 @@
     },
     {
       "test_id": "H12M102",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6671,6 +7439,9 @@
     },
     {
       "test_id": "H12M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6697,6 +7468,9 @@
     },
     {
       "test_id": "H12H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6723,6 +7497,9 @@
     },
     {
       "test_id": "H12H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6749,6 +7526,9 @@
     },
     {
       "test_id": "H13H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6775,6 +7555,9 @@
     },
     {
       "test_id": "H13H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6801,6 +7584,9 @@
     },
     {
       "test_id": "H13M102",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6827,6 +7613,9 @@
     },
     {
       "test_id": "H13M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6853,6 +7642,9 @@
     },
     {
       "test_id": "H14M101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6879,6 +7671,9 @@
     },
     {
       "test_id": "H14M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6905,6 +7700,9 @@
     },
     {
       "test_id": "H14M202",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6931,6 +7729,9 @@
     },
     {
       "test_id": "H14H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6957,6 +7758,9 @@
     },
     {
       "test_id": "H14H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -6983,6 +7787,9 @@
     },
     {
       "test_id": "H15H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -7009,6 +7816,9 @@
     },
     {
       "test_id": "H15H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -7035,6 +7845,9 @@
     },
     {
       "test_id": "H15M102",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -7061,6 +7874,9 @@
     },
     {
       "test_id": "H15M201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Methanol",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -7087,6 +7903,9 @@
     },
     {
       "test_id": "H19H101",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -7113,6 +7932,9 @@
     },
     {
       "test_id": "H19H201",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Heptane",
       "material_class": "liquid",
       "thickness_mm": null,

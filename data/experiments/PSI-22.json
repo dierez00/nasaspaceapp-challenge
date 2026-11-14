@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "id": "PSI-22",
   "title": "Advanced Combustion via Microgravity Experiments Electric-Field Effects on Laminar Diffusion Flames",
   "acronym": "ACME E-FIELD Flames",
@@ -15,6 +15,9 @@
   "tests": [
     {
       "test_id": "18073",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "100% CH4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -41,6 +44,9 @@
     },
     {
       "test_id": "18078",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "100% CH4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -67,6 +73,9 @@
     },
     {
       "test_id": "18080",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "40% CH4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -93,6 +102,9 @@
     },
     {
       "test_id": "18087",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "100% C2H4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -119,6 +131,9 @@
     },
     {
       "test_id": "18092",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "30% C2H4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -145,6 +160,9 @@
     },
     {
       "test_id": "18095",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "30% C2H4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -171,6 +189,9 @@
     },
     {
       "test_id": "18102",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "40% CH4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -197,6 +218,9 @@
     },
     {
       "test_id": "18106",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "40% CH4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -223,6 +247,9 @@
     },
     {
       "test_id": "18113",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "100% CH4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -249,6 +276,9 @@
     },
     {
       "test_id": "18130",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "100% CH4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -275,6 +305,9 @@
     },
     {
       "test_id": "18137",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "100% C2H4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -301,6 +334,9 @@
     },
     {
       "test_id": "18269",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "40% CH4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -327,6 +363,9 @@
     },
     {
       "test_id": "18274",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "30% C2H4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -353,6 +392,9 @@
     },
     {
       "test_id": "18282",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "100% CH4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -379,6 +421,9 @@
     },
     {
       "test_id": "18285",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "100% C2H4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -405,6 +450,9 @@
     },
     {
       "test_id": "18290",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "100% C2H4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -431,6 +479,9 @@
     },
     {
       "test_id": "18298",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "40% CH4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -457,6 +508,9 @@
     },
     {
       "test_id": "18302",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "30% C2H4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -483,6 +537,9 @@
     },
     {
       "test_id": "18312",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "100% CH4",
       "material_class": "gas",
       "thickness_mm": null,
@@ -509,6 +566,9 @@
     },
     {
       "test_id": "18319",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "100% C2H4",
       "material_class": "gas",
       "thickness_mm": null,

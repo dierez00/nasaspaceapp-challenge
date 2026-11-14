@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "id": "PSI-102",
   "title": "Smoke and Aerosol Measurement Experiment",
   "acronym": "SAME",
@@ -15,6 +15,9 @@
   "tests": [
     {
       "test_id": "1",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Silicone",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -41,6 +44,9 @@
     },
     {
       "test_id": "2",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -67,6 +73,9 @@
     },
     {
       "test_id": "3",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -93,6 +102,9 @@
     },
     {
       "test_id": "4",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -119,6 +131,9 @@
     },
     {
       "test_id": "5",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Silicone",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -145,6 +160,9 @@
     },
     {
       "test_id": "6",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Teflon",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -171,6 +189,9 @@
     },
     {
       "test_id": "7",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Lampwick",
       "material_class": "fabric",
       "thickness_mm": null,
@@ -197,6 +218,9 @@
     },
     {
       "test_id": "8",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Kapton",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -223,6 +247,9 @@
     },
     {
       "test_id": "9",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -249,6 +276,9 @@
     },
     {
       "test_id": "10",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Teflon",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -275,6 +305,9 @@
     },
     {
       "test_id": "11",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -301,6 +334,9 @@
     },
     {
       "test_id": "12",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -327,6 +363,9 @@
     },
     {
       "test_id": "13",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Teflon",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -353,6 +392,9 @@
     },
     {
       "test_id": "14",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Kapton",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -379,6 +421,9 @@
     },
     {
       "test_id": "15",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -405,6 +450,9 @@
     },
     {
       "test_id": "16",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -431,6 +479,9 @@
     },
     {
       "test_id": "17",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Lampwick",
       "material_class": "fabric",
       "thickness_mm": null,
@@ -457,6 +508,9 @@
     },
     {
       "test_id": "18",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -483,6 +537,9 @@
     },
     {
       "test_id": "19",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -509,6 +566,9 @@
     },
     {
       "test_id": "20",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -535,6 +595,9 @@
     },
     {
       "test_id": "21",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -561,6 +624,9 @@
     },
     {
       "test_id": "22",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -587,6 +653,9 @@
     },
     {
       "test_id": "23",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Silicone",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -613,6 +682,9 @@
     },
     {
       "test_id": "24",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Silicone",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -639,6 +711,9 @@
     },
     {
       "test_id": "25",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Teflon",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -665,6 +740,9 @@
     },
     {
       "test_id": "26",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Teflon",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -691,6 +769,9 @@
     },
     {
       "test_id": "27",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Silicone",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -717,6 +798,9 @@
     },
     {
       "test_id": "28",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Teflon",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -743,6 +827,9 @@
     },
     {
       "test_id": "29",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Kapton",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -769,6 +856,9 @@
     },
     {
       "test_id": "30",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Kapton",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -795,6 +885,9 @@
     },
     {
       "test_id": "31",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Lampwick",
       "material_class": "fabric",
       "thickness_mm": null,
@@ -821,6 +914,9 @@
     },
     {
       "test_id": "32",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Lampwick",
       "material_class": "fabric",
       "thickness_mm": null,
@@ -847,6 +943,9 @@
     },
     {
       "test_id": "33",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Kapton",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -873,6 +972,9 @@
     },
     {
       "test_id": "34",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Lampwick",
       "material_class": "fabric",
       "thickness_mm": null,
@@ -899,6 +1001,9 @@
     },
     {
       "test_id": "35",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Silicone",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -925,6 +1030,9 @@
     },
     {
       "test_id": "36",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -951,6 +1059,9 @@
     },
     {
       "test_id": "37",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -977,6 +1088,9 @@
     },
     {
       "test_id": "38",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1003,6 +1117,9 @@
     },
     {
       "test_id": "39",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1029,6 +1146,9 @@
     },
     {
       "test_id": "40",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1055,6 +1175,9 @@
     },
     {
       "test_id": "41",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Teflon",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -1081,6 +1204,9 @@
     },
     {
       "test_id": "42",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1107,6 +1233,9 @@
     },
     {
       "test_id": "43",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1133,6 +1262,9 @@
     },
     {
       "test_id": "44",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1159,6 +1291,9 @@
     },
     {
       "test_id": "45",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Dibutyl Phthalate (DBP)",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1185,6 +1320,9 @@
     },
     {
       "test_id": "46",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Lampwick",
       "material_class": "fabric",
       "thickness_mm": null,
@@ -1211,6 +1349,9 @@
     },
     {
       "test_id": "47",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Kapton",
       "material_class": "polymer",
       "thickness_mm": null,

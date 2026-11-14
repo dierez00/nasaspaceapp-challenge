@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "id": "PSI-98",
   "title": "Spacecraft Fire Safety Experiment-I",
   "acronym": "SAFFIRE-I",
@@ -15,6 +15,9 @@
   "tests": [
     {
       "test_id": "S1",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Cotton-Fiberglass (SIBAL)",
       "material_class": "fabric",
       "thickness_mm": 0.37,
@@ -48,6 +51,9 @@
     },
     {
       "test_id": "S2",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Cotton-Fiberglass (SIBAL)",
       "material_class": "fabric",
       "thickness_mm": 0.37,

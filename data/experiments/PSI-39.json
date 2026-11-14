@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "id": "PSI-39",
   "title": "Cool Flames Investigation",
   "acronym": "CFI",
@@ -15,6 +15,9 @@
   "tests": [
     {
       "test_id": "FLEX-1206",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -41,6 +44,9 @@
     },
     {
       "test_id": "FLEX-1207",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -67,6 +73,9 @@
     },
     {
       "test_id": "FLEX-1208",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -93,6 +102,9 @@
     },
     {
       "test_id": "FLEX-1209",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -119,6 +131,9 @@
     },
     {
       "test_id": "FLEX-1210",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -145,6 +160,9 @@
     },
     {
       "test_id": "FLEX-1211",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -171,6 +189,9 @@
     },
     {
       "test_id": "FLEX-1212",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -197,6 +218,9 @@
     },
     {
       "test_id": "FLEX-1213",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -223,6 +247,9 @@
     },
     {
       "test_id": "FLEX-1214",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -249,6 +276,9 @@
     },
     {
       "test_id": "FLEX-1215",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -275,6 +305,9 @@
     },
     {
       "test_id": "FLEX-1216",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -301,6 +334,9 @@
     },
     {
       "test_id": "FLEX-1217",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -327,6 +363,9 @@
     },
     {
       "test_id": "FLEX-1218",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -353,6 +392,9 @@
     },
     {
       "test_id": "FLEX-1219",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -379,6 +421,9 @@
     },
     {
       "test_id": "FLEX-1220",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -405,6 +450,9 @@
     },
     {
       "test_id": "FLEX-1221",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -431,6 +479,9 @@
     },
     {
       "test_id": "FLEX-1222",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -457,6 +508,9 @@
     },
     {
       "test_id": "FLEX-1223",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -483,6 +537,9 @@
     },
     {
       "test_id": "FLEX-1224",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -509,6 +566,9 @@
     },
     {
       "test_id": "FLEX-1225",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -535,6 +595,9 @@
     },
     {
       "test_id": "FLEX-1226",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -561,6 +624,9 @@
     },
     {
       "test_id": "FLEX-1227",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -587,6 +653,9 @@
     },
     {
       "test_id": "FLEX-1228",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -613,6 +682,9 @@
     },
     {
       "test_id": "FLEX-1229",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -639,6 +711,9 @@
     },
     {
       "test_id": "FLEX-1230",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -665,6 +740,9 @@
     },
     {
       "test_id": "FLEX-1231",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -691,6 +769,9 @@
     },
     {
       "test_id": "FLEX-1232",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -717,6 +798,9 @@
     },
     {
       "test_id": "FLEX-1233",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -743,6 +827,9 @@
     },
     {
       "test_id": "FLEX-1234",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -769,6 +856,9 @@
     },
     {
       "test_id": "FLEX-1235",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -795,6 +885,9 @@
     },
     {
       "test_id": "FLEX-1236",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -821,6 +914,9 @@
     },
     {
       "test_id": "FLEX-1237",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -847,6 +943,9 @@
     },
     {
       "test_id": "FLEX-1238",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -873,6 +972,9 @@
     },
     {
       "test_id": "FLEX-1239",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -899,6 +1001,9 @@
     },
     {
       "test_id": "FLEX-1240",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -925,6 +1030,9 @@
     },
     {
       "test_id": "FLEX-1241",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -951,6 +1059,9 @@
     },
     {
       "test_id": "FLEX-1242",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -977,6 +1088,9 @@
     },
     {
       "test_id": "FLEX-1243",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1003,6 +1117,9 @@
     },
     {
       "test_id": "FLEX-1244",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1029,6 +1146,9 @@
     },
     {
       "test_id": "FLEX-1245",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1055,6 +1175,9 @@
     },
     {
       "test_id": "FLEX-1246",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1081,6 +1204,9 @@
     },
     {
       "test_id": "FLEX-1247",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1107,6 +1233,9 @@
     },
     {
       "test_id": "FLEX-1248",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1133,6 +1262,9 @@
     },
     {
       "test_id": "FLEX-1249",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1159,6 +1291,9 @@
     },
     {
       "test_id": "FLEX-1250",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1185,6 +1320,9 @@
     },
     {
       "test_id": "FLEX-1251",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1211,6 +1349,9 @@
     },
     {
       "test_id": "FLEX-1252",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1237,6 +1378,9 @@
     },
     {
       "test_id": "FLEX-1253",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1263,6 +1407,9 @@
     },
     {
       "test_id": "FLEX-1254",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1289,6 +1436,9 @@
     },
     {
       "test_id": "FLEX-1255",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1315,6 +1465,9 @@
     },
     {
       "test_id": "FLEX-1256",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1341,6 +1494,9 @@
     },
     {
       "test_id": "FLEX-1257",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1367,6 +1523,9 @@
     },
     {
       "test_id": "FLEX-1258",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1393,6 +1552,9 @@
     },
     {
       "test_id": "FLEX-1259",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1419,6 +1581,9 @@
     },
     {
       "test_id": "FLEX-1260",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1445,6 +1610,9 @@
     },
     {
       "test_id": "FLEX-1261",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1471,6 +1639,9 @@
     },
     {
       "test_id": "FLEX-1262",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1497,6 +1668,9 @@
     },
     {
       "test_id": "FLEX-1263",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1523,6 +1697,9 @@
     },
     {
       "test_id": "FLEX-1264",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1549,6 +1726,9 @@
     },
     {
       "test_id": "FLEX-1265",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1575,6 +1755,9 @@
     },
     {
       "test_id": "FLEX-1266",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1601,6 +1784,9 @@
     },
     {
       "test_id": "FLEX-1267",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1627,6 +1813,9 @@
     },
     {
       "test_id": "FLEX-1268",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1653,6 +1842,9 @@
     },
     {
       "test_id": "FLEX-1269",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1679,6 +1871,9 @@
     },
     {
       "test_id": "FLEX-1270",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1705,6 +1900,9 @@
     },
     {
       "test_id": "FLEX-1271",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1731,6 +1929,9 @@
     },
     {
       "test_id": "FLEX-1272",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1757,6 +1958,9 @@
     },
     {
       "test_id": "FLEX-1273",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1783,6 +1987,9 @@
     },
     {
       "test_id": "FLEX-1274",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1809,6 +2016,9 @@
     },
     {
       "test_id": "FLEX-1274A",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1835,6 +2045,9 @@
     },
     {
       "test_id": "FLEX-1275",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1861,6 +2074,9 @@
     },
     {
       "test_id": "FLEX-1276",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1887,6 +2103,9 @@
     },
     {
       "test_id": "FLEX-1277",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1913,6 +2132,9 @@
     },
     {
       "test_id": "FLEX-1278",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1939,6 +2161,9 @@
     },
     {
       "test_id": "FLEX-1279",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1965,6 +2190,9 @@
     },
     {
       "test_id": "FLEX-1280",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -1991,6 +2219,9 @@
     },
     {
       "test_id": "FLEX-1281",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2017,6 +2248,9 @@
     },
     {
       "test_id": "FLEX-1282",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2043,6 +2277,9 @@
     },
     {
       "test_id": "FLEX-1283",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2069,6 +2306,9 @@
     },
     {
       "test_id": "FLEX-1284",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2095,6 +2335,9 @@
     },
     {
       "test_id": "FLEX-1285",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2121,6 +2364,9 @@
     },
     {
       "test_id": "FLEX-1286",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2147,6 +2393,9 @@
     },
     {
       "test_id": "FLEX-1287",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2173,6 +2422,9 @@
     },
     {
       "test_id": "FLEX-1288",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2199,6 +2451,9 @@
     },
     {
       "test_id": "FLEX-1289",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2225,6 +2480,9 @@
     },
     {
       "test_id": "FLEX-1290",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2251,6 +2509,9 @@
     },
     {
       "test_id": "FLEX-1291",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2277,6 +2538,9 @@
     },
     {
       "test_id": "FLEX-1292",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2303,6 +2567,9 @@
     },
     {
       "test_id": "FLEX-1293",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2329,6 +2596,9 @@
     },
     {
       "test_id": "FLEX-1294",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2355,6 +2625,9 @@
     },
     {
       "test_id": "FLEX-1295",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2381,6 +2654,9 @@
     },
     {
       "test_id": "FLEX-1296",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2407,6 +2683,9 @@
     },
     {
       "test_id": "FLEX-1297",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2433,6 +2712,9 @@
     },
     {
       "test_id": "FLEX-1298",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2459,6 +2741,9 @@
     },
     {
       "test_id": "FLEX-1299",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2485,6 +2770,9 @@
     },
     {
       "test_id": "FLEX-1300",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2511,6 +2799,9 @@
     },
     {
       "test_id": "FLEX-1301",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2537,6 +2828,9 @@
     },
     {
       "test_id": "FLEX-1302",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2563,6 +2857,9 @@
     },
     {
       "test_id": "FLEX-1303",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2589,6 +2886,9 @@
     },
     {
       "test_id": "FLEX-1304",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2615,6 +2915,9 @@
     },
     {
       "test_id": "FLEX-1305",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2641,6 +2944,9 @@
     },
     {
       "test_id": "FLEX-1306",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2667,6 +2973,9 @@
     },
     {
       "test_id": "FLEX-1307",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2693,6 +3002,9 @@
     },
     {
       "test_id": "FLEX-1308",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2719,6 +3031,9 @@
     },
     {
       "test_id": "FLEX-1309",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2745,6 +3060,9 @@
     },
     {
       "test_id": "FLEX-1310",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2771,6 +3089,9 @@
     },
     {
       "test_id": "FLEX-1311",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2797,6 +3118,9 @@
     },
     {
       "test_id": "FLEX-1312",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2823,6 +3147,9 @@
     },
     {
       "test_id": "FLEX-1313",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2849,6 +3176,9 @@
     },
     {
       "test_id": "FLEX-1314",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2875,6 +3205,9 @@
     },
     {
       "test_id": "FLEX-1315",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2901,6 +3234,9 @@
     },
     {
       "test_id": "FLEX-1316",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2927,6 +3263,9 @@
     },
     {
       "test_id": "FLEX-1317",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2953,6 +3292,9 @@
     },
     {
       "test_id": "FLEX-1318",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -2979,6 +3321,9 @@
     },
     {
       "test_id": "FLEX-1319",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3005,6 +3350,9 @@
     },
     {
       "test_id": "FLEX-1320",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3031,6 +3379,9 @@
     },
     {
       "test_id": "FLEX-1321",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3057,6 +3408,9 @@
     },
     {
       "test_id": "FLEX-1322",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3083,6 +3437,9 @@
     },
     {
       "test_id": "FLEX-1323",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3109,6 +3466,9 @@
     },
     {
       "test_id": "FLEX-1324",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3135,6 +3495,9 @@
     },
     {
       "test_id": "FLEX-1325",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3161,6 +3524,9 @@
     },
     {
       "test_id": "FLEX-1326",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3187,6 +3553,9 @@
     },
     {
       "test_id": "FLEX-1327",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3213,6 +3582,9 @@
     },
     {
       "test_id": "FLEX-1328",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3239,6 +3611,9 @@
     },
     {
       "test_id": "FLEX-1329",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3265,6 +3640,9 @@
     },
     {
       "test_id": "FLEX-1330",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3291,6 +3669,9 @@
     },
     {
       "test_id": "FLEX-1331",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3317,6 +3698,9 @@
     },
     {
       "test_id": "FLEX-1332",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3343,6 +3727,9 @@
     },
     {
       "test_id": "FLEX-1333",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3369,6 +3756,9 @@
     },
     {
       "test_id": "FLEX-1334",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3395,6 +3785,9 @@
     },
     {
       "test_id": "FLEX-1335",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3421,6 +3814,9 @@
     },
     {
       "test_id": "FLEX-1336",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3447,6 +3843,9 @@
     },
     {
       "test_id": "FLEX-1337",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3473,6 +3872,9 @@
     },
     {
       "test_id": "FLEX-1338",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3499,6 +3901,9 @@
     },
     {
       "test_id": "FLEX-1339",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3525,6 +3930,9 @@
     },
     {
       "test_id": "FLEX-1340",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3551,6 +3959,9 @@
     },
     {
       "test_id": "FLEX-1341",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3577,6 +3988,9 @@
     },
     {
       "test_id": "FLEX-1342",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3603,6 +4017,9 @@
     },
     {
       "test_id": "FLEX-1343",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3629,6 +4046,9 @@
     },
     {
       "test_id": "FLEX-1344",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3655,6 +4075,9 @@
     },
     {
       "test_id": "FLEX-1345",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3681,6 +4104,9 @@
     },
     {
       "test_id": "FLEX-1346",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3707,6 +4133,9 @@
     },
     {
       "test_id": "FLEX-1347",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3733,6 +4162,9 @@
     },
     {
       "test_id": "FLEX-1348",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3759,6 +4191,9 @@
     },
     {
       "test_id": "FLEX-1349",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3785,6 +4220,9 @@
     },
     {
       "test_id": "FLEX-1350",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3811,6 +4249,9 @@
     },
     {
       "test_id": "FLEX-1351",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3837,6 +4278,9 @@
     },
     {
       "test_id": "FLEX-1352",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3863,6 +4307,9 @@
     },
     {
       "test_id": "FLEX-1353",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3889,6 +4336,9 @@
     },
     {
       "test_id": "FLEX-1354",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3915,6 +4365,9 @@
     },
     {
       "test_id": "FLEX-1355",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3941,6 +4394,9 @@
     },
     {
       "test_id": "FLEX-1356",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3967,6 +4423,9 @@
     },
     {
       "test_id": "FLEX-1357",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -3993,6 +4452,9 @@
     },
     {
       "test_id": "FLEX-1358",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4019,6 +4481,9 @@
     },
     {
       "test_id": "FLEX-1359",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4045,6 +4510,9 @@
     },
     {
       "test_id": "FLEX-1360",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4071,6 +4539,9 @@
     },
     {
       "test_id": "FLEX-1361",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4097,6 +4568,9 @@
     },
     {
       "test_id": "FLEX-1362",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4123,6 +4597,9 @@
     },
     {
       "test_id": "FLEX-1363",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4149,6 +4626,9 @@
     },
     {
       "test_id": "FLEX-1364",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4175,6 +4655,9 @@
     },
     {
       "test_id": "FLEX-1365",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4201,6 +4684,9 @@
     },
     {
       "test_id": "FLEX-1366",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4227,6 +4713,9 @@
     },
     {
       "test_id": "FLEX-1367",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4253,6 +4742,9 @@
     },
     {
       "test_id": "FLEX-1368",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4279,6 +4771,9 @@
     },
     {
       "test_id": "FLEX-1369",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4305,6 +4800,9 @@
     },
     {
       "test_id": "FLEX-1370",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4331,6 +4829,9 @@
     },
     {
       "test_id": "FLEX-1371",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4357,6 +4858,9 @@
     },
     {
       "test_id": "FLEX-1372",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4383,6 +4887,9 @@
     },
     {
       "test_id": "FLEX-1373",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4409,6 +4916,9 @@
     },
     {
       "test_id": "FLEX-1374",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4435,6 +4945,9 @@
     },
     {
       "test_id": "FLEX-1375",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4461,6 +4974,9 @@
     },
     {
       "test_id": "FLEX-1376",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4487,6 +5003,9 @@
     },
     {
       "test_id": "FLEX-1377",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4513,6 +5032,9 @@
     },
     {
       "test_id": "FLEX-1378",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4539,6 +5061,9 @@
     },
     {
       "test_id": "FLEX-1379",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4565,6 +5090,9 @@
     },
     {
       "test_id": "FLEX-1380",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4591,6 +5119,9 @@
     },
     {
       "test_id": "FLEX-1381",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4617,6 +5148,9 @@
     },
     {
       "test_id": "FLEX-1382",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 75% / iso-dodecane 25%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4643,6 +5177,9 @@
     },
     {
       "test_id": "FLEX-1383",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4669,6 +5206,9 @@
     },
     {
       "test_id": "FLEX-1384",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4695,6 +5235,9 @@
     },
     {
       "test_id": "FLEX-1385",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4721,6 +5264,9 @@
     },
     {
       "test_id": "FLEX-1386",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4747,6 +5293,9 @@
     },
     {
       "test_id": "FLEX-1387",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "n-Dodecane 60% / iso-dodecane 40%",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4773,6 +5322,9 @@
     },
     {
       "test_id": "FLEX-1388",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4799,6 +5351,9 @@
     },
     {
       "test_id": "FLEX-1389",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4825,6 +5380,9 @@
     },
     {
       "test_id": "FLEX-1390",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4851,6 +5409,9 @@
     },
     {
       "test_id": "FLEX-1391",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4877,6 +5438,9 @@
     },
     {
       "test_id": "FLEX-1392",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4903,6 +5467,9 @@
     },
     {
       "test_id": "FLEX-1393",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4929,6 +5496,9 @@
     },
     {
       "test_id": "FLEX-1394",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4955,6 +5525,9 @@
     },
     {
       "test_id": "FLEX-1395",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -4981,6 +5554,9 @@
     },
     {
       "test_id": "FLEX-1396",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5007,6 +5583,9 @@
     },
     {
       "test_id": "FLEX-1397",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5033,6 +5612,9 @@
     },
     {
       "test_id": "FLEX-1398",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5059,6 +5641,9 @@
     },
     {
       "test_id": "FLEX-1399",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5085,6 +5670,9 @@
     },
     {
       "test_id": "FLEX-1400",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5111,6 +5699,9 @@
     },
     {
       "test_id": "FLEX-1401",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5137,6 +5728,9 @@
     },
     {
       "test_id": "FLEX-1402",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5163,6 +5757,9 @@
     },
     {
       "test_id": "FLEX-1403",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5189,6 +5786,9 @@
     },
     {
       "test_id": "FLEX-1404",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5215,6 +5815,9 @@
     },
     {
       "test_id": "FLEX-1405",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5241,6 +5844,9 @@
     },
     {
       "test_id": "FLEX-1406",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5267,6 +5873,9 @@
     },
     {
       "test_id": "FLEX-1407",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5293,6 +5902,9 @@
     },
     {
       "test_id": "FLEX-1408",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5319,6 +5931,9 @@
     },
     {
       "test_id": "FLEX-1409",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5345,6 +5960,9 @@
     },
     {
       "test_id": "FLEX-1410",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5371,6 +5989,9 @@
     },
     {
       "test_id": "FLEX-1411",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5397,6 +6018,9 @@
     },
     {
       "test_id": "FLEX-1412",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5423,6 +6047,9 @@
     },
     {
       "test_id": "FLEX-1413",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5449,6 +6076,9 @@
     },
     {
       "test_id": "FLEX-1414",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5475,6 +6105,9 @@
     },
     {
       "test_id": "FLEX-1415",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5501,6 +6134,9 @@
     },
     {
       "test_id": "FLEX-1416",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5527,6 +6163,9 @@
     },
     {
       "test_id": "FLEX-1417",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5553,6 +6192,9 @@
     },
     {
       "test_id": "FLEX-1418",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5579,6 +6221,9 @@
     },
     {
       "test_id": "FLEX-1419",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5605,6 +6250,9 @@
     },
     {
       "test_id": "FLEX-1420",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5631,6 +6279,9 @@
     },
     {
       "test_id": "FLEX-1421",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5657,6 +6308,9 @@
     },
     {
       "test_id": "FLEX-1422",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5683,6 +6337,9 @@
     },
     {
       "test_id": "FLEX-1423",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5709,6 +6366,9 @@
     },
     {
       "test_id": "FLEX-1424",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5735,6 +6395,9 @@
     },
     {
       "test_id": "FLEX-1425",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5761,6 +6424,9 @@
     },
     {
       "test_id": "FLEX-1426",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5787,6 +6453,9 @@
     },
     {
       "test_id": "FLEX-1427",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5813,6 +6482,9 @@
     },
     {
       "test_id": "FLEX-1428",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5839,6 +6511,9 @@
     },
     {
       "test_id": "FLEX-1429",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5865,6 +6540,9 @@
     },
     {
       "test_id": "FLEX-1430",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,
@@ -5891,6 +6569,9 @@
     },
     {
       "test_id": "FLEX-1431",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Farnesane",
       "material_class": "liquid",
       "thickness_mm": null,

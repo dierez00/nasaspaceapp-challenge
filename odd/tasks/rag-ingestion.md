@@ -28,10 +28,10 @@ Reranker, agents, frontend, PDF parsing.
 
 ## Tasks
 - [x] T1 Schema: drop FK, add `content_hash` + uniqueness; add `voyageai` dependency and embedding settings.
-- [ ] T2 Domain + application: chunk model, chunkers per source type, embedder port, indexing use case with hash-based diff.
-- [ ] T3 Infrastructure: Voyage embedder adapter, Postgres chunk repository; `atlas-index` CLI.
-- [ ] T4 API: `POST /search` with citations.
-- [ ] T5 Tests + README section; live smoke run against local pgvector (needs `docker compose up -d db`).
+- [x] T2 Domain + application: chunk model, chunkers per source type, embedder port, indexing use case with hash-based diff.
+- [x] T3 Infrastructure: Voyage embedder adapter, Postgres chunk repository; `atlas-index` CLI.
+- [x] T4 API: `POST /search` with citations.
+- [x] T5 Tests + README section; live smoke run against local pgvector (needs `docker compose up -d db`).
 
 ## Acceptance criteria
 - `atlas-index` run twice: second run embeds 0 chunks.
@@ -43,6 +43,11 @@ Reranker, agents, frontend, PDF parsing.
 
 ## Progress
 - Created 2026-11-14. Baseline: 6 passed, 1 skipped.
+- T1 done: ad293f8 (schema, deps, settings).
+- T2-T5 done in the follow-up commit (chunking, indexing use case, Voyage/Postgres adapters, `atlas-index`, `POST /search`, tests, README).
+- Model `voyage-4`, output_dimension 1024. Chunking: experiment overview, one chunk per test, search-source overview + publications, CSV rows in groups of 8 with header context (89 chunks).
+- Live smoke (local pgvector via `docker run`, no compose plugin): run 1 `89 new, 0 unchanged, 0 removed`; run 2 `0 new, 89 unchanged, 0 removed`; `/search` top hit PSI-107 sources.json overview (0.726).
+- Tests: 11 passed, 2 skipped without DB; 13 passed with ATLAS_TEST_DATABASE_URL.
 
 ## Next step
-T1.
+Done; ready for review/merge.

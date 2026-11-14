@@ -18,6 +18,21 @@ docker compose up -d db          # Postgres 17 + pgvector en localhost:5433
 - `GET /health`: estado de la API y de la base de datos
 - `GET /experiments` y `GET /experiments/{id}`: experimentos validados para el mapa
 
+## Búsqueda (RAG)
+
+Requiere `VOYAGE_API_KEY` en `.env` (modelo `voyage-4`, 1024 dimensiones; configurable con `EMBEDDING_MODEL`).
+
+```bash
+.venv/bin/atlas-index            # trocea data/ (experimentos, search/sources.json, CSV crudos), embebe y guarda en pgvector
+# primera corrida: 89 new, 0 unchanged, 0 removed; la segunda: 0 new, 89 unchanged, 0 removed
+curl -X POST localhost:8000/search -H 'content-type: application/json' \
+  -d '{"query": "smoke point in microgravity", "k": 5}'
+```
+
+- `atlas-index` es idempotente: cada chunk se identifica por el hash de su contenido, solo se embeben los nuevos y se borran los que ya no existen. Volver a ejecutarlo tras agregar archivos a `data/` es seguro; una segunda corrida seguida embebe 0.
+- `POST /search` devuelve `[{experiment_id, source_file, section, content, score}]` ordenado por similitud coseno (`k` entre 1 y 20, por defecto 5). Responde 503 si falta la clave.
+- Sin método de pago, Voyage limita a 3 RPM y 10K TPM: el indexado espera y reintenta solo, así que la primera corrida puede tardar unos minutos.
+
 ## Pruebas
 
 ```bash
@@ -25,7 +40,7 @@ docker compose up -d db          # Postgres 17 + pgvector en localhost:5433
 ATLAS_TEST_DATABASE_URL=postgresql://atlas:atlas@localhost:5433/atlas .venv/bin/pytest
 ```
 
-La segunda corrida incluye las pruebas contra Postgres; requiere haber ejecutado `atlas-load`.
+La segunda corrida incluye las pruebas contra Postgres; requiere haber ejecutado `atlas-load`. Las pruebas de búsqueda usan un embedder falso (sin red) y vacían `document_chunks` al terminar.
 
 ## Estructura
 

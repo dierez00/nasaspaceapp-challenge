@@ -1,0 +1,544 @@
+{
+  "schema_version": "1.0",
+  "id": "PSI-20",
+  "title": "Advanced Combustion via Microgravity Experiments - Burning Rate Emulator",
+  "acronym": "ACME BRE",
+  "doi": "10.60555/vb93-3y72",
+  "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-20",
+  "research_area": "Combustion Science",
+  "sub_research_area": "Flames of Gaseous Fuels",
+  "platform": "International Space Station (Combustion Integrated Rack)",
+  "start_date": "2010-01-01",
+  "end_date": "2025-02-08",
+  "principal_investigator": "James G. Quintiere",
+  "summary": "Gaseous fuels (C2H4 and CH4 diluted with N2) burned on 25 mm and 50 mm porous circular burners in the CIR aboard the ISS under quiescent microgravity to emulate condensed-phase fuel burning and determine extinction limits across varying O2 concentrations.",
+  "tests": [
+    {
+      "test_id": "BRE-2019-02-08",
+      "material": "100% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 30.5,
+      "o2_percent_range": [
+        21.0,
+        40.0
+      ],
+      "o2_status": "reported",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 25 mm. Flames ignited count: 10. O2 concentration varied during session across approximate values: 21; 26.5; 40 (midpoint used). Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia). Source note: Oxygen Conc. (as diluted with nitrogen on a volume basis) was varied between tests where approximate concentrations for tests that ignited are listed. The chamber pressures were also varied but are not identified in this summary table.",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 1 (2019-Feb-8)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2019-02-20",
+      "material": "100% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 30.25,
+      "o2_percent_range": [
+        26.5,
+        34.0
+      ],
+      "o2_status": "reported",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 25 mm. Flames ignited count: 8. O2 concentration varied during session across approximate values: 26.5; 34 (midpoint used). Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia). Source note: Flames Ignited is the number ignited on that day (neglecting the day change on ISS).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 2 (2019-Feb-20)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2019-02-25",
+      "material": "50% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 30.5,
+      "o2_percent_range": [
+        21.0,
+        40.0
+      ],
+      "o2_status": "reported",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 25 mm. Flames ignited count: 8. O2 concentration varied during session across approximate values: 21; 26.5; 34; 40 (midpoint used). Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 3 (2019-Feb-25)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2019-03-04",
+      "material": "50% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 33.25,
+      "o2_percent_range": [
+        26.5,
+        40.0
+      ],
+      "o2_status": "reported",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 25 mm. Flames ignited count: 6. O2 concentration varied during session across approximate values: 26.5; 40 (midpoint used). Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 4 (2019-March-4)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2019-03-07",
+      "material": "50% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 34.0,
+      "o2_percent_range": null,
+      "o2_status": "derived",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 25 mm. Flames ignited count: 6. O2 reported as 3400% in source table; interpreted as typographical error for 34.0%. Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 5 (2019-March-7)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2019-03-11",
+      "material": "50% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 30.25,
+      "o2_percent_range": [
+        26.5,
+        34.0
+      ],
+      "o2_status": "reported",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 25 mm. Flames ignited count: 7. O2 concentration varied during session across approximate values: 26.5; 34 (midpoint used). Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 6 (2019-March-11)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2019-03-28",
+      "material": "100%C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 30.25,
+      "o2_percent_range": [
+        26.5,
+        34.0
+      ],
+      "o2_status": "reported",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 25 mm. Flames ignited count: 8. O2 concentration varied during session across approximate values: 26.5; 34 (midpoint used). Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 7 (2019-March-28)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2019-04-01",
+      "material": "100%C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 21.0,
+      "o2_percent_range": null,
+      "o2_status": "derived",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "no_ignition",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 25 mm. Flames ignited count: 0. O2 reported as 2100% in source table; interpreted as typographical error for 21.0%. Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 8 (2019-April-1)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2019-04-04",
+      "material": "100%C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 27.5,
+      "o2_percent_range": [
+        21.0,
+        34.0
+      ],
+      "o2_status": "reported",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 25 mm. Flames ignited count: 9. O2 concentration varied during session across approximate values: 21; 26.5; 34 (midpoint used). Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 9 (2019-April-4)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2020-09-03",
+      "material": "100% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 32.5,
+      "o2_percent_range": [
+        25.0,
+        40.0
+      ],
+      "o2_status": "reported",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 50 mm. Flames ignited count: 13. O2 concentration varied during session across approximate values: 25; 34; 40 (midpoint used). Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 10 (2020-Sept-3)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2020-10-17",
+      "material": "100% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 30.25,
+      "o2_percent_range": [
+        26.5,
+        34.0
+      ],
+      "o2_status": "reported",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 25 mm. Flames ignited count: 13. O2 concentration varied during session across approximate values: 26.5; 34 (midpoint used). Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 11 (2020-Oct-17)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2020-12-05",
+      "material": "100% CH4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 32.5,
+      "o2_percent_range": [
+        25.0,
+        40.0
+      ],
+      "o2_status": "reported",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 25 mm. Flames ignited count: 21. O2 concentration varied during session across approximate values: 25; 34; 40 (midpoint used). Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 12 (2020-Dec-5)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2020-12-04",
+      "material": "100% CH4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 32.5,
+      "o2_percent_range": [
+        25.0,
+        40.0
+      ],
+      "o2_status": "reported",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 25 mm. Flames ignited count: 18. O2 concentration varied during session across approximate values: 25; 40 (midpoint used). Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 13 (2020-Dec-4)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2020-12-11",
+      "material": "50% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 32.5,
+      "o2_percent_range": [
+        25.0,
+        40.0
+      ],
+      "o2_status": "reported",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 25 mm. Flames ignited count: 12. O2 concentration varied during session across approximate values: 25; 40 (midpoint used). Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 14 (2020-Dec-11)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2020-12-17",
+      "material": "100% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 37.0,
+      "o2_percent_range": [
+        34.0,
+        40.0
+      ],
+      "o2_status": "reported",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 25 mm. Flames ignited count: 10. O2 concentration varied during session across approximate values: 34; 40 (midpoint used). Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 15 (2020-Dec-17)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2020-12-23",
+      "material": "100% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 32.5,
+      "o2_percent_range": [
+        25.0,
+        40.0
+      ],
+      "o2_status": "reported",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 25 mm. Flames ignited count: 17. O2 concentration varied during session across approximate values: 25; 34; 40 (midpoint used). Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 16 (2020-Dec-23)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2021-01-20",
+      "material": "100% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 27.5,
+      "o2_percent_range": [
+        21.0,
+        34.0
+      ],
+      "o2_status": "reported",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 25 mm. Flames ignited count: 15. O2 concentration varied during session across approximate values: 21; 26.5; 34 (midpoint used). Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 17 (2021-Jan-20)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "BRE-2021-01-28",
+      "material": "100% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 32.5,
+      "o2_percent_range": [
+        25.0,
+        40.0
+      ],
+      "o2_status": "reported",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Porous circular burner diameter 50 mm. Flames ignited count: 13. O2 concentration varied during session across approximate values: 25; 34; 40 (midpoint used). Chamber pressure was varied during tests but not reported in summary table; assumed nominal 101.3 kPa (14.7 psia).",
+      "source": {
+        "file": "PSI-20_Experimental table_ACME BRE.csv",
+        "locator": "row 18 (2021-Jan-28)"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    }
+  ],
+  "sources": [
+    {
+      "file": "PSI-20_Experimental table_ACME BRE.csv",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-20"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "extracted_by": "claude",
+    "reviewed_by": null
+  }
+}

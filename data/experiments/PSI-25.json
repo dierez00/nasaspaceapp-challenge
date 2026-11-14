@@ -18,7 +18,6 @@
       "point_type": "limit",
       "limit_type": "radiative_extinction",
       "derived_from": [
-        "B6",
         "B9"
       ],
       "material": "PMMA film",
@@ -41,13 +40,13 @@
         "spread_rate_mm_s": 2.0,
         "note": "Downward spread over 100 um PMMA, 21% O2, 101 kPa (SDSU flame stabilizer): average 2.0 mm/s, steady (p40). Outcome 'complete_burn' inferred from steady spread."
       },
-      "notes": "Gradual flow reduction from 3 cm/s; flame extinguished ~30 s after ignition. Steady spread rate before flow reduction was 2.2 mm/s (same sample conditions), not measured at the limit, so spread_rate left null. O2 not stated for this specific test; 21% taken from Table 2.1 (p28) which lists the 21% case as 10+-5 mm/s (i.e. 1.0+-0.5 cm/s) experimental, computation 15 mm/s, theory 7.5 mm/s. Authors warn of large uncertainty in velocity calibration at such low flow. CSV match is inferred by CSV match (100 um, ~21% O2, flow reduced to <1: B6, B9). Quote: \"The fan voltage at that time indicates a flow velocity of about 1.1 cm/s.\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "Gradual flow reduction from 3 cm/s; flame extinguished ~30 s after ignition. Steady spread rate before flow reduction was 2.2 mm/s (same sample conditions), not measured at the limit, so spread_rate left null. O2 not stated for this specific test; 21% taken from Table 2.1 (p28) which lists the 21% case as 10+-5 mm/s (i.e. 1.0+-0.5 cm/s) experimental, computation 15 mm/s, theory 7.5 mm/s. Authors warn of large uncertainty in velocity calibration at such low flow. CSV match is inferred by CSV match (100 um, ~21% O2, flow reduced to <1: B6, B9). Quote: \"The fan voltage at that time indicates a flow velocity of about 1.1 cm/s.\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Review: Gradual flow reduction from 3 cm/s; flame extinguished ~30 s after ignition. Steady spread rate before flow reduction was 2.2 mm/s (same sample conditions), not measured at the limit, so spread_rate left null. O2 not stated for this specific test; 21% taken from Table 2.1 (p28) which lists the 21% case as 10+-5 mm/s (i.e. 1.0+-0.5 cm/s) experimental, computation 15 mm/s, theory 7.5 mm/s. Authors warn of large uncertainty in velocity calibration at such low flow. Run match from Appendix A Table A.1 (p. 104): B9 = 100 um PMMA film, 2 cm wide, calibrated initial O2 21.0%, flow reduced to <1 cm/s (pot 0.6, 0.35), extinguished at pot 0.35, 45 frames (consistent with extinction ~30 s after ignition). B6 (also 21.0%) removed: flow was never reduced to extinction, the sample burned out. Text says the test started at 3 cm/s while B9 lists 2 cm/s, so the match rests on thickness/O2/extinction at pot 0.35, not on an explicit run label. Quote: \"The fan voltage at that time indicates a flow velocity of about 1.1 cm/s.\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: Report never names the run; B9 start flow (2 cm/s) differs from the 3 cm/s in the text. B1 (100 um, flow cut off abruptly, 22.2% calibrated vs 20.6% raw sensor) is the text's first test, not this limit.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 23 (also 13), 2.2.5 Extinction Velocity (also 2.1.2.1)"
       },
       "confidence": "high",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "BHA-EXT-200um-21",
@@ -77,22 +76,19 @@
         "spread_rate_mm_s": null,
         "note": "No experimental 1g value stated in text for this thickness (only in Fig. 2.21). Computation (not experiment), 21% O2, quiescent 1g downward: steady spread, 1.6 mm/s (p26)."
       },
-      "notes": "Value stated jointly for 100, 200 and 300 um (about 1 cm/s). O2 for the thickness set is not stated in the text; 21% from Table 2.1. 200 um: CSV 21% tests with reduced flow are B10 (1 cm wide) and B11. Authors state velocity independent of thickness and warn of significant calibration uncertainty. Matches inferred by CSV match. Quote: \"about 1 cm/s for 100, 200, and 300 µm and about 1.5 cm/s for 400 µm\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "Value stated jointly for 100, 200 and 300 um (about 1 cm/s). O2 for the thickness set is not stated in the text; 21% from Table 2.1. 200 um: CSV 21% tests with reduced flow are B10 (1 cm wide) and B11. Authors state velocity independent of thickness and warn of significant calibration uncertainty. Matches inferred by CSV match. Quote: \"about 1 cm/s for 100, 200, and 300 µm and about 1.5 cm/s for 400 µm\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: Report does not name runs. B10 and B11 are both 0.2 mm, calibrated initial O2 21.0%, extinguished at pot 0.35; B10 is 1 cm wide whereas p. 21 states 20 mm wide samples, so B11 is the closer match. O2 21% is only stated for this set via Table 2.1 and the calibrated 21.0 of B10/B11.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 23 (also 13), 2.2.5 Extinction Velocity"
       },
       "confidence": "medium",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "BHA-EXT-300um-21",
       "point_type": "limit",
       "limit_type": "radiative_extinction",
-      "derived_from": [
-        "B4",
-        "B12"
-      ],
+      "derived_from": [],
       "material": "PMMA film",
       "material_class": "polymer",
       "thickness_mm": 0.3,
@@ -113,7 +109,7 @@
         "spread_rate_mm_s": null,
         "note": "No experimental 1g value stated in text for this thickness (only in Fig. 2.21). Computation (not experiment), 21% O2, quiescent 1g downward: steady spread, 1.2 mm/s (p26)."
       },
-      "notes": "Value stated jointly for 100, 200 and 300 um (about 1 cm/s). O2 for the thickness set is not stated in the text; 21% from Table 2.1. 300 um: the only 300 um CSV tests (B4, B12) have initial O2 22.2%, so the actual O2 for this value may be ~22%, not 21%. Authors state velocity independent of thickness and warn of significant calibration uncertainty. Matches inferred by CSV match. Quote: \"about 1 cm/s for 100, 200, and 300 µm and about 1.5 cm/s for 400 µm\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "Value stated jointly for 100, 200 and 300 um (about 1 cm/s). O2 for the thickness set is not stated in the text; 21% from Table 2.1. 300 um: the only 300 um CSV tests (B4, B12) have initial O2 22.2%, so the actual O2 for this value may be ~22%, not 21%. Authors state velocity independent of thickness and warn of significant calibration uncertainty. Matches inferred by CSV match. Quote: \"about 1 cm/s for 100, 200, and 300 µm and about 1.5 cm/s for 400 µm\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Review: Value stated jointly for 100, 200 and 300 um (about 1 cm/s). O2 for the thickness set is not stated in the text; 21% from Table 2.1. 300 um: no Appendix A.1 test is a 21% flow-reduction run at 300 um. The only 300 um runs (B4, B12) are 22.2% calibrated initial O2 at constant flow (air display 5 and 2 cm/s, no extinction noted), so they are not tied to this limit and derived_from is empty. O2 of the 300 um value is not stated in the text (21% from Table 2.1 only). Authors state velocity independent of thickness and warn of significant calibration uncertainty. Quote: \"about 1 cm/s for 100, 200, and 300 µm and about 1.5 cm/s for 400 µm\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: No run documents the 300 um extinction velocity; the value is stated jointly with 100 and 200 um. O2 for it is unknown (21% assumed); consider confidence low and no run link.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 23 (also 13), 2.2.5 Extinction Velocity"
@@ -148,26 +144,25 @@
         "spread_rate_mm_s": null,
         "note": "No experimental 1g value in text for this thickness. Computation (not experiment), 21% O2: steady downward spread 0.9 mm/s (p26)."
       },
-      "notes": "400 um is the one thickness with a higher value (1.5 vs 1). B13 is the only CSV 400 um test at ~21% (flow stepped down to 0.35 pot), inferred by CSV match. Calibration uncertainty is large. Quote: \"about 1 cm/s for 100, 200, and 300 µm and about 1.5 cm/s for 400 µm\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "400 um is the one thickness with a higher value (1.5 vs 1). B13 is the only CSV 400 um test at ~21% (flow stepped down to 0.35 pot), inferred by CSV match. Calibration uncertainty is large. Quote: \"about 1 cm/s for 100, 200, and 300 µm and about 1.5 cm/s for 400 µm\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: B13 is the only 400 um test with 21.0% calibrated O2 and a flow reduction (B7 is 22.2% at constant 2 cm/s); report does not name it explicitly.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 23 (also 13), 2.2.5 Extinction Velocity"
       },
       "confidence": "medium",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "BHA-EXT-100um-16",
       "point_type": "limit",
       "limit_type": "radiative_extinction",
       "derived_from": [
-        "B16",
-        "B20"
+        "B16"
       ],
       "material": "PMMA film",
       "material_class": "polymer",
       "thickness_mm": 0.1,
-      "o2_percent": 16,
+      "o2_percent": 17.3,
       "o2_percent_range": null,
       "o2_status": "reported",
       "pressure_kpa": 101.3,
@@ -184,26 +179,25 @@
         "spread_rate_mm_s": null,
         "note": "Computation only (100 um): in quiescent 1g at 16% O2 the buoyancy-created flow causes blowoff extinction (p26). No 1g experiment at 16% stated."
       },
-      "notes": "O2 stated as 'about 16 percent'. Sample width 20 mm wide. Table 2.1 (p28) gives the experimental 16% case as 30+-5 mm/s (3.0+-0.5 cm/s), computation 35 mm/s, theory 10 mm/s, i.e. slightly different from the text values. Authors note insufficient data at lower O2. DISCREPANCY: CSV calibrated initial O2 for the likely matching tests is 17.3-17.5% (B16, B17, B20; B14 shows 15%), not 16%; matches inferred by CSV match. Quote: \"velocities are found to be about 2.6 cm/s for 100 µm and about 4 cm/s for 200 µm\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Likely matching CSV runs show 17.3–17.5% O2 (15% for B14), not ~16%.",
+      "notes": "O2 stated as 'about 16 percent'. Sample width 20 mm wide. Table 2.1 (p28) gives the experimental 16% case as 30+-5 mm/s (3.0+-0.5 cm/s), computation 35 mm/s, theory 10 mm/s, i.e. slightly different from the text values. Authors note insufficient data at lower O2. DISCREPANCY: CSV calibrated initial O2 for the likely matching tests is 17.3-17.5% (B16, B17, B20; B14 shows 15%), not 16%; matches inferred by CSV match. Quote: \"velocities are found to be about 2.6 cm/s for 100 µm and about 4 cm/s for 200 µm\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). O2 is the calibrated initial value of the tied run (Appendix A.1); text says 'about 16 percent' (raw sensor ~16.5%). Review: O2 stated as 'about 16 percent'. Sample width 20 mm wide. Table 2.1 (p28) gives the experimental 16% case as 30+-5 mm/s (3.0+-0.5 cm/s), computation 35 mm/s, theory 10 mm/s, i.e. slightly different from the text values. Authors note insufficient data at lower O2. O2 resolution: the text says only 'about 16 percent'. The matching run is B16 (2 cm wide, 100 um, quenched at pot 0.4 after flow reduction), whose Appendix A.1 calibrated initial O2 is 17.3% (final 17.2%); the uncalibrated sensor columns read 16.5/16.4%, which is probably where the nominal ~16% comes from. o2_percent set to the calibrated 17.3. B20 (same sample type, 17.4%) burned the entire sample, so it is not an extinction run; B14 (15%, 1 cm wide, 200 um) is not this set. Quote: \"velocities are found to be about 2.6 cm/s for 100 µm and about 4 cm/s for 200 µm\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Run link B16 is by sample width (20 mm for 100 um per the text), thickness and extinction after flow reduction; the report does not label runs. Open: Report text says about 16%; the 17.3% value is the calibrated Appendix figure. Caller should set o2_status to whatever enum means 'from Appendix table, calibrated' and keep the 'about 16 percent' wording in notes if preferred. Run link is inferred (no run IDs in text).",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 25 (also 15), 2.2.5 Extinction Velocity"
       },
       "confidence": "medium",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "BHA-EXT-200um-16",
       "point_type": "limit",
       "limit_type": "radiative_extinction",
       "derived_from": [
-        "B14",
         "B17"
       ],
       "material": "PMMA film",
       "material_class": "polymer",
       "thickness_mm": 0.2,
-      "o2_percent": 16,
+      "o2_percent": 17.5,
       "o2_percent_range": null,
       "o2_status": "reported",
       "pressure_kpa": 101.3,
@@ -216,31 +210,28 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "O2 stated as 'about 16 percent'. Sample width 10 mm wide. Table 2.1 (p28) gives the experimental 16% case as 30+-5 mm/s (3.0+-0.5 cm/s), computation 35 mm/s, theory 10 mm/s, i.e. slightly different from the text values. Authors note insufficient data at lower O2. DISCREPANCY: CSV calibrated initial O2 for the likely matching tests is 17.3-17.5% (B16, B17, B20; B14 shows 15%), not 16%; matches inferred by CSV match. Quote: \"velocities are found to be about 2.6 cm/s for 100 µm and about 4 cm/s for 200 µm\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Likely matching CSV runs show 17.3–17.5% O2 (15% for B14), not ~16%.",
+      "notes": "O2 stated as 'about 16 percent'. Sample width 10 mm wide. Table 2.1 (p28) gives the experimental 16% case as 30+-5 mm/s (3.0+-0.5 cm/s), computation 35 mm/s, theory 10 mm/s, i.e. slightly different from the text values. Authors note insufficient data at lower O2. DISCREPANCY: CSV calibrated initial O2 for the likely matching tests is 17.3-17.5% (B16, B17, B20; B14 shows 15%), not 16%; matches inferred by CSV match. Quote: \"velocities are found to be about 2.6 cm/s for 100 µm and about 4 cm/s for 200 µm\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). O2 is the calibrated initial value of the tied run (Appendix A.1); text says 'about 16 percent' (raw sensor ~16.5%). Review: O2 stated as 'about 16 percent'. Sample width 10 mm wide. Table 2.1 (p28) gives the experimental 16% case as 30+-5 mm/s (3.0+-0.5 cm/s), computation 35 mm/s, theory 10 mm/s, i.e. slightly different from the text values. Authors note insufficient data at lower O2. O2 resolution: the text says only 'about 16 percent'. The matching run is B17 (1 cm wide, 200 um, extinguished just as pot 0.4 was reached), calibrated initial O2 17.5% (final 17.4%); raw sensor columns read 16.6/16.5%. o2_percent set to the calibrated 17.5. B14 (15.0% calibrated, 'only brief ignition, flame extinguished') is not a flow-reduction extinction at ~16% and is removed; B18 (17.4%) is a blowoff run. Quote: \"velocities are found to be about 2.6 cm/s for 100 µm and about 4 cm/s for 200 µm\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Run link B17 is by sample width (10 mm for 200 um per the text), thickness and extinction at pot 0.4; the report does not label runs. Open: Same as 100 um: 'about 16 percent' (text) vs 17.5% calibrated (Appendix); run link inferred.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 25 (also 15), 2.2.5 Extinction Velocity"
       },
       "confidence": "medium",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "FP-QUENCH-BLACKROD-OPP",
       "point_type": "limit",
       "limit_type": "quenching",
       "derived_from": [
-        "P2",
-        "P4",
-        "P6",
+        "P1",
         "P10",
         "P12",
         "P14",
-        "P15",
-        "P16",
         "P17",
-        "P19",
         "P22a",
-        "P22b"
+        "P22b",
+        "P23",
+        "P24"
       ],
       "material": "PMMA rod (black cast), 6.35 and 9.525 mm diameter",
       "material_class": "polymer",
@@ -261,13 +252,13 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Applies to 6.35 mm (O2 16.8-18.9%) and 9.525 mm (17.5-20.9%) diameter rods (Table 4.2, p48); o2_percent is the lower end of the combined range, not a single test value. Text calls this the near-quenching limit regime. No normal-gravity value at comparable velocity (buoyant velocity ~0.50 m/s at ignition, p48). 'approximately' hence medium. derived_from inferred by CSV match (black 1/4 and 3/8 in. rods with flow stepped down to ~0.3-0.4 pot). Quote: \"Sustained flame spread for the conditions tested was not observed for opposed-flow velocities below approximately 4 mm/s\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "Applies to 6.35 mm (O2 16.8-18.9%) and 9.525 mm (17.5-20.9%) diameter rods (Table 4.2, p48); o2_percent is the lower end of the combined range, not a single test value. Text calls this the near-quenching limit regime. No normal-gravity value at comparable velocity (buoyant velocity ~0.50 m/s at ignition, p48). 'approximately' hence medium. derived_from inferred by CSV match (black 1/4 and 3/8 in. rods with flow stepped down to ~0.3-0.4 pot). Quote: \"Sustained flame spread for the conditions tested was not observed for opposed-flow velocities below approximately 4 mm/s\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Review: Applies to 6.35 mm (O2 16.8-18.9%) and 9.525 mm (17.5-20.9%) diameter rods (Table 4.2, p48); o2_percent is the lower end of the combined range, not a single test value. Text calls this the near-quenching limit regime. No normal-gravity value at comparable velocity (buoyant velocity ~0.50 m/s at ignition, p48). 'approximately' hence medium. derived_from revised against Appendix A.3 (pp. 106-107): kept black 6.35 and 9.525 mm rods with opposed flow, calibrated initial O2 inside the Table 4.2 ranges, and an extinction at pot 0.3-0.4 (P1 0.315, P10 0.3, P12 0.34, P14 0.31, P17 0.34, P22a 0.32, P22b, P23 0.38, P24 0.30). Removed: P16 and P19 (Appendix lists them as Concurrent), P4 and P6 (flow turned off, no natural extinction), P2 (extinction was fan off, not a ramp), P15 (stable burn, no extinction noted). P18 and P20 (extinction at pot 0.32/0.335) excluded because O2 20.0/19.0 is above the 6.35 mm range 16.8-18.9 of Table 4.2. The report does not name runs, so this list is an inference. Quote: \"Sustained flame spread for the conditions tested was not observed for opposed-flow velocities below approximately 4 mm/s\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: Run list is inferred, not stated in the report. 'approximately 4 mm/s' is a visual lower bound from Fig. 4.1, not a per-run measurement. o2_percent 16.8 is just the lower end of the combined range.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 48, 4.1.2 Results"
       },
       "confidence": "medium",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "FP-MINO2-BLACKROD-OPP",
@@ -276,7 +267,8 @@
       "derived_from": [
         "P1",
         "P2",
-        "P9"
+        "P9",
+        "P12"
       ],
       "material": "PMMA rod (black cast), 6.35-12.7 mm diameter",
       "material_class": "polymer",
@@ -298,12 +290,12 @@
         "spread_rate_mm_s": null,
         "note": "In normal gravity flame spread was not observed below 19% O2; lowest O2 at which all four rod diameters burned without external radiant heating was 19% (p49-50). Authors attribute difference to lower opposed flow in microgravity."
       },
-      "notes": "Minimum O2 at which opposed flame spread was observed in the BASS-II rod tests; flow not specified for this limit (tests at ~0.4-7.5 cm/s). 17.5% was the only O2 at which all three diameters were tested. CONFLICT: Olson (p73) states opposed-flow spread was not observed below 16.4% O2 (see OLS-OPP-ROD-MINO2-16.4). derived_from inferred by CSV match (black rods at ~17.4-17.7% O2). Conflicts with Olson p73 (opposed spread not observed below 16.4% O2). Quote: \"flame spread was observed at O2 concentrations as low as 17.5 percent\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "Minimum O2 at which opposed flame spread was observed in the BASS-II rod tests; flow not specified for this limit (tests at ~0.4-7.5 cm/s). 17.5% was the only O2 at which all three diameters were tested. CONFLICT: Olson (p73) states opposed-flow spread was not observed below 16.4% O2 (see OLS-OPP-ROD-MINO2-16.4). derived_from inferred by CSV match (black rods at ~17.4-17.7% O2). 17.5% is the lowest O2 of the 0g/1g comparison (all three rod diameters), not an absolute minimum: opposed spread occurred at 16.8% (P17) and none at 16.4% (P8). Quote: \"flame spread was observed at O2 concentrations as low as 17.5 percent\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Review: Minimum O2 at which opposed flame spread was observed in the BASS-II rod tests; flow not specified for this limit (tests at ~0.4-7.5 cm/s). 17.5% was the only O2 at which all three diameters were tested. Scope of the 17.5% value: it is the lowest O2 of the normal-vs-microgravity comparison (the only O2 at which all three diameters were tested, p. 49; Fig. 4.3 uses test-averaged O2), not a sharp minimum. Table 4.2 (p. 48) lists tests down to 16.8% and Appendix runs P17 (16.8%) and P10 (17.0%) show finite-flow burning, so the true opposed-spread minimum in these tests is at most ~16.8%. This does not contradict Olson (no spread at or below 16.4%: P8 16.4%, P21a/b 16.3%); both points stand. derived_from: black opposed-flow rods near 17.5% O2 of each diameter per p. 49: P1 (17.7) and P2 (17.4) 6.35 mm, P12 (17.5) 9.525 mm, P9 (17.6) 12.7 mm (the earlier list had no 9.525 mm run). Quote: \"flame spread was observed at O2 concentrations as low as 17.5 percent\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: The report's 17.5% is a comparison-level statement; absolute lowest O2 with sustained opposed spread in the data is <=16.8% (P17), so 'minimum_oxygen' = 17.5 should be read as 'as low as 17.5 in the compared dataset'. Run list is inferred.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 50 (also 49), 4.1.2 Results"
       },
-      "confidence": "high",
+      "confidence": "medium",
       "needs_review": true
     },
     {
@@ -330,12 +322,12 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Fig. 4.4(f): cap-shaped flame burned away the hemispherical tip and extinguished; flame never spread along the rod. Authors describe it as a quenched wake flame. 3.18 mm is almost certainly the radius of the 1/4 in. rod (Olson uses r=0.318 cm), but the caption says 3.18 mm. Test mapping by exact O2 and flow match is inferred by CSV match (P21a/P21b are 16.3% black 1/4 in. rod at 5 cm/s). Quote: \"3.18 mm, 16.3 percent O2, at 5 cm/s\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "Fig. 4.4(f): cap-shaped flame burned away the hemispherical tip and extinguished; flame never spread along the rod. Authors describe it as a quenched wake flame. 3.18 mm is almost certainly the radius of the 1/4 in. rod (Olson uses r=0.318 cm), but the caption says 3.18 mm. Test mapping by exact O2 and flow match is inferred by CSV match (P21a/P21b are 16.3% black 1/4 in. rod at 5 cm/s). Quote: \"3.18 mm, 16.3 percent O2, at 5 cm/s\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Review: Fig. 4.4(f): cap-shaped flame burned away the hemispherical tip and extinguished; flame never spread along the rod. Authors describe it as a quenched wake flame. 3.18 mm is almost certainly the radius of the 1/4 in. rod (Olson uses r=0.318 cm), but the caption says 3.18 mm. Mapping confirmed in Appendix A.3 (p. 107): P21a and P21b are the 6.35-mm black rod at calibrated 16.3% O2, 5 cm/s ('Flame self-extinguished at 5 cm/s after sample end became flat, dim flame'; P21b: igniter broke on the flattened end), matching Fig. 4.4(f). The caption '3.18 mm' is the rod radius; the Appendix gives 6.35 mm diameter. Quote: \"3.18 mm, 16.3 percent O2, at 5 cm/s\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: Caption diameter (3.18 mm) vs Appendix (6.35 mm) is resolved only by inference that 3.18 is the radius; no explicit statement in the report.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 52, 4.1.2 Results (Figure 4.4 caption)"
       },
-      "confidence": "low",
+      "confidence": "medium",
       "needs_review": true
     },
     {
@@ -392,13 +384,13 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Only an upper bound (<1 cm/s) is stated, so flow_velocity_cm_s is null rather than inventing a number. Table 5.1 lists M12 at 12 and 10 cm/s with spread not tracked; CSV air display shows <1. M12 matched by thickness/width/O2 (inferred by CSV match). Quote: \"two sided, 21.7 percent O2, <1 cm/s\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "Only an upper bound (<1 cm/s) is stated, so flow_velocity_cm_s is null rather than inventing a number. Table 5.1 lists M12 at 12 and 10 cm/s with spread not tracked; CSV air display shows <1. M12 matched by thickness/width/O2 (inferred by CSV match). Quote: \"two sided, 21.7 percent O2, <1 cm/s\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: The caption O2 (21.7) equals M12's initial O2, not O2 at extinction (final 20.4%); flow only bounded (<1 cm/s). Table 5.1 velocities (12, 10) are spread-tracked flows, not the quench flow.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 59, 5.3 Experimental Setup and Summary (Figure 5.4)"
       },
       "confidence": "medium",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "MIL-QUENCH-2mm-1s-22.2",
@@ -407,7 +399,7 @@
       "derived_from": [
         "M14"
       ],
-      "material": "PMMA slab (clear cast), 2 mm thick x 2.2 cm wide, one-sided burn (per text)",
+      "material": "PMMA slab (clear cast), 2 mm thick x 2.2 cm wide, one-sided burn",
       "material_class": "polymer",
       "thickness_mm": 2,
       "o2_percent": 22.2,
@@ -423,12 +415,12 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Fig. 5.4(e) caption says 'two sided' but the text (p58) says (e) and (f) are a single-sided sample whose flame was weak despite high flow and O2. Table 5.1 lists M14 (one-sided, 2 mm, 22.2% initial O2) at 15, 14, 10 cm/s and CSV shows ~8, so the 11 cm/s caption value cannot be cross-checked. M14 matched by inferred by CSV match. Quote: \"22.2 percent O2, 11 cm/s\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "Fig. 5.4(e) caption says 'two sided' but the text (p58) says (e) and (f) are a single-sided sample whose flame was weak despite high flow and O2. Table 5.1 lists M14 (one-sided, 2 mm, 22.2% initial O2) at 15, 14, 10 cm/s and CSV shows ~8, so the 11 cm/s caption value cannot be cross-checked. M14 matched by inferred by CSV match. Quote: \"22.2 percent O2, 11 cm/s\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Review: Fig. 5.4(e) caption says 'two sided' but the text (p58) says (e) and (f) are a single-sided sample whose flame was weak despite high flow and O2. Table 5.1 lists M14 (one-sided, 2 mm, 22.2% initial O2) at 15, 14, 10 cm/s and CSV shows ~8, so the 11 cm/s caption value cannot be cross-checked. M14 is the only 2 mm x 2.2 cm test starting at 22.2% O2 (Table 5.1, p. 57; Appendix A.4 p. 108: '2-mm-thick PMMA, one-sided, 2 cm wide'), so the match is explicit; the caption word 'two sided' on (e) is an error (text p. 58 says (e)/(f) are one-sided, and Table 5.1 lists M14 as one side). Appendix A.4 says M14 'self-extinguished at an air reading of 9 cm/s' while the caption says 11 cm/s and Table 5.1 lists 15, 14, 10 cm/s; the caption value is kept. Quote: \"22.2 percent O2, 11 cm/s\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: Quench velocity 11 cm/s (caption) vs 9 cm/s (Appendix note) vs 10 (last Table 5.1 value) are inconsistent; 11 is kept as the report's stated figure. O2 22.2 is the initial value (final 21.6).",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 59, 5.3 Experimental Setup and Summary (Figure 5.4)"
       },
-      "confidence": "low",
+      "confidence": "medium",
       "needs_review": true
     },
     {
@@ -436,10 +428,7 @@
       "point_type": "limit",
       "limit_type": "minimum_oxygen",
       "derived_from": [
-        "M17",
-        "M7",
-        "M8",
-        "M9"
+        "M17"
       ],
       "material": "PMMA slab (clear cast), two-sided burn (shown for 2 mm x 2.2 cm)",
       "material_class": "polymer",
@@ -457,13 +446,13 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Not an extinction limit per se: below ~19% O2 two-sided flames stopped spreading across the surface and consumed the fuel from the trailing edge (regression mode). Fig. 5.5 gives extinction O2 vs flow for all tests but only graphically (values not stated). Text also says 1.2 cm wide samples extinguished ~1 percent O2 higher than 2.2 cm samples. derived_from is inferred by CSV match (two-sided tests at ~18-19% O2). Quote: \"reduced to approximately 19 percent however, the flames could no longer spread across the surface of the two-sided fuel\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "Not an extinction limit per se: below ~19% O2 two-sided flames stopped spreading across the surface and consumed the fuel from the trailing edge (regression mode). Fig. 5.5 gives extinction O2 vs flow for all tests but only graphically (values not stated). Text also says 1.2 cm wide samples extinguished ~1 percent O2 higher than 2.2 cm samples. derived_from is inferred by CSV match (two-sided tests at ~18-19% O2). Quote: \"reduced to approximately 19 percent however, the flames could no longer spread across the surface of the two-sided fuel\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Review: Not an extinction limit per se: below ~19% O2 two-sided flames stopped spreading across the surface and consumed the fuel from the trailing edge (regression mode). Fig. 5.5 gives extinction O2 vs flow for all tests but only graphically (values not stated). Text also says 1.2 cm wide samples extinguished ~1 percent O2 higher than 2.2 cm samples. derived_from reduced to M17: Fig. 5.4(a)/(b) (2 mm x 2.2 cm, two sided, 18.8% O2, 3 cm/s, regression behavior) matches only M17 (Table 5.1: 2 mm, 2.2 cm, two sides, initial O2 18.8). M7, M8 and M9 (1.2 cm wide, 1-3 mm) are not shown in the text as regression cases; the ~19% statement is general (Fig. 5.5 is graphical only). Quote: \"reduced to approximately 19 percent however, the flames could no longer spread across the surface of the two-sided fuel\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: 'approximately 19 percent' is a general statement, not a measured threshold; only M17 is tied by an explicit figure. Other two-sided runs near 19% (M16 19.2, M19 19.0, M8 19.1, M7 18.9) may also be regression cases but are not documented.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 58, 5.3 Experimental Setup and Summary"
       },
       "confidence": "medium",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "FER-NOIGN-NOMEX3",
@@ -488,18 +477,18 @@
       "gravity_environment": "microgravity",
       "gravity_g": 1e-06,
       "flow_velocity_cm_s": null,
-      "flow_direction": null,
+      "flow_direction": "concurrent",
       "outcome": "no_ignition",
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Not a measured limit: three tests at 21.0, 21.7 and 22.2% O2 (CSV/Appendix A) gave no ignition, so the minimum O2 for ignition under test conditions is above 22.2%. CSV air display values 9.5, 15 and 8 are probably cm/s but the text gives no flow velocities, so flow left null. Test IDs from CSV (Nomex III, Ferkul) - the text only says three samples. Quote: \"The three Nomex® samples did not ignite\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "Not a measured limit: three tests at 21.0, 21.7 and 22.2% O2 (CSV/Appendix A) gave no ignition, so the minimum O2 for ignition under test conditions is above 22.2%. CSV air display values 9.5, 15 and 8 are probably cm/s but the text gives no flow velocities, so flow left null. Test IDs from CSV (Nomex III, Ferkul) - the text only says three samples. Quote: \"The three Nomex® samples did not ignite\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Review: Not a measured limit: three tests at 21.0, 21.7 and 22.2% O2 (CSV/Appendix A) gave no ignition, so the minimum O2 for ignition under test conditions is above 22.2%. CSV air display values 9.5, 15 and 8 are probably cm/s but the text gives no flow velocities, so flow left null. Test IDs F1-F3 are the three Nomex III tests of Appendix A.2 (Table A.2, p. 105; F4 is the wax candle, whose sample is not Nomex): F1 22.2%, F2 21.0%, F3 21.7% calibrated initial O2, all listed as Concurrent; notes: F1 'Ignited briefly but did not spread at all', F2 'flame would not sustain', F3 'Brief ignition flash, no sustained flame'. Table 7.1/p. 46 text gives no flow values. Quote: \"The three Nomex® samples did not ignite\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: Flow velocity unknown (air display 9.5, 15, 8 not confirmed as cm/s). Brief flash at ignition occurred in the tests, so outcome 'no_ignition' means no sustained flame.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 46, 3.1.1 Results"
       },
       "confidence": "medium",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "OLS-MINO2-ROD-BOUNDARY",
@@ -528,13 +517,13 @@
         "spread_rate_mm_s": null,
         "note": "Normal-gravity upward flame spread limit of 15.4% O2 with an added 4 cm/s forced flow (Ref. 23); below this upward burning is not sustained. Buoyant flow at flame base ~20 cm/s (Ref. 32) (p76, p89)."
       },
-      "notes": "Minimum of the O2 vs stretch-rate flammability boundary, X_O2 = 6exp(-0.5a)+0.0167a+13.4 (Eq. 6.1; blowoff-branch intercept 13.4% extrapolated to a=0). Flow 2 cm/s is the stated diffusive velocity UD at which blowoff->quenching transition occurs (U/UD=1, p88), not a separately measured limit velocity, hence medium. Direction: authors call these concurrent-flow rod tests in axial stagnation flow (abstract, conclusions). Lowest-O2 test is O4 (O2 14.8->13.6%). Quote: \"minimum O2 concentration of 13.5 percent O2 at a of 8 to 12 s–1\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "Minimum of the O2 vs stretch-rate flammability boundary, X_O2 = 6exp(-0.5a)+0.0167a+13.4 (Eq. 6.1; blowoff-branch intercept 13.4% extrapolated to a=0). Flow 2 cm/s is the stated diffusive velocity UD at which blowoff->quenching transition occurs (U/UD=1, p88), not a separately measured limit velocity, hence medium. Direction: authors call these concurrent-flow rod tests in axial stagnation flow (abstract, conclusions). Lowest-O2 test is O4 (O2 14.8->13.6%). Quote: \"minimum O2 concentration of 13.5 percent O2 at a of 8 to 12 s–1\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: Flow 2 cm/s is the diffusive velocity UD at the transition (also consistent with U = a r / 1.5 = 1.7-2.5 cm/s for a = 8-12 s-1, r = 0.318 cm), not a measured limit flow. Direction: abstract says concurrent; Appendix A.5 lists these tests as Stagnation. 13.5 is the fit/graph minimum; lowest measured final O2 with flame is 13.6 (O4).",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 75-76 (also 88), 6.1.4.4 Flammability Boundary"
       },
       "confidence": "medium",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "OLS-QUENCH-LOWESTO2-r0.476",
@@ -598,13 +587,13 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Ignition limit (higher than the 13.6% post-ignition extinction limit). Flow 5 cm/s is the typical ignition flow (p68); at very low O2 even 500 s igniter time failed at initial flows 2-10 cm/s (p67). Inferred by CSV match: O12 (13.6% no ignition) and O16 (14.5% postburn only). Quote: \"Below an initial O2 concentration of ~14.5 percent O2, a sustained ignition could not be achieved\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "Ignition limit (higher than the 13.6% post-ignition extinction limit). Flow 5 cm/s is the typical ignition flow (p68); at very low O2 even 500 s igniter time failed at initial flows 2-10 cm/s (p67). Inferred by CSV match: O12 (13.6% no ignition) and O16 (14.5% postburn only). Quote: \"Below an initial O2 concentration of ~14.5 percent O2, a sustained ignition could not be achieved\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: Run link O12/O16 is by O2 only; O16 (14.5%) 'postburn flame only', O12 (13.6%) 'no ign at any flow'. Appendix lists these tests as Stagnation; text calls them concurrent.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 68, 6.1.4.1 Ignition Delay Time"
       },
       "confidence": "high",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "OLS-OPP-ROD-MINO2-16.4",
@@ -613,7 +602,7 @@
       "derived_from": [
         "P8"
       ],
-      "material": "PMMA rod (opposed-flow BASS-II tests, Ref. 14)",
+      "material": "PMMA rod (black cast), 9.525 mm diameter (P8), opposed-flow BASS-II tests of Fernandez-Pello",
       "material_class": "polymer",
       "thickness_mm": null,
       "o2_percent": 16.4,
@@ -629,13 +618,13 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Statement by Olson about the Fernandez-Pello opposed rod tests; conflicts with the 17.5% minimum stated in section 4 (p50). P8 (3/8 in. black rod, 16.4%, would not stay lit) matched by inferred by CSV match. Conflicts with Fernandez-Pello p50 (17.5% O2 minimum). Quote: \"opposed-flow flame spread was not observed below 16.4 percent O2 at any flow\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "Statement by Olson about the Fernandez-Pello opposed rod tests; conflicts with the 17.5% minimum stated in section 4 (p50). P8 (3/8 in. black rod, 16.4%, would not stay lit) matched by inferred by CSV match. Consistent with Fernandez-Pello: 17.5% (p50) is a comparison level, not a minimum. Quote: \"opposed-flow flame spread was not observed below 16.4 percent O2 at any flow\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Review: Statement by Olson about the Fernandez-Pello opposed rod tests. Not a contradiction of the 17.5% in section 4 (p50): that value is a comparison-level 'as low as', while spread was seen at 16.8% (P17) and none at or below 16.4% (P8, P21). P8 (3/8 in. = 9.525 mm black rod, 16.4% calibrated, tried at 5, 10 and 15 cm/s, 'would not stay lit') matches Olson's 'at any flow'; P21a/b (6.35 mm, 16.3%) are consistent evidence below 16.4%. Olson cites Ref. 14 but that reference is a sensor paper; the opposed rod tests are Fernandez-Pello's (Table A.3). Quote: \"opposed-flow flame spread was not observed below 16.4 percent O2 at any flow\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: Olson gives no run or diameter; P8 is chosen as the exact O2/flow match. The wording 'not observed below 16.4' can be read as limit just at/below 16.4%.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 73, 6.1.4.3 Blowoff Extinction"
       },
       "confidence": "high",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "TIEN-QUENCH-T4-18.7",
@@ -784,13 +773,13 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Sample 1.2 cm; text says the 1.2 cm quenching limit was not resolved, so treat as indicative wide, thickness about 0.32 mm. Quenching velocity taken as the final velocity of the 'start to final' flow range in Table 7.1 (interpretation: flow reduced until the flame quenched). Authors summarize quenching velocities as 1-5 cm/s, higher at lower O2 (p100). No normal-gravity value stated. Quote: \"GMT190-T20 1.2 11 to 3 17.2 Quenched\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "Sample 1.2 cm; text says the 1.2 cm quenching limit was not resolved, so treat as indicative wide, thickness about 0.32 mm. Quenching velocity taken as the final velocity of the 'start to final' flow range in Table 7.1 (interpretation: flow reduced until the flame quenched). Authors summarize quenching velocities as 1-5 cm/s, higher at lower O2 (p100). No normal-gravity value stated. Quote: \"GMT190-T20 1.2 11 to 3 17.2 Quenched\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: 1.2 cm quenching limit is explicitly 'not resolved' by the authors, so the value is indicative; Table 7.1 gives start/final velocity, final taken as quench velocity (Appendix notes agree). Appendix lists the sample as '1 cm SIBAL'.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 96 (Table 7.1); 100, 7.1.4 Results and Discussion"
       },
       "confidence": "medium",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "TIEN-QUENCH-T22-17.1-1.2cm",
@@ -815,13 +804,13 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Sample 1.2 cm; text says the 1.2 cm quenching limit was not resolved, so treat as indicative wide, thickness about 0.32 mm. Quenching velocity taken as the final velocity of the 'start to final' flow range in Table 7.1 (interpretation: flow reduced until the flame quenched). Authors summarize quenching velocities as 1-5 cm/s, higher at lower O2 (p100). No normal-gravity value stated. Quote: \"GMT190-T22 1.2 10.5 to 5 17.1 Quenched\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "Sample 1.2 cm; text says the 1.2 cm quenching limit was not resolved, so treat as indicative wide, thickness about 0.32 mm. Quenching velocity taken as the final velocity of the 'start to final' flow range in Table 7.1 (interpretation: flow reduced until the flame quenched). Authors summarize quenching velocities as 1-5 cm/s, higher at lower O2 (p100). No normal-gravity value stated. Quote: \"GMT190-T22 1.2 10.5 to 5 17.1 Quenched\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: 1.2 cm quenching limit is explicitly 'not resolved' by the authors, so the value is indicative; Table 7.1 gives start/final velocity, final taken as quench velocity (Appendix notes agree). Appendix lists the sample as '1 cm SIBAL'.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 96 (Table 7.1); 100, 7.1.4 Results and Discussion"
       },
       "confidence": "medium",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "TIEN-BLOWOFF-T21-17.2",
@@ -846,13 +835,13 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "1.2 cm wide sample. Blowoff velocity taken as the final velocity (47 cm/s; CSV: 'max(47)'). Table 7.1 also lists 'No blowoff' for T15 (18.7% O2, up to 29 cm/s) and T17 (16.9%, up to 53 cm/s), which are lower bounds not limits; T17 not blowing off at 53 cm/s sits oddly with T21 blowing off at 47 cm/s (width and O2 differ). Quote: \"GMT190-T21 1.2 11 to 47 17.2 Blow-off\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "1.2 cm wide sample. Blowoff velocity taken as the final velocity (47 cm/s; CSV: 'max(47)'). Table 7.1 also lists 'No blowoff' for T15 (18.7% O2, up to 29 cm/s) and T17 (16.9%, up to 53 cm/s), which are lower bounds not limits; T17 not blowing off at 53 cm/s sits oddly with T21 blowing off at 47 cm/s (width and O2 differ). Quote: \"GMT190-T21 1.2 11 to 47 17.2 Blow-off\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: T17 (2.2 cm, 16.9%, 6 to 53 cm/s) did not blow off while T21 (1.2 cm, 17.2%) did at 47: different widths; not a data error. Appendix lists the sample as '1 cm SIBAL'.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 96, 7.1.4 Results and Discussion (Table 7.1)"
       },
       "confidence": "medium",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "TIEN-NOIGN-16.4-16.8",
@@ -882,13 +871,13 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "2.2 cm wide samples did not ignite at 16.4% O2 (T9 at 10 cm/s, T10 at 5 cm/s) and 16.8% (T12 at 5 cm/s), whereas T14 and T17 ignited at 16.9%. The text says near the boundary ignition is sporadic and a decreasing-O2 procedure is needed (p100), so this is a bracket, not a sharp limit. Multiple flows so flow_velocity_cm_s is null. Quote: \"GMT175-T9 2.2 10 16.4 No ignition\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38).",
+      "notes": "2.2 cm wide samples did not ignite at 16.4% O2 (T9 at 10 cm/s, T10 at 5 cm/s) and 16.8% (T12 at 5 cm/s), whereas T14 and T17 ignited at 16.9%. The text says near the boundary ignition is sporadic and a decreasing-O2 procedure is needed (p100), so this is a bracket, not a sharp limit. Multiple flows so flow_velocity_cm_s is null. Quote: \"GMT175-T9 2.2 10 16.4 No ignition\". Pressure: report states 1 atm (pp. 11, 22, 28, 94); measured 99.2–99.5 kPa in the section 2.3 tests (p. 38). Open: Appendix A.6 notes show brief flashes at the igniter for T9/T10/T12 ('Extinguished quickly'), so 'no ignition' means no sustained flame. Bracket, not a sharp limit.",
       "source": {
         "file": "PSI-25_Reports_BASS-II Summary Report.pdf",
         "locator": "p. 96, 7.1.4 Results and Discussion (Table 7.1)"
       },
       "confidence": "medium",
-      "needs_review": true
+      "needs_review": false
     }
   ],
   "sources": [

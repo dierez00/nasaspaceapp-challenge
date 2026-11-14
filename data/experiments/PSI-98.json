@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0",
+  "id": "PSI-98",
+  "title": "Spacecraft Fire Safety Experiment-I",
+  "acronym": "SAFFIRE-I",
+  "doi": "10.60555/0t15-1z43",
+  "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98",
+  "research_area": "Combustion Science",
+  "sub_research_area": "Spacecraft Fire, Smoke Distribution",
+  "platform": "Cygnus spacecraft (after unberthing from ISS)",
+  "start_date": "2016-06-14",
+  "end_date": "2016-06-19",
+  "principal_investigator": "David L. Urban",
+  "summary": "A 40.6 cm x 94 cm cotton-fiberglass (SIBAL) fabric was burned in two successive tests aboard an uncrewed Cygnus spacecraft at 20 cm/s air flow: concurrent spread over approximately 84 cm, followed by opposed spread over the approximately 10 cm of remaining fuel.",
+  "tests": [
+    {
+      "test_id": "S1",
+      "material": "Cotton-Fiberglass (SIBAL)",
+      "material_class": "fabric",
+      "thickness_mm": 0.37,
+      "o2_percent": 21.6,
+      "o2_percent_range": [
+        21.5,
+        21.7
+      ],
+      "o2_status": "derived",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 20,
+      "flow_direction": "concurrent",
+      "outcome": "partial_burn",
+      "burn_length_cm": 84,
+      "spread_rate_mm_s": 1.8,
+      "normal_gravity_reference": {
+        "outcome": "complete_burn",
+        "spread_rate_mm_s": null,
+        "note": "1-g burn length reported as Complete; spread rate Acceleratory (no constant rate)."
+      },
+      "notes": "Thickness corrected to 0.37 mm using 20170008805.pdf, Table I (p. 29); the PSI CSV labels 0.37 as cm, which would convert to 3.7 mm. Pressure is not reported in the consulted sources; 101.3 kPa assumed as nominal ISS cabin pressure. Gravity level 1e-6 g is the repository convention for orbital microgravity. CSV sample length/width labels appear transposed relative to the Readme and results report: original sample 94 cm long by 40.6 cm wide. Ignition 182 W for 8 s. Burn duration 420 s; approximately 84 cm burned out of 94 cm, so classified partial_burn. Airflow was switched off to extinguish the flame. O2 21.6% is the midpoint of the reported 21.5-21.7% range; Table I footnote i states oxygen values were derived from measured CO2 production relative to the initial ISS O2 reading.",
+      "source": {
+        "file": "PSI-98_Experimental table_SAFFIRE-1.csv",
+        "locator": "row Sample Number = S1; results and corrected thickness: 20170008805.pdf, Table I, p. 29, sample 1-1; interpretation: pp. 14, 16, 17, 21"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "S2",
+      "material": "Cotton-Fiberglass (SIBAL)",
+      "material_class": "fabric",
+      "thickness_mm": 0.37,
+      "o2_percent": 21.5,
+      "o2_percent_range": null,
+      "o2_status": "derived",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 20,
+      "flow_direction": "opposed",
+      "outcome": "complete_burn",
+      "burn_length_cm": 10,
+      "spread_rate_mm_s": 1.3,
+      "normal_gravity_reference": {
+        "outcome": "no_sustained_burn",
+        "spread_rate_mm_s": null,
+        "note": "1-g burn length reported as approximately zero; no_sustained_burn is an interpretation, since ignition versus immediate extinction is not distinguished."
+      },
+      "notes": "Thickness corrected to 0.37 mm using 20170008805.pdf, Table I (p. 29); the PSI CSV labels 0.37 as cm, which would convert to 3.7 mm. Pressure is not reported in the consulted sources; 101.3 kPa assumed as nominal ISS cabin pressure. Gravity level 1e-6 g is the repository convention for orbital microgravity. CSV sample length/width labels appear transposed relative to the Readme and results report: original sample 94 cm long by 40.6 cm wide. Ignition 182 W for 8 s. Burn duration 70 s. S2 is a second ignition of the approximately 10 cm remaining on the same physical fabric after S1, rather than a new 94 cm sample; complete_burn refers to this remaining fuel (Table I, sample 1-2). O2 is approximately 21.5%, not an exact measurement; Table I footnote i identifies O2 as derived from CO2 production relative to the initial ISS reading. The near-zero 1-g burn length does not distinguish no ignition from immediate extinction; review the normalized reference outcome.",
+      "source": {
+        "file": "PSI-98_Experimental table_SAFFIRE-1.csv",
+        "locator": "row Sample Number = S2; results and corrected thickness: 20170008805.pdf, Table I, p. 29, sample 1-2; interpretation: pp. 14, 16, 17, 21"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    }
+  ],
+  "sources": [
+    {
+      "file": "PSI-98_Experimental table_SAFFIRE-1.csv",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98"
+    },
+    {
+      "file": "PSI-98_Science Documents_SAFFIRE-I and SAFFIRE-III Readme.docx",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98"
+    },
+    {
+      "file": "PSI-98_Engineering Documents_SAFFIRE-I Operations.pdf",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98"
+    },
+    {
+      "file": "20170008805.pdf",
+      "url": "https://ntrs.nasa.gov/api/citations/20170008805/downloads/20170008805.pdf"
+    },
+    {
+      "file": "NASA Ignites Fire Experiment Aboard Space Cargo Ship — Saffire-I Mission Updates",
+      "url": "https://www.nasa.gov/centers-and-facilities/glenn/nasa-ignites-fire-experiment-aboard-space-cargo-ship/"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "extracted_by": "codex",
+    "reviewed_by": null
+  }
+}

@@ -17,19 +17,7 @@
       "test_id": "SIBAL-CONC-QUENCH",
       "point_type": "limit",
       "limit_type": "quenching",
-      "derived_from": [
-        "1",
-        "7",
-        "8",
-        "4",
-        "10",
-        "5",
-        "6",
-        "2",
-        "3",
-        "11",
-        "9"
-      ],
+      "derived_from": [],
       "material": "SIBAL cotton-fiberglass fabric (75% cotton/25% fiberglass)",
       "material_class": "fabric",
       "thickness_mm": null,
@@ -46,7 +34,7 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "1 and 2 cm wide, 8.5 cm long sheet; area density 18 mg/cm2 O2 level not stated on slide; 21 assumed (ISS cabin air) - confidence for o2 is low. Specific run(s) not identified; derived_from is inferred by CSV match (SIBAL tests, incl. 5b opposed excluded). Same statement in overview slide 26 and plot slide 25 (Concurrent-Flow Extinction marker near 0-1 cm/s). Quote: \"decreasing concurrent flow speed to a very low value (around 1 cm/s), quenching extinction was observed\". O2 not stated; ISS cabin nominal 21% assumed. Pressure not stated on slide; ISS cabin nominal 1 atm assumed.",
+      "notes": "1 and 2 cm wide, 8.5 cm long sheet; area density 18 mg/cm2. Quote: \"decreasing concurrent flow speed to a very low value (around 1 cm/s), quenching extinction was observed\" (ASGSR slide 33; same in overview slide 26). Slide gives no run number, O2 or pressure for the quenching event, so derived_from is [] (no evidence ties specific runs). O2 21% and 1 atm remain assumed (ISS cabin nominal); no run-level statement exists. ISS cabin O2 varied between runs (overview slide 30: 21% to 22%), so confidence for O2 is low. The red dashed 'Concurrent-Flow Extinction' marker on the spread-rate plot is an extrapolation line, not a measured point. Open: No evidence of which runs quenched or of the O2/pressure at that event; o2_status and pressure_status stay assumed. BASS-II quenching runs (psi25 Table 7.1) were at 17-19% O2 and must not be used for this 2012 point.",
       "source": {
         "file": "PSI-26_Presentations_FlammabilityAspectsofCottonFiberglassFabric_ASGSR2012.pdf",
         "locator": "slide 33"
@@ -58,40 +46,28 @@
       "test_id": "SIBAL-2CM-CONC-10",
       "point_type": "test",
       "limit_type": null,
-      "derived_from": [
-        "1",
-        "7",
-        "8",
-        "4",
-        "10",
-        "5",
-        "6",
-        "2",
-        "3",
-        "11",
-        "9"
-      ],
+      "derived_from": [],
       "material": "SIBAL cotton-fiberglass fabric",
       "material_class": "fabric",
       "thickness_mm": null,
       "o2_percent": 21,
       "o2_percent_range": null,
-      "o2_status": "assumed",
+      "o2_status": "reported",
       "pressure_kpa": 101.3,
-      "pressure_status": "assumed",
+      "pressure_status": "reported",
       "gravity_environment": "microgravity",
       "gravity_g": 1e-06,
       "flow_velocity_cm_s": 10,
       "flow_direction": "concurrent",
-      "outcome": "partial_burn",
+      "outcome": "complete_burn",
       "burn_length_cm": null,
       "spread_rate_mm_s": 2.55,
       "normal_gravity_reference": {
         "outcome": "partial_burn",
         "spread_rate_mm_s": null,
-        "note": "slide 31: 1-g with flow (10 cm/s) growing flame size and spread; concave base, soot zone Original wording: \"growing flame size and spread (burns) in 1-g concurrent at 10 cm/s\"."
+        "note": "slide 31: 1-g with flow (10 cm/s): growing flame size and spread; concave base, extended soot zone (0-g: steady flame size and spread). Slide wording: \"Growing flame size and spread\"."
       },
-      "notes": "2 cm wide sheet Spread rate stated; fuel fate (outcome) not stated - partial_burn is an enum approximation for 'flame spread established'. O2 not stated (21 assumed). Fit VF=0.20U+0.56 on slide 30 gives 2.56. CSV link inferred by material match. Quote: \"Concurrent and Opposed Spread at ~ 10 cm/s 2.55 mm/s versus 1.21 mm/s\". O2 not stated; ISS cabin nominal 21% assumed. Pressure not stated on slide; ISS cabin nominal 1 atm assumed.",
+      "notes": "2 cm wide sheet. Spread rate stated on slide 29: \"Concurrent and Opposed Spread at ~ 10 cm/s 2.55 mm/s versus 1.21 mm/s\" (fit VF=0.20U+0.56 gives 2.56). Run ids (not in derived_from, per contract): most probably CSV Test 7 (GMT 96, 4/5/2012, SIBAL 2 cm), which the BASS-II report lists as GMT96-T7, 2.2 cm, 10 cm/s, 21% O2, 'BASS' (Table 7.1 p.96); match is by width/flow/date, not stated on the slides. O2 21% and 1 atm come from the BASS-II report (sec 7.1.4: the four BASS-series SIBAL tests are all 21 percent O2; sec 7.1.3: ambient pressure was 1 atm), not from the PSI-26 slides. Outcome: BASS-II report p.95 describes the 2.2 cm, 10 cm/s, 21% O2 flame as decaying until complete burnout (about 40 s); the ASGSR slides do not state fuel fate. Open: O2, pressure and outcome rest on a secondary source (BASS-II report, a different investigation) tied to this point by width/flow match; the ASGSR slide 20/38 run (ignition at 10 then reduced to 5 cm/s) might be a different run than Test 7 (fixed 10 cm/s).",
       "source": {
         "file": "PSI-26_Presentations_FlammabilityAspectsofCottonFiberglassFabric_ASGSR2012.pdf",
         "locator": "slide 29"
@@ -103,36 +79,24 @@
       "test_id": "SIBAL-2CM-CONC-5",
       "point_type": "test",
       "limit_type": null,
-      "derived_from": [
-        "1",
-        "7",
-        "8",
-        "4",
-        "10",
-        "5",
-        "6",
-        "2",
-        "3",
-        "11",
-        "9"
-      ],
+      "derived_from": [],
       "material": "SIBAL cotton-fiberglass fabric",
       "material_class": "fabric",
       "thickness_mm": null,
       "o2_percent": 21,
       "o2_percent_range": null,
-      "o2_status": "assumed",
+      "o2_status": "reported",
       "pressure_kpa": 101.3,
-      "pressure_status": "assumed",
+      "pressure_status": "reported",
       "gravity_environment": "microgravity",
       "gravity_g": 1e-06,
       "flow_velocity_cm_s": 5,
       "flow_direction": "concurrent",
-      "outcome": "partial_burn",
+      "outcome": "complete_burn",
       "burn_length_cm": null,
       "spread_rate_mm_s": 1.57,
       "normal_gravity_reference": null,
-      "notes": "2 cm wide sheet Spread rate ~1.57 mm/s read from labelled plot point at 5 cm/s (not text). Ignition at 10 cm/s then flow reduced to 5 cm/s (slides 20-21). O2 not stated. Quote: \"2 cm concurrent\". O2 not stated; ISS cabin nominal 21% assumed. Pressure not stated on slide; ISS cabin nominal 1 atm assumed.",
+      "notes": "2 cm wide sheet. Spread rate ~1.57 mm/s read from the plotted 2 cm concurrent point at 5 cm/s (overview slide 25; fit VF=0.20U+0.56 gives 1.56); not given as text. ASGSR slides 20-21/38 show ignition at 10 cm/s then flow reduced to 5 cm/s. Run ids (not in derived_from, per contract): probably CSV Test 8 (GMT 96, 4/5/2012, SIBAL 2 cm) = GMT96-T8 in BASS-II report Table 7.1 (2.2 cm, 5 cm/s, 21% O2, 'BASS'); match by width/flow/date only. O2 21% and 1 atm from the BASS-II report (sec 7.1.4 and 7.1.3), not from the PSI-26 slides. Outcome: BASS-II report p.95 says the 5 cm/s flame took more than 60 s to burn the whole sample; the PSI-26 slides do not state fuel fate. Open: Spread rate is plot-read (not stated). Run tie (Test 8) is by width/flow match; the slide's 10-to-5 cm/s run may be another run, so O2/pressure/outcome are secondary-source inferences.",
       "source": {
         "file": "PSI-26_Presentations_BASS_Overview of Recent ISS Results.pdf",
         "locator": "slide 25"
@@ -144,18 +108,15 @@
       "test_id": "SIBAL-1CM-CONC-10",
       "point_type": "test",
       "limit_type": null,
-      "derived_from": [
-        "10",
-        "11"
-      ],
+      "derived_from": [],
       "material": "SIBAL cotton-fiberglass fabric",
       "material_class": "fabric",
       "thickness_mm": null,
       "o2_percent": 21,
       "o2_percent_range": null,
-      "o2_status": "assumed",
+      "o2_status": "reported",
       "pressure_kpa": 101.3,
-      "pressure_status": "assumed",
+      "pressure_status": "reported",
       "gravity_environment": "microgravity",
       "gravity_g": 1e-06,
       "flow_velocity_cm_s": 10,
@@ -164,7 +125,7 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": 1.71,
       "normal_gravity_reference": null,
-      "notes": "1 cm wide sheet Flame-tip speed 1.71 mm/s (fit); base 1.68 mm/s; flame reaches steady state after ~10 s. 1 cm-wide samples in CSV: tests 10 and 11 (inferred by CSV match). O2 not stated. Quote: \"xtip = 1.71 t + 2.25\". O2 not stated; ISS cabin nominal 21% assumed. Pressure not stated on slide; ISS cabin nominal 1 atm assumed.",
+      "notes": "1 cm wide sheet. Flame-tip speed from slide 23 fit xtip = 1.71 t + 2.25 (base fit xbase = 1.68 t - 13.81); flame reaches steady state after ~10 s. Slides label the run '10 cm/s'; the plotted 1 cm concurrent points sit at ~11 and ~19 cm/s. Run id (not in derived_from, per contract): CSV Test 10 (GMT 131, 5/10/2012, SIBAL 1 cm) = GMT131-T10, 1.2 cm, 11 cm/s, 21% O2 in BASS-II report Table 7.1; CSV Test 11 (GMT 222) is the 19 cm/s point, not this one, so it is not linked. O2 21% and 1 atm from the BASS-II report (sec 7.1.4 and 7.1.3), not from the PSI-26 slides. Outcome partial_burn = flame sustained at steady state; fuel fate not stated anywhere. Open: Flow is 10 cm/s on slides but 11 cm/s in the BASS-II table and plot; outcome (fuel fate) not stated by any source, partial_burn is an enum approximation.",
       "source": {
         "file": "PSI-26_Presentations_FlammabilityAspectsofCottonFiberglassFabric_ASGSR2012.pdf",
         "locator": "slide 23"
@@ -176,9 +137,7 @@
       "test_id": "SIBAL-2CM-OPP-10",
       "point_type": "test",
       "limit_type": null,
-      "derived_from": [
-        "5b"
-      ],
+      "derived_from": [],
       "material": "SIBAL cotton-fiberglass fabric",
       "material_class": "fabric",
       "thickness_mm": null,
@@ -199,7 +158,7 @@
         "spread_rate_mm_s": null,
         "note": "Downward flame spread (opposed flow) in 1-g with this material is not possible in normal air (flame self-extinguishes)"
       },
-      "notes": "2 cm wide sheet 1.21 mm/s is the opposed value stated at '~10 cm/s' on slide 29; plot (slide 30) shows ~1.4 mm/s at exactly 10 cm/s and ~1.2 at ~9 cm/s. CSV test 5b is 'SIBAL 2 cm opposed flow' (inferred by CSV match). O2 not stated. Quote: \"Flame quickly reaches steady state and goes out when it runs out of fuel.\". O2 not stated; ISS cabin nominal 21% assumed. Pressure not stated on slide; ISS cabin nominal 1 atm assumed.",
+      "notes": "2 cm wide sheet. 1.21 mm/s is the opposed value stated at '~10 cm/s' on slide 29; the opposed plot (slide 30) shows ~1.43 mm/s at 10 cm/s and ~1.2 mm/s at ~9 cm/s, so the stated 1.21 may belong to the ~9 cm/s points. Outcome complete_burn confirmed by slide 25: \"Flame quickly reaches steady state and goes out when it runs out of fuel.\" Run id (not in derived_from, per contract): the only SIBAL row marked opposed in the CSV is Test 5b (GMT 181, 6/29/2012), but it may be the 90 s stepped run (slide 26) rather than this constant 10 cm/s sequence, so the link is unproven. O2 21% and 1 atm assumed (ISS cabin nominal); no PSI-26 statement or BASS-II table row covers opposed runs. Normal-gravity reference (slide 25 note, slide 33): downward (opposed) spread is not possible in normal air. Open: Spread value 1.21 vs plot ~1.43 at exactly 10 cm/s; O2 and pressure remain assumed; run id unproven. Test 5b shares GMT 181 with Ultem Test 16 (ISS atmosphere 21-22%) but that is context, not a statement for SIBAL.",
       "source": {
         "file": "PSI-26_Presentations_FlammabilityAspectsofCottonFiberglassFabric_ASGSR2012.pdf",
         "locator": "slide 25"
@@ -211,9 +170,7 @@
       "test_id": "SIBAL-2CM-OPP-1",
       "point_type": "test",
       "limit_type": null,
-      "derived_from": [
-        "5b"
-      ],
+      "derived_from": [],
       "material": "SIBAL cotton-fiberglass fabric",
       "material_class": "fabric",
       "thickness_mm": null,
@@ -230,7 +187,7 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "2 cm wide sheet Flame persisted (burn time 90 s) while opposed flow stepped down to ~1 cm/s; no opposed extinction stated. Lowest opposed plotted point ~1.4 cm/s, ~0.62 mm/s (slide 30). outcome is an approximation. Quote: \"decreased in discrete steps from 10 cm/s all the way down to about 1 cm/s\". O2 not stated; ISS cabin nominal 21% assumed. Pressure not stated on slide; ISS cabin nominal 1 atm assumed.",
+      "notes": "2 cm wide sheet. Slide 26: flow decreased in discrete steps from 10 cm/s to about 1 cm/s, total burn time 90 s; flame persisted through the steps, no opposed extinction stated. Lowest opposed plotted point is ~1.4 cm/s, ~0.62 mm/s (slide 30); spread_rate left null because the plotted point is at 1.4, not 1 cm/s. Outcome partial_burn is an approximation (flame sustained; end state at 1 cm/s not stated; 85 mm sample over 90 s is consistent with full consumption but this is inference). Run id (not in derived_from, per contract): likely CSV Test 5b (GMT 181, 6/29/2012, 'SIBAL 2 cm opposed flow'), the only opposed SIBAL row. O2 21% and 1 atm assumed (ISS cabin nominal). Open: Outcome could be complete_burn (burn time ~ sample length / mean spread rate) but no source says so; O2 and pressure assumed; run tie is by CSV label only.",
       "source": {
         "file": "PSI-26_Presentations_FlammabilityAspectsofCottonFiberglassFabric_ASGSR2012.pdf",
         "locator": "slide 26"
@@ -242,10 +199,7 @@
       "test_id": "NOMEX3-22-14",
       "point_type": "test",
       "limit_type": null,
-      "derived_from": [
-        "14",
-        "15"
-      ],
+      "derived_from": [],
       "material": "Nomex-III (natural)",
       "material_class": "fabric",
       "thickness_mm": null,
@@ -264,28 +218,25 @@
       "normal_gravity_reference": {
         "outcome": "partial_burn",
         "spread_rate_mm_s": null,
-        "note": "slide 31: 'At 1g ULOI, but narrower sample'; ULOI of Nomex-III = 22% O2 (slide 28) Original wording: \"burns at 1-g limiting oxygen index (22% O2), but with a wider sample\"."
+        "note": "Slide 31: \"At 1g ULOI, but narrower sample\" (ISS sample is narrower than the 1-g standard sample); ULOI of Nomex-III = 22% O2 (slide 28). The earlier note said 'wider sample', which contradicts the slide."
       },
-      "notes": "2 cm wide sample Slide 30: 'Nomex-III sample did burn'; slide 31: nearly complete concurrent propagation at 15 cm/s on ISS, flame narrowed and extinguished within 1 cm of sample end. Title says 14 cm/s, text 15 cm/s. CSV 'Nomex III Natural' tests 14 and 15 (inferred by CSV match). Quote: \"NOMEX – III, 22% O2, 1 atm 14 cm/s (0g)\".",
+      "notes": "2 cm wide sample. Slide 30: 'Nomex-III sample did burn'; slide 31: nearly complete concurrent propagation at 15 cm/s on ISS (flow arrow on the photo points along the sample, igniter end opposite), flame narrowed and extinguished within 1 cm of the sample end. Slide title says 14 cm/s, body text says 15 cm/s; 14 kept as the title condition. Candidate run ids (not in derived_from, per contract): CSV 'Nomex III Natural' Test 14 (6/28/2012) and 'nomex natural III' Test 15 (7/19/2012); the slide gives no test number or date. O2 22% and 1 atm are in the slide title. Quote: \"NOMEX – III, 22% O2, 1 atm 14 cm/s (0g)\". Open: Flow 14 (title) vs 15 cm/s (body) unresolved; 1-g reference outcome 'partial_burn' is an interpretation of 'At 1g ULOI' (marginal burn); which CSV test(s) the slide shows is not stated.",
       "source": {
         "file": "PSI-26_Presentations_BASS_Overview of Recent ISS Results.pdf",
         "locator": "slide 31"
       },
-      "confidence": "high",
+      "confidence": "medium",
       "needs_review": true
     },
     {
       "test_id": "ULTEM-21-15",
       "point_type": "test",
       "limit_type": null,
-      "derived_from": [
-        "16",
-        "17"
-      ],
+      "derived_from": [],
       "material": "Ultem 1000 (fire-retarded polyetherimide film)",
       "material_class": "polymer",
       "thickness_mm": 0.254,
-      "o2_percent": 21,
+      "o2_percent": 21.5,
       "o2_percent_range": [
         21,
         22
@@ -303,28 +254,25 @@
       "normal_gravity_reference": {
         "outcome": "no_sustained_burn",
         "spread_rate_mm_s": null,
-        "note": "Slide 30: 'Similar to 1-g (Note: samples narrower on ISS)'; ULOI 23.5% O2 (slide 28) Original wording: \"no_sustained_burn (similar to 1-g)\"."
+        "note": "Slide 30: \"Similar to 1-g (Note: samples narrower on ISS)\". ULOI 23.5% O2 (slide 28). 1-g reference pressure not stated."
       },
-      "notes": "10 mil film; narrower than 1-g standard sample 'did not burn' mapped to no_sustained_burn (ignition vs. no-propagation not distinguished). Flow direction not stated. CSV 'ultem sheet' tests 16 and 17 (inferred by CSV match). Pressure not stated on this slide. Quote: \"Ultem and Nomex HT90-40 samples did not burn on ISS atmosphere 21% to 22% O2 Flow speeds around 15 cm/s\". Pressure not stated on slide; ISS cabin nominal 1 atm assumed.",
+      "notes": "10 mil film; narrower than 1-g standard sample. 'did not burn' mapped to no_sustained_burn; the slide does not say whether ignition occurred (no_ignition is the alternative). O2: slide 30 gives 'ISS atmosphere 21% to 22% O2', stored as range [21,22] with midpoint 21.5 per the extraction contract. Flow 'around 15 cm/s'. Flow direction not stated (hardware allows flipping samples 180 degrees, so it cannot be inferred). Candidate run ids (not in derived_from, per contract): CSV 'ultem sheet' Tests 16 (6/29/2012) and 17 (7/19/2012). Pressure not stated on slide 30; ISS cabin nominal 1 atm assumed. Slide 29 photos are 2009 ground tests at 10.2 psia, not ISS runs. Open: Outcome no_ignition vs no_sustained_burn not decidable; pressure assumed; flow_direction unknown; 'around 15 cm/s' stored as 15.",
       "source": {
         "file": "PSI-26_Presentations_BASS_Overview of Recent ISS Results.pdf",
         "locator": "slide 30"
       },
-      "confidence": "high",
+      "confidence": "medium",
       "needs_review": true
     },
     {
       "test_id": "NOMEXHT9040-21-15",
       "point_type": "test",
       "limit_type": null,
-      "derived_from": [
-        "12",
-        "13"
-      ],
+      "derived_from": [],
       "material": "Nomex HT90-40 (fire-retarded aromatic nylon fabric)",
       "material_class": "fabric",
       "thickness_mm": 0.305,
-      "o2_percent": 21,
+      "o2_percent": 21.5,
       "o2_percent_range": [
         21,
         22
@@ -342,14 +290,14 @@
       "normal_gravity_reference": {
         "outcome": "no_sustained_burn",
         "spread_rate_mm_s": null,
-        "note": "ULOI 23.5% O2 (slide 28); 'Similar to 1-g' Original wording: \"no_sustained_burn (similar to 1-g)\"."
+        "note": "Slide 30: \"Similar to 1-g (Note: samples narrower on ISS)\". ULOI 23.5% O2 (slide 28). 1-g reference pressure not stated."
       },
-      "notes": "12 mil fabric; narrower than 1-g standard sample CSV lists 'Nomex blend 2 cm' (tests 12, 12-R, 12-R2, 13); mapping to HT90-40 is uncertain (inferred by CSV match, low certainty). Flow direction not stated. Quote: \"Ultem and Nomex HT90-40 samples did not burn on ISS atmosphere 21% to 22% O2 Flow speeds around 15 cm/s\". Pressure not stated on slide; ISS cabin nominal 1 atm assumed.",
+      "notes": "12 mil fabric; narrower than 1-g standard sample. 'did not burn' mapped to no_sustained_burn (ignition not distinguished). O2: slide 30 'ISS atmosphere 21% to 22% O2' stored as range [21,22] with midpoint 21.5. Flow 'around 15 cm/s'. Flow direction not stated. Candidate run ids (not in derived_from, per contract): CSV 'Nomex blend 2 cm' Tests 12, 12-R, 12-R2, 13; mapping of 'Nomex blend' to HT90-40 is uncertain. Pressure not stated on slide 30; ISS cabin nominal 1 atm assumed. Open: CSV 'Nomex blend' = HT90-40 is unverified; outcome ambiguity; pressure assumed; flow_direction unknown.",
       "source": {
         "file": "PSI-26_Presentations_BASS_Overview of Recent ISS Results.pdf",
         "locator": "slide 30"
       },
-      "confidence": "high",
+      "confidence": "medium",
       "needs_review": true
     },
     {
@@ -379,7 +327,7 @@
         "locator": "slide 34"
       },
       "confidence": "medium",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "PMMA-SPH1-17-LT1",
@@ -402,7 +350,7 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "1 cm diameter sphere Flow stated as 'less than 1 cm/s' - 1 stored as upper bound. Flame sustained at this flow. Specific CSV run not identifiable. Quote: \"burning PMMA sphere (1-cm diameter) at 17% oxygen and less than 1 cm/s\". Pressure not stated on slide; ISS cabin nominal 1 atm assumed.",
+      "notes": "1 cm diameter sphere Flow stated as 'less than 1 cm/s' - 1 stored as upper bound. Flame sustained at this flow. Specific CSV run not identifiable. Quote: \"burning PMMA sphere (1-cm diameter) at 17% oxygen and less than 1 cm/s\". Pressure not stated on slide; ISS cabin nominal 1 atm assumed. Open: Pressure: slide 36 gives no pressure; slides 51/56/60 state 1 atm for other 17% O2/N2 sphere and candle tests but none covers this 1 cm sphere test, so pressure_status stays assumed. Flow 'less than 1 cm/s' stored as 1 (upper bound). Outcome partial_burn approximated; flow direction unknown.",
       "source": {
         "file": "PSI-26_Presentations_BASS_Overview of Recent ISS Results.pdf",
         "locator": "slide 36"
@@ -437,7 +385,7 @@
         "locator": "slide 56"
       },
       "confidence": "medium",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "PMMA-FLAT1CM-AIR-9",
@@ -460,7 +408,7 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "1 cm wide flat sheet Flame ~1 cm, persisted a very long time; went out only when flow shut off. Air taken as 21% O2. Quote: \"burning in air at low flow speed (around 9 cm/s)\". O2 not stated; ISS cabin nominal 21% assumed. Pressure not stated on slide; ISS cabin nominal 1 atm assumed.",
+      "notes": "1 cm wide flat sheet. Slide 54: flame ~1 cm, persisted a very long time; went out only when the air flow was shut off (fuel not exhausted), so partial_burn. 'In air' is explicit but no O2 percentage is given; 21% assumed (the 21-22% ISS-atmosphere statement on slide 30 is for Ultem/Nomex runs only). Pressure not stated; 1 atm assumed. Air flow direction on the slide is right to left in the image; the montage shows only the flame (no sample), so concurrent vs opposed cannot be determined. CSV 'PMMA 1 cm' runs exist in 2012 (Tests 30-33) and 2013 (Tests 26-28, when O2 was varied), so the run cannot be tied and derived_from stays []. Quote: \"burning in air at low flow speed (around 9 cm/s)\". Open: O2 and pressure remain assumed; flow direction relative to spread unknown; run not identifiable (2012 vs 2013 candidates).",
       "source": {
         "file": "PSI-26_Presentations_BASS_Overview of Recent ISS Results.pdf",
         "locator": "slide 54"
@@ -472,11 +420,7 @@
       "test_id": "CANDLE-17-ZEROFLOW",
       "point_type": "limit",
       "limit_type": "quenching",
-      "derived_from": [
-        "82",
-        "82a",
-        "82b"
-      ],
+      "derived_from": [],
       "material": "Paraffin wax candle in ceramic tube",
       "material_class": "other",
       "thickness_mm": null,
@@ -493,7 +437,7 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "candle in ceramic tube Flame burns at <1 cm/s flow at 17% O2; extinguishes when flow turned off. Slide 60 gives 17% O2/N2, 1 atm, flow stepped 5,4,3,2,1,<1 cm/s with flame persisting. Slide 59 says paraffin; CSV tests 82/82a/82b are 'candle' (inferred by CSV match). Quote: \"test is concluded when the flow is turned off and the flame rapidly goes out\".",
+      "notes": "Paraffin wax candle in ceramic tube, 17% O2, flow up. Slide 59: flame at <1 cm/s, test concluded when flow turned off and flame goes out. Slide 60 (candle sequence, same family): 17% O2/N2, 1 atm, flow stepped 5,4,3,2,1,<1 cm/s. derived_from set to [] because no slide gives run numbers, and CSV candle Tests 82/82a/82b are dated 7/3/2012, before the O2-variation tests the overview calls 'more recent' (slide 4); 17% candle runs are more likely the 2013 candle rows (e.g. Tests 85, 89, 93, 95), also unproven. Quote: \"test is concluded when the flow is turned off and the flame rapidly goes out\". Open: Whether slide 59 and slide 60 show the same test (pressure cited from slide 60) is not stated; source runs unknown; zero-flow quench is the only limit stated.",
       "source": {
         "file": "PSI-26_Presentations_BASS_Overview of Recent ISS Results.pdf",
         "locator": "slide 59"
@@ -514,6 +458,10 @@
     {
       "file": "PSI-26_Presentations_FlammabilityAspectsofCottonFiberglassFabric_ASGSR2012.pdf",
       "url": null
+    },
+    {
+      "file": "PSI-25_Reports_BASS-II Summary Report.pdf (Table 7.1, sec. 7.1.3)",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25"
     }
   ],
   "review": {

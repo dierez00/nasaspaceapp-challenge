@@ -1,0 +1,264 @@
+{
+  "schema_version": "1.0",
+  "id": "PSI-68",
+  "title": "Flame Extinguishment Experiment - 2",
+  "acronym": "FLEX-2",
+  "doi": "10.60555/byp8-h018",
+  "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-68",
+  "research_area": "Combustion Science",
+  "sub_research_area": "Spacecraft Fire Safety",
+  "platform": "International Space Station (Combustion Integrated Rack, Multi-user Droplet Combustion Apparatus)",
+  "start_date": "2016-08-12",
+  "end_date": "2019-09-30",
+  "principal_investigator": "Forman A. Williams",
+  "summary": "Isolated and paired fuel droplets (1.5-5 mm; pure alkanes, alcohols and bi-component mixtures) were ignited aboard the ISS in O2/N2 or O2/He at 0.5-3 atm and 17-30% O2 to measure burning and flame extinction without buoyancy and benchmark droplet combustion models.",
+  "tests": [
+    {
+      "test_id": "IsoOctane (pure)",
+      "material": "Iso-octane (pure)",
+      "material_class": "liquid",
+      "thickness_mm": null,
+      "o2_percent": 23.5,
+      "o2_percent_range": [
+        17.0,
+        30.0
+      ],
+      "o2_status": "derived",
+      "pressure_kpa": 177.3,
+      "pressure_status": "derived",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 2.55,
+      "flow_direction": "mixed",
+      "outcome": "partial_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Source row is a test-matrix envelope, not a single run: initial droplet diameter 1.5-5 mm (not a thickness, so thickness_mm = null); ambient O2/N2 or O2/He at 25 C. O2 mole fraction listed as 0.17, 0.21, 0.25, 0.30 -> midpoint 23.5% with range [17, 30]. Pressure listed as 0.5, 1.0, 1.5, 2.0 or 3.0 atm (no range field in contract) -> midpoint 1.75 atm = 177.3 kPa. Flow velocity 0.1-5 cm/s -> midpoint 2.55 cm/s; per Approach, flow comes from translating the droplet only in some tests, others are quiescent, so flow_direction = mixed. Outcome not reported in the table; set to partial_burn because FLEX-2 studies flame extinction at finite droplet diameter (radiative / cool-flame extinction), but actual outcome varies per run.",
+      "source": {
+        "file": "PSI-68_Experimental table_Flex2.csv",
+        "locator": "data row 1, Sample (Fuel Type) = IsoOctane (pure)"
+      },
+      "confidence": "low",
+      "needs_review": true
+    },
+    {
+      "test_id": "n-Octane (pure)",
+      "material": "n-Octane (pure)",
+      "material_class": "liquid",
+      "thickness_mm": null,
+      "o2_percent": 23.5,
+      "o2_percent_range": [
+        17.0,
+        30.0
+      ],
+      "o2_status": "derived",
+      "pressure_kpa": 177.3,
+      "pressure_status": "derived",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 2.55,
+      "flow_direction": "mixed",
+      "outcome": "partial_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Source row is a test-matrix envelope, not a single run: initial droplet diameter 1.5-5 mm (not a thickness, so thickness_mm = null); ambient O2/N2 or O2/He at 25 C. O2 mole fraction listed as 0.17, 0.21, 0.25, 0.30 -> midpoint 23.5% with range [17, 30]. Pressure listed as 0.5, 1.0, 1.5, 2.0 or 3.0 atm (no range field in contract) -> midpoint 1.75 atm = 177.3 kPa. Flow velocity 0.1-5 cm/s -> midpoint 2.55 cm/s; per Approach, flow comes from translating the droplet only in some tests, others are quiescent, so flow_direction = mixed. Outcome not reported in the table; set to partial_burn because FLEX-2 studies flame extinction at finite droplet diameter (radiative / cool-flame extinction), but actual outcome varies per run.",
+      "source": {
+        "file": "PSI-68_Experimental table_Flex2.csv",
+        "locator": "data row 2, Sample (Fuel Type) = n-Octane (pure)"
+      },
+      "confidence": "low",
+      "needs_review": true
+    },
+    {
+      "test_id": "Heptane (pure)",
+      "material": "n-Heptane (pure)",
+      "material_class": "liquid",
+      "thickness_mm": null,
+      "o2_percent": 23.5,
+      "o2_percent_range": [
+        17.0,
+        30.0
+      ],
+      "o2_status": "derived",
+      "pressure_kpa": 177.3,
+      "pressure_status": "derived",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 2.55,
+      "flow_direction": "mixed",
+      "outcome": "partial_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Source row is a test-matrix envelope, not a single run: initial droplet diameter 1.5-5 mm (not a thickness, so thickness_mm = null); ambient O2/N2 or O2/He at 25 C. O2 mole fraction listed as 0.17, 0.21, 0.25, 0.30 -> midpoint 23.5% with range [17, 30]. Pressure listed as 0.5, 1.0, 1.5, 2.0 or 3.0 atm (no range field in contract) -> midpoint 1.75 atm = 177.3 kPa. Flow velocity 0.1-5 cm/s -> midpoint 2.55 cm/s; per Approach, flow comes from translating the droplet only in some tests, others are quiescent, so flow_direction = mixed. Outcome not reported in the table; set to partial_burn because FLEX-2 studies flame extinction at finite droplet diameter (radiative / cool-flame extinction), but actual outcome varies per run.",
+      "source": {
+        "file": "PSI-68_Experimental table_Flex2.csv",
+        "locator": "data row 3, Sample (Fuel Type) = Heptane (pure)"
+      },
+      "confidence": "low",
+      "needs_review": true
+    },
+    {
+      "test_id": "Decane (pure)",
+      "material": "n-Decane (pure)",
+      "material_class": "liquid",
+      "thickness_mm": null,
+      "o2_percent": 23.5,
+      "o2_percent_range": [
+        17.0,
+        30.0
+      ],
+      "o2_status": "derived",
+      "pressure_kpa": 177.3,
+      "pressure_status": "derived",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 2.55,
+      "flow_direction": "mixed",
+      "outcome": "partial_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Source row is a test-matrix envelope, not a single run: initial droplet diameter 1.5-5 mm (not a thickness, so thickness_mm = null); ambient O2/N2 or O2/He at 25 C. O2 mole fraction listed as 0.17, 0.21, 0.25, 0.30 -> midpoint 23.5% with range [17, 30]. Pressure listed as 0.5, 1.0, 1.5, 2.0 or 3.0 atm (no range field in contract) -> midpoint 1.75 atm = 177.3 kPa. Flow velocity 0.1-5 cm/s -> midpoint 2.55 cm/s; per Approach, flow comes from translating the droplet only in some tests, others are quiescent, so flow_direction = mixed. Outcome not reported in the table; set to partial_burn because FLEX-2 studies flame extinction at finite droplet diameter (radiative / cool-flame extinction), but actual outcome varies per run.",
+      "source": {
+        "file": "PSI-68_Experimental table_Flex2.csv",
+        "locator": "data row 4, Sample (Fuel Type) = Decane (pure)"
+      },
+      "confidence": "low",
+      "needs_review": true
+    },
+    {
+      "test_id": "Ethanol (pure)",
+      "material": "Ethanol (pure)",
+      "material_class": "liquid",
+      "thickness_mm": null,
+      "o2_percent": 23.5,
+      "o2_percent_range": [
+        17.0,
+        30.0
+      ],
+      "o2_status": "derived",
+      "pressure_kpa": 177.3,
+      "pressure_status": "derived",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 2.55,
+      "flow_direction": "mixed",
+      "outcome": "partial_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Source row is a test-matrix envelope, not a single run: initial droplet diameter 1.5-5 mm (not a thickness, so thickness_mm = null); ambient O2/N2 or O2/He at 25 C. O2 mole fraction listed as 0.17, 0.21, 0.25, 0.30 -> midpoint 23.5% with range [17, 30]. Pressure listed as 0.5, 1.0, 1.5, 2.0 or 3.0 atm (no range field in contract) -> midpoint 1.75 atm = 177.3 kPa. Flow velocity 0.1-5 cm/s -> midpoint 2.55 cm/s; per Approach, flow comes from translating the droplet only in some tests, others are quiescent, so flow_direction = mixed. Outcome not reported in the table; set to partial_burn because FLEX-2 studies flame extinction at finite droplet diameter (radiative / cool-flame extinction), but actual outcome varies per run.",
+      "source": {
+        "file": "PSI-68_Experimental table_Flex2.csv",
+        "locator": "data row 5, Sample (Fuel Type) = Ethanol (pure)"
+      },
+      "confidence": "low",
+      "needs_review": true
+    },
+    {
+      "test_id": "Propanol (95%) Glycerol (5%) (mixture)",
+      "material": "Propanol 95% / Glycerol 5% (mixture)",
+      "material_class": "liquid",
+      "thickness_mm": null,
+      "o2_percent": 23.5,
+      "o2_percent_range": [
+        17.0,
+        30.0
+      ],
+      "o2_status": "derived",
+      "pressure_kpa": 177.3,
+      "pressure_status": "derived",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 2.55,
+      "flow_direction": "mixed",
+      "outcome": "partial_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Source row is a test-matrix envelope, not a single run: initial droplet diameter 1.5-5 mm (not a thickness, so thickness_mm = null); ambient O2/N2 or O2/He at 25 C. O2 mole fraction listed as 0.17, 0.21, 0.25, 0.30 -> midpoint 23.5% with range [17, 30]. Pressure listed as 0.5, 1.0, 1.5, 2.0 or 3.0 atm (no range field in contract) -> midpoint 1.75 atm = 177.3 kPa. Flow velocity 0.1-5 cm/s -> midpoint 2.55 cm/s; per Approach, flow comes from translating the droplet only in some tests, others are quiescent, so flow_direction = mixed. Outcome not reported in the table; set to partial_burn because FLEX-2 studies flame extinction at finite droplet diameter (radiative / cool-flame extinction), but actual outcome varies per run.",
+      "source": {
+        "file": "PSI-68_Experimental table_Flex2.csv",
+        "locator": "data row 6, Sample (Fuel Type) = Propanol (95%) Glycerol (5%) (mixture)"
+      },
+      "confidence": "low",
+      "needs_review": true
+    },
+    {
+      "test_id": "Heptane (50%) IsoOctane (50%) (mixture)",
+      "material": "n-Heptane 50% / Iso-octane 50% (mixture)",
+      "material_class": "liquid",
+      "thickness_mm": null,
+      "o2_percent": 23.5,
+      "o2_percent_range": [
+        17.0,
+        30.0
+      ],
+      "o2_status": "derived",
+      "pressure_kpa": 177.3,
+      "pressure_status": "derived",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 2.55,
+      "flow_direction": "mixed",
+      "outcome": "partial_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Source row is a test-matrix envelope, not a single run: initial droplet diameter 1.5-5 mm (not a thickness, so thickness_mm = null); ambient O2/N2 or O2/He at 25 C. O2 mole fraction listed as 0.17, 0.21, 0.25, 0.30 -> midpoint 23.5% with range [17, 30]. Pressure listed as 0.5, 1.0, 1.5, 2.0 or 3.0 atm (no range field in contract) -> midpoint 1.75 atm = 177.3 kPa. Flow velocity 0.1-5 cm/s -> midpoint 2.55 cm/s; per Approach, flow comes from translating the droplet only in some tests, others are quiescent, so flow_direction = mixed. Outcome not reported in the table; set to partial_burn because FLEX-2 studies flame extinction at finite droplet diameter (radiative / cool-flame extinction), but actual outcome varies per run.",
+      "source": {
+        "file": "PSI-68_Experimental table_Flex2.csv",
+        "locator": "data row 7, Sample (Fuel Type) = Heptane (50%) IsoOctane (50%) (mixture)"
+      },
+      "confidence": "low",
+      "needs_review": true
+    },
+    {
+      "test_id": "Propanol (80%) Glycerol (20%) (mixture)",
+      "material": "Propanol 80% / Glycerol 20% (mixture)",
+      "material_class": "liquid",
+      "thickness_mm": null,
+      "o2_percent": 23.5,
+      "o2_percent_range": [
+        17.0,
+        30.0
+      ],
+      "o2_status": "derived",
+      "pressure_kpa": 177.3,
+      "pressure_status": "derived",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 2.55,
+      "flow_direction": "mixed",
+      "outcome": "partial_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Source row is a test-matrix envelope, not a single run: initial droplet diameter 1.5-5 mm (not a thickness, so thickness_mm = null); ambient O2/N2 or O2/He at 25 C. O2 mole fraction listed as 0.17, 0.21, 0.25, 0.30 -> midpoint 23.5% with range [17, 30]. Pressure listed as 0.5, 1.0, 1.5, 2.0 or 3.0 atm (no range field in contract) -> midpoint 1.75 atm = 177.3 kPa. Flow velocity 0.1-5 cm/s -> midpoint 2.55 cm/s; per Approach, flow comes from translating the droplet only in some tests, others are quiescent, so flow_direction = mixed. Outcome not reported in the table; set to partial_burn because FLEX-2 studies flame extinction at finite droplet diameter (radiative / cool-flame extinction), but actual outcome varies per run.",
+      "source": {
+        "file": "PSI-68_Experimental table_Flex2.csv",
+        "locator": "data row 8, Sample (Fuel Type) = Propanol (80%) Glycerol (20%) (mixture)"
+      },
+      "confidence": "low",
+      "needs_review": true
+    }
+  ],
+  "sources": [
+    {
+      "file": "PSI-68_Experimental table_Flex2.csv",
+      "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-68"
+    },
+    {
+      "file": "PSI-68 investigation metadata (Approach, Objective)",
+      "url": "https://psi.nasa.gov/geode-py/ws/repo/investigations/PSI-68"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "extracted_by": "claude",
+    "reviewed_by": null
+  }
+}

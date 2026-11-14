@@ -44,6 +44,7 @@ Otros directorios:
 - `db/schema.sql`: esquema idempotente (`experiments`, `experiment_tests`, `document_chunks`).
 - `data/experiments/PSI-<n>.json`: un archivo por investigación.
 - `data/raw/PSI-<n>/`: copia sin cambios de la tabla experimental de PSI.
+- `data/search/sources.json`: investigaciones que solo alimentan la búsqueda con citas (no son puntos del mapa).
 - `data/schema/experiment.schema.json`: JSON Schema generado para el front; no se edita a mano.
 - `docs/data-extraction.md`: formato, reglas del equipo y prompt de extracción.
 

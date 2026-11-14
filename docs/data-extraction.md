@@ -2,6 +2,20 @@
 
 Guía para capturar investigaciones de [NASA PSI](https://psi.nasa.gov/physci/repo/) en el formato común del Atlas. El ejemplo completo es [`data/experiments/PSI-99.json`](../data/experiments/PSI-99.json).
 
+## ¿Va al mapa o solo a la búsqueda?
+
+Lista completa de investigaciones de combustión: <https://psi.nasa.gov/physci/repo/search?q=combustion&data_source=psi&data_type=investigation>.
+
+Una investigación entra al mapa (`data/experiments/`) si cumple las tres condiciones:
+
+1. Quema un **material** (sólido, tela, película o líquido) y no solo estudia la forma o el hollín de una llama.
+2. Reporta, o permite citar, el **O₂** y la **presión** de cada condición.
+3. Dice si el material **ardió o no**, o da un **límite** (extinción, *blowoff*, O₂ mínimo).
+
+Si no las cumple, regístrala en `data/search/sources.json` con `"scope": "search_only"` y la razón. Ejemplo: PSI-107 (SPICE, llamas de gas y *smoke point*).
+
+**Cuando la tabla de PSI no trae resultados** (como en BASS y BASS-II), búscalos en `Reports`, `Science Documents` o `Presentations`. Captura como `limit` lo que los autores reportan, con página o lámina, y no deduzcas resultados prueba por prueba.
+
 ## Reglas del equipo
 
 1. **Un archivo por investigación:** `data/experiments/PSI-<n>.json`. Como nadie edita el mismo archivo, no hay conflictos de merge.

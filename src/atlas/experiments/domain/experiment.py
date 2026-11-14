@@ -1,0 +1,99 @@
+"""Data contract for one PSI investigation (data/experiments/PSI-<n>.json).
+
+One record per investigation; each entry in `tests` is one point on the gap map.
+"""
+
+from datetime import date
+from typing import Annotated, Literal
+
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
+
+SCHEMA_VERSION = "1.0"
+
+ValueStatus = Literal["reported", "derived", "assumed"]
+GravityEnvironment = Literal["microgravity", "lunar", "martian", "partial", "normal"]
+FlowDirection = Literal["concurrent", "opposed", "quiescent", "mixed"]
+BurnOutcome = Literal["no_ignition", "no_sustained_burn", "partial_burn", "complete_burn"]
+MaterialClass = Literal["polymer", "fabric", "composite", "metal", "liquid", "gas", "other"]
+
+NonEmpty = Annotated[str, Field(min_length=1)]
+NonNegative = Annotated[float, Field(ge=0)]
+
+
+class Contract(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+
+class SourceRef(Contract):
+    file: NonEmpty = Field(description="PSI file name or page section the value comes from")
+    locator: NonEmpty = Field(description="Row, table, page or section inside that file")
+
+
+class NormalGravityReference(Contract):
+    outcome: BurnOutcome
+    spread_rate_mm_s: NonNegative | None
+    note: str | None
+
+
+class ExperimentTest(Contract):
+    test_id: NonEmpty
+    material: NonEmpty
+    material_class: MaterialClass
+    thickness_mm: Annotated[float, Field(gt=0)] | None
+    o2_percent: Annotated[float, Field(ge=0, le=100)]
+    o2_percent_range: tuple[float, float] | None
+    o2_status: ValueStatus
+    pressure_kpa: Annotated[float, Field(gt=0)]
+    pressure_status: ValueStatus
+    gravity_environment: GravityEnvironment
+    gravity_g: Annotated[float, Field(ge=0, le=1.5)] = Field(
+        description="Representative level; use 1e-6 for orbital microgravity"
+    )
+    flow_velocity_cm_s: NonNegative | None
+    flow_direction: FlowDirection | None
+    outcome: BurnOutcome = Field(
+        description="no_sustained_burn = ignited but self-extinguished almost immediately"
+    )
+    burn_length_cm: NonNegative | None
+    spread_rate_mm_s: NonNegative | None
+    normal_gravity_reference: NormalGravityReference | None
+    notes: str | None
+    source: SourceRef
+    confidence: Literal["high", "medium", "low"]
+    needs_review: bool
+
+    @model_validator(mode="after")
+    def assumed_values_need_review(self) -> "ExperimentTest":
+        if "assumed" in (self.o2_status, self.pressure_status) and not self.needs_review:
+            raise ValueError("assumed O2 or pressure requires needs_review = true")
+        return self
+
+
+class SourceFile(Contract):
+    file: NonEmpty
+    url: HttpUrl | None
+
+
+class Review(Contract):
+    status: Literal["draft", "reviewed"]
+    extracted_by: NonEmpty
+    reviewed_by: str | None
+
+
+class Experiment(Contract):
+    schema_version: Literal["1.0"]
+    id: Annotated[str, Field(pattern=r"^PSI-\d+$")]
+    title: NonEmpty
+    acronym: str | None
+    doi: str | None
+    source_url: HttpUrl
+    research_area: NonEmpty
+    sub_research_area: str | None
+    platform: NonEmpty
+    start_date: date | None
+    end_date: date | None
+    principal_investigator: str | None
+    summary: NonEmpty = Field(description="One or two sentences, plain language")
+    tests: Annotated[list[ExperimentTest], Field(min_length=1)]
+    sources: Annotated[list[SourceFile], Field(min_length=1)]
+    review: Review

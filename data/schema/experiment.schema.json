@@ -1,0 +1,520 @@
+{
+  "$defs": {
+    "ExperimentTest": {
+      "additionalProperties": false,
+      "properties": {
+        "test_id": {
+          "minLength": 1,
+          "title": "Test Id",
+          "type": "string"
+        },
+        "material": {
+          "minLength": 1,
+          "title": "Material",
+          "type": "string"
+        },
+        "material_class": {
+          "enum": [
+            "polymer",
+            "fabric",
+            "composite",
+            "metal",
+            "liquid",
+            "gas",
+            "other"
+          ],
+          "title": "Material Class",
+          "type": "string"
+        },
+        "thickness_mm": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Thickness Mm"
+        },
+        "o2_percent": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "O2 Percent",
+          "type": "number"
+        },
+        "o2_percent_range": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "O2 Percent Range"
+        },
+        "o2_status": {
+          "enum": [
+            "reported",
+            "derived",
+            "assumed"
+          ],
+          "title": "O2 Status",
+          "type": "string"
+        },
+        "pressure_kpa": {
+          "exclusiveMinimum": 0,
+          "title": "Pressure Kpa",
+          "type": "number"
+        },
+        "pressure_status": {
+          "enum": [
+            "reported",
+            "derived",
+            "assumed"
+          ],
+          "title": "Pressure Status",
+          "type": "string"
+        },
+        "gravity_environment": {
+          "enum": [
+            "microgravity",
+            "lunar",
+            "martian",
+            "partial",
+            "normal"
+          ],
+          "title": "Gravity Environment",
+          "type": "string"
+        },
+        "gravity_g": {
+          "description": "Representative level; use 1e-6 for orbital microgravity",
+          "maximum": 1.5,
+          "minimum": 0,
+          "title": "Gravity G",
+          "type": "number"
+        },
+        "flow_velocity_cm_s": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Flow Velocity Cm S"
+        },
+        "flow_direction": {
+          "anyOf": [
+            {
+              "enum": [
+                "concurrent",
+                "opposed",
+                "quiescent",
+                "mixed"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Flow Direction"
+        },
+        "outcome": {
+          "description": "no_sustained_burn = ignited but self-extinguished almost immediately",
+          "enum": [
+            "no_ignition",
+            "no_sustained_burn",
+            "partial_burn",
+            "complete_burn"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "burn_length_cm": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Burn Length Cm"
+        },
+        "spread_rate_mm_s": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Spread Rate Mm S"
+        },
+        "normal_gravity_reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NormalGravityReference"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Notes"
+        },
+        "source": {
+          "$ref": "#/$defs/SourceRef"
+        },
+        "confidence": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ],
+          "title": "Confidence",
+          "type": "string"
+        },
+        "needs_review": {
+          "title": "Needs Review",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "test_id",
+        "material",
+        "material_class",
+        "thickness_mm",
+        "o2_percent",
+        "o2_percent_range",
+        "o2_status",
+        "pressure_kpa",
+        "pressure_status",
+        "gravity_environment",
+        "gravity_g",
+        "flow_velocity_cm_s",
+        "flow_direction",
+        "outcome",
+        "burn_length_cm",
+        "spread_rate_mm_s",
+        "normal_gravity_reference",
+        "notes",
+        "source",
+        "confidence",
+        "needs_review"
+      ],
+      "title": "ExperimentTest",
+      "type": "object"
+    },
+    "NormalGravityReference": {
+      "additionalProperties": false,
+      "properties": {
+        "outcome": {
+          "enum": [
+            "no_ignition",
+            "no_sustained_burn",
+            "partial_burn",
+            "complete_burn"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "spread_rate_mm_s": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Spread Rate Mm S"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Note"
+        }
+      },
+      "required": [
+        "outcome",
+        "spread_rate_mm_s",
+        "note"
+      ],
+      "title": "NormalGravityReference",
+      "type": "object"
+    },
+    "Review": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "draft",
+            "reviewed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "extracted_by": {
+          "minLength": 1,
+          "title": "Extracted By",
+          "type": "string"
+        },
+        "reviewed_by": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reviewed By"
+        }
+      },
+      "required": [
+        "status",
+        "extracted_by",
+        "reviewed_by"
+      ],
+      "title": "Review",
+      "type": "object"
+    },
+    "SourceFile": {
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "minLength": 1,
+          "title": "File",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Url"
+        }
+      },
+      "required": [
+        "file",
+        "url"
+      ],
+      "title": "SourceFile",
+      "type": "object"
+    },
+    "SourceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "description": "PSI file name or page section the value comes from",
+          "minLength": 1,
+          "title": "File",
+          "type": "string"
+        },
+        "locator": {
+          "description": "Row, table, page or section inside that file",
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        }
+      },
+      "required": [
+        "file",
+        "locator"
+      ],
+      "title": "SourceRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "id": {
+      "pattern": "^PSI-\\d+$",
+      "title": "Id",
+      "type": "string"
+    },
+    "title": {
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "acronym": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Acronym"
+    },
+    "doi": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Doi"
+    },
+    "source_url": {
+      "format": "uri",
+      "maxLength": 2083,
+      "minLength": 1,
+      "title": "Source Url",
+      "type": "string"
+    },
+    "research_area": {
+      "minLength": 1,
+      "title": "Research Area",
+      "type": "string"
+    },
+    "sub_research_area": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Sub Research Area"
+    },
+    "platform": {
+      "minLength": 1,
+      "title": "Platform",
+      "type": "string"
+    },
+    "start_date": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Start Date"
+    },
+    "end_date": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "End Date"
+    },
+    "principal_investigator": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Principal Investigator"
+    },
+    "summary": {
+      "description": "One or two sentences, plain language",
+      "minLength": 1,
+      "title": "Summary",
+      "type": "string"
+    },
+    "tests": {
+      "items": {
+        "$ref": "#/$defs/ExperimentTest"
+      },
+      "minItems": 1,
+      "title": "Tests",
+      "type": "array"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/SourceFile"
+      },
+      "minItems": 1,
+      "title": "Sources",
+      "type": "array"
+    },
+    "review": {
+      "$ref": "#/$defs/Review"
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "title",
+    "acronym",
+    "doi",
+    "source_url",
+    "research_area",
+    "sub_research_area",
+    "platform",
+    "start_date",
+    "end_date",
+    "principal_investigator",
+    "summary",
+    "tests",
+    "sources",
+    "review"
+  ],
+  "title": "Experiment",
+  "type": "object"
+}

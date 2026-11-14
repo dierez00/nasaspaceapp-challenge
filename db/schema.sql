@@ -44,7 +44,7 @@ alter table experiment_tests add column if not exists limit_type text;
 -- RAG chunks of PSI documents; 1024 = Voyage default embedding size.
 create table if not exists document_chunks (
   id bigserial primary key,
-  experiment_id text not null references experiments (id) on delete cascade,
+  experiment_id text not null,
   source_file text not null,
   section text,
   content text not null,
@@ -53,3 +53,9 @@ create table if not exists document_chunks (
 
 create index if not exists document_chunks_embedding_idx
   on document_chunks using hnsw (embedding vector_cosine_ops);
+
+-- Chunks also cover search-only sources (e.g. PSI-107) that are not in `experiments`.
+alter table document_chunks drop constraint if exists document_chunks_experiment_id_fkey;
+alter table document_chunks add column if not exists content_hash text;
+create unique index if not exists document_chunks_hash_idx
+  on document_chunks (experiment_id, source_file, content_hash);

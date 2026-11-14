@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     data_dir: Path = Path("data")
     cors_origins: list[str] = ["http://localhost:3000"]
     voyage_api_key: SecretStr | None = None
+    embedding_model: str = "voyage-4"
+    embedding_dimension: int = 1024
     claude_code_oauth_token: SecretStr | None = None
 
 

@@ -21,11 +21,11 @@
       "material": "Silicone",
       "material_class": "polymer",
       "thickness_mm": 0.27,
-      "o2_percent": 21.5,
+      "o2_percent": 22.1,
       "o2_percent_range": null,
-      "o2_status": "derived",
-      "pressure_kpa": 101.3,
-      "pressure_status": "assumed",
+      "o2_status": "reported",
+      "pressure_kpa": 100,
+      "pressure_status": "reported",
       "gravity_environment": "microgravity",
       "gravity_g": 1e-06,
       "flow_velocity_cm_s": 20,
@@ -38,13 +38,13 @@
         "spread_rate_mm_s": null,
         "note": "1-g spread rate reported as 'Acceleratory' (no constant rate)"
       },
-      "notes": "Burn time reported as 'Insignificant'; µg burn length ~0. Pressure assumed ISS cabin nominal (~101.3 kPa); not stated in PSI-99 files.",
+      "notes": "Burn time \"Insignificant\"; igniter flame did not spread (Ferkul 2017: none of the silicone samples burned). O2 22.1% per Ferkul Table I / ISS reading (PSI CSV lists ~21.5, which matches Saffire-1 end value, apparent table error). Pressure: 100 kPa reported for Saffire II in Thomsen et al. 2020 (abstract) and Urban/Ferkul ICES-2021 Table 2 (rounded values; no test-specific sensor trace found).",
       "source": {
         "file": "PSI-99_Experimental table_SAFFIRE-2.csv",
         "locator": "row Sample Number = 2-1"
       },
-      "confidence": "medium",
-      "needs_review": true
+      "confidence": "high",
+      "needs_review": false
     },
     {
       "test_id": "2-2",
@@ -56,9 +56,9 @@
       "thickness_mm": 0.61,
       "o2_percent": 22.1,
       "o2_percent_range": null,
-      "o2_status": "derived",
-      "pressure_kpa": 101.3,
-      "pressure_status": "assumed",
+      "o2_status": "reported",
+      "pressure_kpa": 100,
+      "pressure_status": "reported",
       "gravity_environment": "microgravity",
       "gravity_g": 1e-06,
       "flow_velocity_cm_s": 20,
@@ -71,13 +71,13 @@
         "spread_rate_mm_s": 1.2,
         "note": "1-g burn length 7.6 cm"
       },
-      "notes": "Burn time reported as 'Insignificant'. Pressure assumed ISS cabin nominal (~101.3 kPa); not stated in PSI-99 files.",
+      "notes": "Burn time \"Insignificant\"; igniter flame did not spread (Ferkul 2017: none of the silicone samples burned). Pressure: 100 kPa reported for Saffire II in Thomsen et al. 2020 (abstract) and Urban/Ferkul ICES-2021 Table 2 (rounded values; no test-specific sensor trace found).",
       "source": {
         "file": "PSI-99_Experimental table_SAFFIRE-2.csv",
         "locator": "row Sample Number = 2-2"
       },
-      "confidence": "medium",
-      "needs_review": true
+      "confidence": "high",
+      "needs_review": false
     },
     {
       "test_id": "2-3",
@@ -89,9 +89,9 @@
       "thickness_mm": 1.03,
       "o2_percent": 22.1,
       "o2_percent_range": null,
-      "o2_status": "derived",
-      "pressure_kpa": 101.3,
-      "pressure_status": "assumed",
+      "o2_status": "reported",
+      "pressure_kpa": 100,
+      "pressure_status": "reported",
       "gravity_environment": "microgravity",
       "gravity_g": 1e-06,
       "flow_velocity_cm_s": 20,
@@ -104,13 +104,13 @@
         "spread_rate_mm_s": null,
         "note": "1-g burn length ~0"
       },
-      "notes": "Burn time reported as 'Insignificant'. Pressure assumed ISS cabin nominal (~101.3 kPa); not stated in PSI-99 files.",
+      "notes": "Burn time \"Insignificant\"; igniter flame did not spread (Ferkul 2017: none of the silicone samples burned). Pressure: 100 kPa reported for Saffire II in Thomsen et al. 2020 (abstract) and Urban/Ferkul ICES-2021 Table 2 (rounded values; no test-specific sensor trace found).",
       "source": {
         "file": "PSI-99_Experimental table_SAFFIRE-2.csv",
         "locator": "row Sample Number = 2-3"
       },
-      "confidence": "medium",
-      "needs_review": true
+      "confidence": "high",
+      "needs_review": false
     },
     {
       "test_id": "2-4",
@@ -122,9 +122,9 @@
       "thickness_mm": 0.37,
       "o2_percent": 22.1,
       "o2_percent_range": null,
-      "o2_status": "derived",
-      "pressure_kpa": 101.3,
-      "pressure_status": "assumed",
+      "o2_status": "reported",
+      "pressure_kpa": 100,
+      "pressure_status": "reported",
       "gravity_environment": "microgravity",
       "gravity_g": 1e-06,
       "flow_velocity_cm_s": 20,
@@ -137,13 +137,13 @@
         "spread_rate_mm_s": 0.6,
         "note": null
       },
-      "notes": "Source thickness reads '037 mm'; interpreted as 0.37 mm. Pressure assumed ISS cabin nominal (~101.3 kPa); not stated in PSI-99 files.",
+      "notes": "Downward/opposed-flow test. Thickness 0.37 mm confirmed (PSI CSV typo \"037 mm\"). Burn time \"Insignificant\"; none of the silicone samples burned. Pressure: 100 kPa reported for Saffire II in Thomsen et al. 2020 (abstract) and Urban/Ferkul ICES-2021 Table 2 (rounded values; no test-specific sensor trace found).",
       "source": {
         "file": "PSI-99_Experimental table_SAFFIRE-2.csv",
         "locator": "row Sample Number = 2-4"
       },
-      "confidence": "medium",
-      "needs_review": true
+      "confidence": "high",
+      "needs_review": false
     },
     {
       "test_id": "2-5",
@@ -155,9 +155,9 @@
       "thickness_mm": 0.37,
       "o2_percent": 22.1,
       "o2_percent_range": null,
-      "o2_status": "derived",
-      "pressure_kpa": 101.3,
-      "pressure_status": "assumed",
+      "o2_status": "reported",
+      "pressure_kpa": 100,
+      "pressure_status": "reported",
       "gravity_environment": "microgravity",
       "gravity_g": 1e-06,
       "flow_velocity_cm_s": 20,
@@ -170,13 +170,13 @@
         "spread_rate_mm_s": null,
         "note": "1-g spread rate reported as 'Acceleratory' (no constant rate)"
       },
-      "notes": "Burn time 145 s. Source thickness reads '037 mm'; interpreted as 0.37 mm. Pressure assumed ISS cabin nominal (~101.3 kPa); not stated in PSI-99 files.",
+      "notes": "Burn time 145 s. Thickness 0.37 mm confirmed (PSI CSV typo \"037 mm\"). Cotton-fiberglass fabric identical to Saffire-1 SIBAL. Pressure: 100 kPa reported for Saffire II in Thomsen et al. 2020 (abstract) and Urban/Ferkul ICES-2021 Table 2 (rounded values; no test-specific sensor trace found).",
       "source": {
         "file": "PSI-99_Experimental table_SAFFIRE-2.csv",
         "locator": "row Sample Number = 2-5"
       },
       "confidence": "high",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "2-6",
@@ -188,12 +188,12 @@
       "thickness_mm": 0.37,
       "o2_percent": 22.1,
       "o2_percent_range": null,
-      "o2_status": "derived",
-      "pressure_kpa": 101.3,
-      "pressure_status": "assumed",
+      "o2_status": "reported",
+      "pressure_kpa": 100,
+      "pressure_status": "reported",
       "gravity_environment": "microgravity",
       "gravity_g": 1e-06,
-      "flow_velocity_cm_s": 20,
+      "flow_velocity_cm_s": 25,
       "flow_direction": "concurrent",
       "outcome": "complete_burn",
       "burn_length_cm": 29,
@@ -203,13 +203,13 @@
         "spread_rate_mm_s": null,
         "note": "1-g spread rate reported as 'Acceleratory' (no constant rate)"
       },
-      "notes": "Material cell empty in source; assumed same as 2-5 (merged cell). Burn time 115 s. Pressure assumed ISS cabin nominal (~101.3 kPa); not stated in PSI-99 files.",
+      "notes": "Burn time 115 s. Material confirmed as cotton-fiberglass (SIBAL), same as 2-5; thickness 0.37 mm confirmed (PSI CSV typo \"037 mm\"). Flow was 25 cm/s, not 20 (PSI CSV lists 20 cm/s; pre-flight plan listed 30 cm/s). Pressure: 100 kPa reported for Saffire II in Thomsen et al. 2020 (abstract) and Urban/Ferkul ICES-2021 Table 2 (rounded values; no test-specific sensor trace found).",
       "source": {
         "file": "PSI-99_Experimental table_SAFFIRE-2.csv",
         "locator": "row Sample Number = 2-6"
       },
-      "confidence": "medium",
-      "needs_review": true
+      "confidence": "high",
+      "needs_review": false
     },
     {
       "test_id": "2-7",
@@ -221,9 +221,9 @@
       "thickness_mm": null,
       "o2_percent": 22.1,
       "o2_percent_range": null,
-      "o2_status": "derived",
-      "pressure_kpa": 101.3,
-      "pressure_status": "assumed",
+      "o2_status": "reported",
+      "pressure_kpa": 100,
+      "pressure_status": "reported",
       "gravity_environment": "microgravity",
       "gravity_g": 1e-06,
       "flow_velocity_cm_s": 20,
@@ -236,13 +236,13 @@
         "spread_rate_mm_s": null,
         "note": "Nomex portion did not burn"
       },
-      "notes": "PMMA 0.85 mm x 5 cm consumed; Nomex 0.37 mm x 24 cm not ignited (source note 2). Burn time 140 s. Pressure assumed ISS cabin nominal (~101.3 kPa); not stated in PSI-99 files.",
+      "notes": "Burn time 140 s. PMMA 0.85 mm (Table I; 0.8 mm in slide text) x 5 cm fully consumed (~460 W flame); Nomex HT90-40 0.37 mm x 24 cm was not ignited. Pressure: 100 kPa reported for Saffire II in Thomsen et al. 2020 (abstract) and Urban/Ferkul ICES-2021 Table 2 (rounded values; no test-specific sensor trace found).",
       "source": {
         "file": "PSI-99_Experimental table_SAFFIRE-2.csv",
         "locator": "row Sample Number = 2-7"
       },
       "confidence": "high",
-      "needs_review": true
+      "needs_review": false
     },
     {
       "test_id": "2-8",
@@ -251,15 +251,15 @@
       "derived_from": [],
       "material": "PMMA (structured)",
       "material_class": "polymer",
-      "thickness_mm": null,
+      "thickness_mm": 10,
       "o2_percent": 22.05,
       "o2_percent_range": [
         22.0,
         22.1
       ],
-      "o2_status": "derived",
-      "pressure_kpa": 101.3,
-      "pressure_status": "assumed",
+      "o2_status": "reported",
+      "pressure_kpa": 100,
+      "pressure_status": "reported",
       "gravity_environment": "microgravity",
       "gravity_g": 1e-06,
       "flow_velocity_cm_s": 20,
@@ -272,13 +272,13 @@
         "spread_rate_mm_s": null,
         "note": "1-g spread rate reported as 'Acceleratory' (no constant rate)"
       },
-      "notes": "~10 cm with visible damage (note 3); flames anchored at base, regression 0.01–0.04 mm/s (note 4). Thickness in source Fig. 5. Burn time 600 s, 97 W / 30 s ignition. Pressure assumed ISS cabin nominal (~101.3 kPa); not stated in PSI-99 files.",
+      "notes": "Structured PMMA slab, nominal 10 mm, grooved down the flow direction; middle 1.8 cm strip only 4 mm thick (Ferkul 2017 Fig. 5 / slides). Burn length ~10 cm = fuel with significant visible damage; flame lengths ~8.0 cm; flames anchored at base, regression 0.01-0.04 mm/s. Burn time 600 s, 97 W / 30 s. Pressure: 100 kPa reported for Saffire II in Thomsen et al. 2020 (abstract) and Urban/Ferkul ICES-2021 Table 2 (rounded values; no test-specific sensor trace found).",
       "source": {
         "file": "PSI-99_Experimental table_SAFFIRE-2.csv",
         "locator": "row Sample Number = 2-8"
       },
-      "confidence": "medium",
-      "needs_review": true
+      "confidence": "high",
+      "needs_review": false
     },
     {
       "test_id": "2-9",
@@ -293,9 +293,9 @@
         21.9,
         22.0
       ],
-      "o2_status": "derived",
-      "pressure_kpa": 101.3,
-      "pressure_status": "assumed",
+      "o2_status": "reported",
+      "pressure_kpa": 100,
+      "pressure_status": "reported",
       "gravity_environment": "microgravity",
       "gravity_g": 1e-06,
       "flow_velocity_cm_s": 20,
@@ -308,13 +308,13 @@
         "spread_rate_mm_s": null,
         "note": "1-g spread rate reported as 'Acceleratory' (no constant rate)"
       },
-      "notes": "Material cell empty in source; flat PMMA inferred from investigation approach. Flames anchored at base (note 4). Burn time 900 s. Pressure assumed ISS cabin nominal (~101.3 kPa); not stated in PSI-99 files.",
+      "notes": "Flat PMMA slab 10 mm (material cell empty in PSI CSV; confirmed by literature). Flame ~9.5 cm, anchored at base (regression 0.01-0.04 mm/s). Burn time 900 s, 97 W / 30 s. Flow 20 cm/s (200 mm/s). Pressure: 100 kPa reported for Saffire II in Thomsen et al. 2020 (abstract) and Urban/Ferkul ICES-2021 Table 2 (rounded values; no test-specific sensor trace found).",
       "source": {
         "file": "PSI-99_Experimental table_SAFFIRE-2.csv",
         "locator": "row Sample Number = 2-9"
       },
-      "confidence": "medium",
-      "needs_review": true
+      "confidence": "high",
+      "needs_review": false
     }
   ],
   "sources": [
@@ -329,11 +329,23 @@
     {
       "file": "PSI-99_Raw Data_SAFFIRE-II Operations.pdf",
       "url": null
+    },
+    {
+      "file": "Ferkul et al. 2017, Results of Large-Scale Spacecraft Flammability Tests (ICES-2017)",
+      "url": "https://ntrs.nasa.gov/citations/20170008805"
+    },
+    {
+      "file": "Thomsen et al., Buoyancy Effects on Concurrent Flame Spread Over Thick PMMA",
+      "url": "https://ntrs.nasa.gov/citations/20200000557"
+    },
+    {
+      "file": "Urban, Ferkul et al., ICES-2021-266",
+      "url": "https://ntrs.nasa.gov/citations/20210011521"
     }
   ],
   "review": {
-    "status": "draft",
+    "status": "reviewed",
     "extracted_by": "claude",
-    "reviewed_by": null
+    "reviewed_by": "claude"
   }
 }

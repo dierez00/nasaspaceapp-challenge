@@ -5,6 +5,8 @@ from atlas.experiments.domain.experiment import Experiment
 
 _TEST_COLUMNS = (
     "test_id",
+    "point_type",
+    "limit_type",
     "material",
     "material_class",
     "thickness_mm",

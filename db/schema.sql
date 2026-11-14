@@ -16,6 +16,8 @@ create table if not exists experiments (
 create table if not exists experiment_tests (
   experiment_id text not null references experiments (id) on delete cascade,
   test_id text not null,
+  point_type text not null default 'test',
+  limit_type text,
   material text not null,
   material_class text not null,
   thickness_mm double precision,
@@ -34,6 +36,10 @@ create table if not exists experiment_tests (
   needs_review boolean not null,
   primary key (experiment_id, test_id)
 );
+
+-- Columns added after the first release; keep the file idempotent.
+alter table experiment_tests add column if not exists point_type text not null default 'test';
+alter table experiment_tests add column if not exists limit_type text;
 
 -- RAG chunks of PSI documents; 1024 = Voyage default embedding size.
 create table if not exists document_chunks (

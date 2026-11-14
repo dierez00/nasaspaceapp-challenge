@@ -8,12 +8,14 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
 
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "1.1"
 
 ValueStatus = Literal["reported", "derived", "assumed"]
 GravityEnvironment = Literal["microgravity", "lunar", "martian", "partial", "normal"]
 FlowDirection = Literal["concurrent", "opposed", "quiescent", "mixed"]
 BurnOutcome = Literal["no_ignition", "no_sustained_burn", "partial_burn", "complete_burn"]
+PointType = Literal["test", "limit"]
+LimitType = Literal["radiative_extinction", "blowoff", "quenching", "minimum_oxygen"]
 MaterialClass = Literal["polymer", "fabric", "composite", "metal", "liquid", "gas", "other"]
 
 NonEmpty = Annotated[str, Field(min_length=1)]
@@ -37,6 +39,11 @@ class NormalGravityReference(Contract):
 
 class ExperimentTest(Contract):
     test_id: NonEmpty
+    point_type: PointType = Field(
+        description="test = one run as reported; limit = flammability limit the authors derived from several runs"
+    )
+    limit_type: LimitType | None
+    derived_from: list[str] = Field(description="Source run ids behind a limit; empty for a test")
     material: NonEmpty
     material_class: MaterialClass
     thickness_mm: Annotated[float, Field(gt=0)] | None
@@ -66,6 +73,8 @@ class ExperimentTest(Contract):
     def assumed_values_need_review(self) -> "ExperimentTest":
         if "assumed" in (self.o2_status, self.pressure_status) and not self.needs_review:
             raise ValueError("assumed O2 or pressure requires needs_review = true")
+        if (self.point_type == "limit") != (self.limit_type is not None):
+            raise ValueError("limit_type is required for limits and must be null for tests")
         return self
 
 
@@ -81,7 +90,7 @@ class Review(Contract):
 
 
 class Experiment(Contract):
-    schema_version: Literal["1.0"]
+    schema_version: Literal["1.1"]
     id: Annotated[str, Field(pattern=r"^PSI-\d+$")]
     title: NonEmpty
     acronym: str | None

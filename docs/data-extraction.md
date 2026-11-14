@@ -17,7 +17,10 @@ La fuente de verdad es el modelo Pydantic [`experiment.py`](../src/atlas/experim
 
 | Campo de `tests[]` | Tipo | Regla |
 | --- | --- | --- |
-| `test_id` | string | ID tal como aparece en la fuente (`"2-1"`) |
+| `test_id` | string | ID tal como aparece en la fuente (`"2-1"`); para límites, un ID corto propio |
+| `point_type` | enum | `test` = una prueba tal como se reporta; `limit` = límite de inflamabilidad que los autores derivan de varias pruebas |
+| `limit_type` | enum \| null | Solo para `limit`: `radiative_extinction`, `blowoff`, `quenching`, `minimum_oxygen` |
+| `derived_from` | string[] | Pruebas de origen de un límite (p. ej. `["B1","B3"]`); vacío para `test` |
 | `material` / `material_class` | string / enum | `polymer`, `fabric`, `composite`, `metal`, `liquid`, `gas`, `other` |
 | `thickness_mm` | number \| null | Convertir a mm |
 | `o2_percent` | number | Fracción molar en %; si hay rango, usar el punto medio y llenar `o2_percent_range` |
@@ -59,11 +62,14 @@ Pega este prompt en Claude junto con la tabla experimental (CSV), el JSON de la 
 ````text
 Eres un asistente de extracción de datos de combustión de NASA PSI. Convierte la
 investigación adjunta en UN objeto JSON que cumpla exactamente este contrato
-(schema_version "1.0"). Usa como referencia de estilo el ejemplo PSI-99 adjunto.
+(schema_version "1.1"). Usa como referencia de estilo el ejemplo PSI-99 adjunto.
 
 Reglas:
-1. Un elemento en `tests[]` por cada muestra o corrida con condiciones propias.
-   Ignora filas que no son pruebas (calibración, visualización de flujo, notas).
+1. Un elemento en `tests[]` por cada muestra o corrida con condiciones propias
+   (point_type "test"). Si la fuente no da el resultado de cada corrida pero sí
+   límites de inflamabilidad (velocidad de extinción, blowoff, O2 mínimo), captura
+   cada límite como point_type "limit" con su limit_type y las corridas de origen
+   en derived_from. Ignora filas que no son pruebas (calibración, visualización).
 2. Copia los valores de la fuente; no inventes. Si falta un valor opcional, usa null.
 3. Normaliza unidades: espesor en mm, presión en kPa (1 atm = 101.3, 1 psi = 6.895),
    O2 en % molar, velocidad de flujo en cm/s, tasa de propagación en mm/s.

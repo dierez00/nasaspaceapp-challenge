@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "id": "PSI-99",
   "title": "Spacecraft Fire Experiment-II",
   "acronym": "SAFFIRE-II",
@@ -15,6 +15,9 @@
   "tests": [
     {
       "test_id": "2-1",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Silicone",
       "material_class": "polymer",
       "thickness_mm": 0.27,
@@ -45,6 +48,9 @@
     },
     {
       "test_id": "2-2",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Silicone",
       "material_class": "polymer",
       "thickness_mm": 0.61,
@@ -75,6 +81,9 @@
     },
     {
       "test_id": "2-3",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Silicone",
       "material_class": "polymer",
       "thickness_mm": 1.03,
@@ -105,6 +114,9 @@
     },
     {
       "test_id": "2-4",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Silicone",
       "material_class": "polymer",
       "thickness_mm": 0.37,
@@ -135,6 +147,9 @@
     },
     {
       "test_id": "2-5",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Cotton-Fiberglass (SIBAL)",
       "material_class": "fabric",
       "thickness_mm": 0.37,
@@ -165,6 +180,9 @@
     },
     {
       "test_id": "2-6",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "Cotton-Fiberglass (SIBAL)",
       "material_class": "fabric",
       "thickness_mm": 0.37,
@@ -195,6 +213,9 @@
     },
     {
       "test_id": "2-7",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "PMMA & Nomex",
       "material_class": "composite",
       "thickness_mm": null,
@@ -225,6 +246,9 @@
     },
     {
       "test_id": "2-8",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "PMMA (structured)",
       "material_class": "polymer",
       "thickness_mm": null,
@@ -258,6 +282,9 @@
     },
     {
       "test_id": "2-9",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
       "material": "PMMA (flat)",
       "material_class": "polymer",
       "thickness_mm": 10,

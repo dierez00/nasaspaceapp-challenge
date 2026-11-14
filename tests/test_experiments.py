@@ -38,3 +38,13 @@ def test_file_name_must_match_id(tmp_path):
 
     assert not result.ok
     assert "does not match" in result.issues[0]
+
+
+def test_limits_require_a_limit_type_and_tests_forbid_it():
+    record = json.loads((DATA_DIR / "PSI-99.json").read_text(encoding="utf-8"))
+    as_limit = {**record["tests"][0], "point_type": "limit"}
+
+    with pytest.raises(ValidationError, match="limit_type"):
+        ExperimentTest.model_validate(as_limit)
+
+    ExperimentTest.model_validate({**as_limit, "limit_type": "blowoff"})

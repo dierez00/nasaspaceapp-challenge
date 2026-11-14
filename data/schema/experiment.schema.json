@@ -8,6 +8,40 @@
           "title": "Test Id",
           "type": "string"
         },
+        "point_type": {
+          "description": "test = one run as reported; limit = flammability limit the authors derived from several runs",
+          "enum": [
+            "test",
+            "limit"
+          ],
+          "title": "Point Type",
+          "type": "string"
+        },
+        "limit_type": {
+          "anyOf": [
+            {
+              "enum": [
+                "radiative_extinction",
+                "blowoff",
+                "quenching",
+                "minimum_oxygen"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Limit Type"
+        },
+        "derived_from": {
+          "description": "Source run ids behind a limit; empty for a test",
+          "items": {
+            "type": "string"
+          },
+          "title": "Derived From",
+          "type": "array"
+        },
         "material": {
           "minLength": 1,
           "title": "Material",
@@ -210,6 +244,9 @@
       },
       "required": [
         "test_id",
+        "point_type",
+        "limit_type",
+        "derived_from",
         "material",
         "material_class",
         "thickness_mm",
@@ -372,7 +409,7 @@
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": "1.0",
+      "const": "1.1",
       "title": "Schema Version",
       "type": "string"
     },

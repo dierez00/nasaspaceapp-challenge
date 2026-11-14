@@ -1,0 +1,193 @@
+[
+  {
+    "source": {
+      "file": "PSI-159_Experimental table_CFI-G_Normal Flames.csv",
+      "locator": "CSV row 37, Test = 21106 F2"
+    },
+    "reason": "Hot ignition = No, but burn duration and termination are missing. Direct cool ignition may have been attempted; the available table and daily log do not establish the overall combustion outcome.",
+    "row": {
+      "Flame Type": "Normal",
+      "Day": "3",
+      "Fuel": "50% butane",
+      "Test": "21106 F2",
+      "Cool flame?": "",
+      " XO2 before test": "0.35424096",
+      "XO2  after test": "0.35424096",
+      "approx p (bar)": "0.50665",
+      "Xf": "0.5",
+      "mHC (mg/s)": "0.8",
+      "TFP": "No",
+      "Tad (K)": "2635.478932",
+      "Zst": "0.137580333",
+      "Hot ignition": "No",
+      "burn time (sec)": "",
+      "Self-ext or flow term": "-",
+      "Peak burner T (C )": "-",
+      "Comments": "direct cool - no hot ignition"
+    }
+  },
+  {
+    "source": {
+      "file": "PSI-159_Experimental table_CFI-G_Normal Flames.csv",
+      "locator": "CSV row 40, Test = 21106 F5"
+    },
+    "reason": "Hot ignition = No, but burn duration and termination are missing. Direct cool ignition may have been attempted; the available table and daily log do not establish the overall combustion outcome.",
+    "row": {
+      "Flame Type": "Normal",
+      "Day": "3",
+      "Fuel": "50% butane",
+      "Test": "21106 F5",
+      "Cool flame?": "",
+      " XO2 before test": "0.352937762",
+      "XO2  after test": "0.352937762",
+      "approx p (bar)": "0.50665",
+      "Xf": "0.5",
+      "mHC (mg/s)": "0.5",
+      "TFP": "No",
+      "Tad (K)": "2633.344646",
+      "Zst": "0.1371645",
+      "Hot ignition": "No",
+      "burn time (sec)": "",
+      "Self-ext or flow term": "-",
+      "Peak burner T (C )": "-",
+      "Comments": "direct cool - no hot ignition"
+    }
+  },
+  {
+    "source": {
+      "file": "PSI-159_Experimental table_CFI-G_Normal Flames.csv",
+      "locator": "CSV row 44, Test = 21106 H1"
+    },
+    "reason": "Hot ignition = No, but burn duration and termination are missing. Direct cool ignition may have been attempted; the available table and daily log do not establish the overall combustion outcome.",
+    "row": {
+      "Flame Type": "Normal",
+      "Day": "3",
+      "Fuel": "50% butane",
+      "Test": "21106 H1",
+      "Cool flame?": "",
+      " XO2 before test": "0.206694811",
+      "XO2  after test": "0.206694811",
+      "approx p (bar)": "0.50665",
+      "Xf": "0.5",
+      "mHC (mg/s)": "0.8",
+      "TFP": "No",
+      "Tad (K)": "2219.09339",
+      "Zst": "0.086741882",
+      "Hot ignition": "No",
+      "burn time (sec)": "",
+      "Self-ext or flow term": "-",
+      "Peak burner T (C )": "-",
+      "Comments": ""
+    }
+  },
+  {
+    "source": {
+      "file": "PSI-159_Experimental table_CFI-G_Normal Flames.csv",
+      "locator": "CSV row 45, Test = 21106 H2"
+    },
+    "reason": "Hot ignition = No, but burn duration and termination are missing. Direct cool ignition may have been attempted; the available table and daily log do not establish the overall combustion outcome.",
+    "row": {
+      "Flame Type": "Normal",
+      "Day": "3",
+      "Fuel": "50% butane",
+      "Test": "21106 H2",
+      "Cool flame?": "",
+      " XO2 before test": "0.206694811",
+      "XO2  after test": "0.206694811",
+      "approx p (bar)": "0.50665",
+      "Xf": "0.5",
+      "mHC (mg/s)": "0.8",
+      "TFP": "No",
+      "Tad (K)": "2219.09339",
+      "Zst": "0.086741882",
+      "Hot ignition": "No",
+      "burn time (sec)": "",
+      "Self-ext or flow term": "-",
+      "Peak burner T (C )": "-",
+      "Comments": ""
+    }
+  },
+  {
+    "source": {
+      "file": "PSI-159_Experimental table_CFI-G_Normal Flames.csv",
+      "locator": "CSV row 69, Test = 21125 A4"
+    },
+    "reason": "Zero fuel fraction and zero hydrocarbon flow; excluded as a non-combustion condition rather than a material flammability failure.",
+    "row": {
+      "Flame Type": "Normal",
+      "Day": "5",
+      "Fuel": "30% butane",
+      "Test": "21125 A4",
+      "Cool flame?": "",
+      " XO2 before test": "0.394118729",
+      "XO2  after test": "0.394118729",
+      "approx p (bar)": "1.0133",
+      "Xf": "0",
+      "mHC (mg/s)": "0",
+      "TFP": "No",
+      "Tad (K)": "#DIV/0!",
+      "Zst": "#DIV/0!",
+      "Hot ignition": "No",
+      "burn time (sec)": "0",
+      "Self-ext or flow term": "-",
+      "Peak burner T (C )": "-",
+      "Comments": ""
+    }
+  },
+  {
+    "source": {
+      "file": "PSI-159_Experimental table_CFI-G_Normal Flames.csv",
+      "locator": "CSV row 77, Test = 21125 H3"
+    },
+    "reason": "Zero fuel fraction and zero hydrocarbon flow; excluded as a non-combustion condition rather than a material flammability failure.",
+    "row": {
+      "Flame Type": "Normal",
+      "Day": "5",
+      "Fuel": "30% butane",
+      "Test": "21125 H3",
+      "Cool flame?": "",
+      " XO2 before test": "0.394118729",
+      "XO2  after test": "0.394118729",
+      "approx p (bar)": "1.0133",
+      "Xf": "0",
+      "mHC (mg/s)": "0",
+      "TFP": "No",
+      "Tad (K)": "#DIV/0!",
+      "Zst": "#DIV/0!",
+      "Hot ignition": "No",
+      "burn time (sec)": "0",
+      "Self-ext or flow term": "-",
+      "Peak burner T (C )": "-",
+      "Comments": ""
+    }
+  },
+  {
+    "source": {
+      "file": "PSI-159_Experimental table_CFI-G_Inverse Flames.csv",
+      "locator": "CSV row 31, Test = 21209 A2"
+    },
+    "reason": "Aborted run; absence of ignition is not evidence of a completed ignition test.",
+    "row": {
+      "Flame Type": "Inverse",
+      "Day": "3",
+      "Fuel": "ethane",
+      "Test": "21209 A2",
+      "Xf  before test": "0.238982459",
+      "Xf  after test": "0.238982459",
+      "approx p (bar)": "0.55165",
+      "XO2": "0.85",
+      "HC burnrate (mg/s)": "2.435",
+      "O2 flow rate (mg/s)": "9.069164383",
+      "TFP": "No",
+      "Tad (K)": "2819.838789",
+      "Zst": "0.47984081",
+      "Hot ignition": "No",
+      "burn time (sec)": "0",
+      "Self -ext or flow term": "-",
+      "Peak burner Temp (C)": "25.7",
+      "Peak burner temp (K)": "298.85",
+      "Color": "-",
+      "Comments": "Aborted"
+    }
+  }
+]

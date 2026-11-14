@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Profile {
+  id            String             @id @db.Uuid
+  fullName      String?            @map("full_name")
+  createdAt     DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime           @default(now()) @map("updated_at") @db.Timestamptz(6)
+  platformAdmin PlatformAdmin?
+  memberships   TenantMembership[]
+
+  @@map("profiles")
+}
+
+model Tenant {
+  id          String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  slug        String             @unique
+  createdAt   DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime           @default(now()) @map("updated_at") @db.Timestamptz(6)
+  memberships TenantMembership[]
+
+  @@map("tenants")
+}
+
+model TenantMembership {
+  tenantId  String     @map("tenant_id") @db.Uuid
+  userId    String     @map("user_id") @db.Uuid
+  role      TenantRole @default(member)
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  tenant    Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user      Profile    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([tenantId, userId])
+  @@index([userId])
+  @@map("tenant_memberships")
+}
+
+model PlatformAdmin {
+  userId    String   @id @map("user_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  user      Profile  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("platform_admins")
+}
+
+enum TenantRole {
+  owner
+  admin
+  member
+
+  @@map("tenant_role")
+}

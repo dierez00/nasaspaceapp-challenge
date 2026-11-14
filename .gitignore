@@ -1,0 +1,29 @@
+# dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Supabase local state
+supabase/.branches/
+supabase/.temp/
+
+# generated Prisma client
+src/generated/prisma/
+
+# tests and tooling
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+
+# editor / OS
+.DS_Store
+.idea/
+.vscode/

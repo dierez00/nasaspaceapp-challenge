@@ -1,0 +1,2 @@
+-- Intentionally empty: never seed production identities or student data.
+-- Create local users through Supabase Auth, then promote one explicitly if needed.

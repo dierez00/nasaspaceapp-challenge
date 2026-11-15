@@ -1,101 +1,101 @@
-# Atlas del Fuego Lunar
+# Lunar Fire Atlas (Atlas del Fuego Lunar)
 
-**¿Cómo arde el fuego en la Luna? Nadie lo ha medido todavía.** El Atlas reúne lo que NASA sí sabe sobre combustión fuera de la Tierra, lo vuelve explorable y señala con precisión qué falta por investigar antes de habitar la superficie lunar.
+**How does fire burn on the Moon? Nobody has measured it yet.** The Atlas gathers what NASA does know about combustion beyond Earth, makes it explorable, and pinpoints what still needs to be studied before we live on the lunar surface.
 
-Proyecto para el **NASA Space Apps Challenge 2026**.
+A project for the **NASA Space Apps Challenge 2026**. The interface is in Spanish.
 
-## El problema
+## The problem
 
-Un hábitat lunar opera con una atmósfera distinta a la de la Tierra (más oxígeno, menos presión) y con una sexta parte de la gravedad. Las tres variables cambian cómo se enciende, se propaga y se apaga una llama, y por lo tanto el riesgo de incendio.
+A lunar habitat runs on an atmosphere unlike Earth's (more oxygen, lower pressure) under one sixth of Earth's gravity. All three variables change how a flame ignites, spreads and goes out, and therefore the fire risk.
 
-NASA tiene décadas de experimentos de combustión en el repositorio **Physical Sciences Informatics (PSI)**, pero la evidencia está repartida en tablas, reportes y presentaciones de cada investigación. Para responder una pregunta concreta, como _¿qué materiales se apagaron con 30 % de O₂ a baja presión?_, hay que leer y cruzar varios documentos a mano.
+NASA holds decades of combustion experiments in its **Physical Sciences Informatics (PSI)** repository, but the evidence is scattered across the tables, reports and slides of each investigation. Answering a concrete question, such as _which materials went out at 30% O₂ and low pressure?_, means reading and cross-checking several documents by hand.
 
-## Nuestra solución
+## Our solution
 
-Una sola herramienta con tres piezas que trabajan juntas:
+One tool with three pieces that work together:
 
-| Pieza                          | Qué permite hacer                                                                                                                                |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Laboratorio comparativo 3D** | Elegir material, oxígeno y presión, y ver la misma llama en microgravedad, gravedad lunar y terrestre, lado a lado.                              |
-| **Mapa de evidencias**         | Ubicar cada ensayo real de NASA en el espacio oxígeno × presión, filtrarlo por gravedad y abrir su fuente original.                              |
-| **Copiloto de investigación**  | Preguntar en lenguaje natural y recibir un _evidence brief_: veredicto, tabla de ensayos, citas exactas, huecos de evidencia y siguientes pasos. |
+| Piece                         | What it lets you do                                                                                                           |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **3D comparative laboratory** | Pick a material, oxygen and pressure, and watch the same flame in microgravity, lunar gravity and Earth gravity side by side. |
+| **Evidence map**              | Place every real NASA trial in the oxygen × pressure space, filter it by gravity and open its original source.                |
+| **Research copilot**          | Ask in natural language and get an _evidence brief_: verdict, trial table, exact citations, evidence gaps and next steps.     |
 
-### Recorrido de un minuto
+### One-minute walkthrough
 
-1. Entra al laboratorio y sube el oxígeno: la llama cambia de forma en cada gravedad.
-2. Pasa al mapa: aparecen los ensayos reales cercanos a esas condiciones, con su resultado (ignición o extinción).
-3. Cambia a gravedad lunar: el mapa queda vacío. **Ese hueco es el hallazgo.**
-4. Pregunta al copiloto qué se sabe de esas condiciones: responde con datos y citas de NASA y propone qué experimento haría falta.
+1. Open the laboratory and raise the oxygen: the flame changes shape in each gravity.
+2. Switch to the map: the real trials near those conditions appear, with their outcome (ignition or extinction).
+3. Switch to lunar gravity: the map is empty. **That gap is the finding.**
+4. Ask the copilot what is known about those conditions: it answers with NASA data and citations and proposes the experiment that is missing.
 
-## Datos de NASA
+## NASA data
 
-Usamos **13 investigaciones del repositorio NASA PSI** realizadas en la Estación Espacial Internacional y en naves Cygnus. De sus tablas experimentales salen **1,115 observaciones** (cada una con material, O₂, presión, gravedad y resultado), y de sus reportes, **1,283 fragmentos** de texto para buscar y citar.
+We use **13 investigations from the NASA PSI repository**, flown on the International Space Station and on Cygnus spacecraft. Their experimental tables yield **1,115 observations** (each with material, O₂, pressure, gravity and outcome), and their reports yield **1,283 text chunks** to search and cite.
 
-| Investigación                | Plataforma                                   | Observaciones |
-| ---------------------------- | -------------------------------------------- | ------------: |
-| ACME CFI-G (PSI-159)         | ISS, Combustion Integrated Rack              |           326 |
-| FLEX (PSI-69)                | ISS, Multi-user Droplet Combustion Apparatus |           274 |
-| CFI (PSI-39)                 | ISS, Multi-user Droplet Combustion Apparatus |           227 |
-| SAME-R (PSI-101)             | ISS                                          |           109 |
-| SAME (PSI-102)               | ISS                                          |            47 |
-| ACME BRE (PSI-20)            | ISS, Combustion Integrated Rack              |            43 |
-| ACME E-FIELD Flames (PSI-22) | ISS, Combustion Integrated Rack              |            28 |
-| BASS-II (PSI-25)             | ISS, Microgravity Science Glovebox           |            26 |
-| BASS (PSI-26)                | ISS, Microgravity Science Glovebox           |            14 |
-| SAFFIRE-II (PSI-99)          | Nave Cygnus                                  |             9 |
-| FLEX-2 (PSI-68)              | ISS, Multi-user Droplet Combustion Apparatus |             8 |
-| SAFFIRE-III (PSI-100)        | Nave Cygnus                                  |             2 |
-| SAFFIRE-I (PSI-98)           | Nave Cygnus                                  |             2 |
+| Investigation                | Platform                                     | Observations |
+| ---------------------------- | -------------------------------------------- | -----------: |
+| ACME CFI-G (PSI-159)         | ISS, Combustion Integrated Rack              |          326 |
+| FLEX (PSI-69)                | ISS, Multi-user Droplet Combustion Apparatus |          274 |
+| CFI (PSI-39)                 | ISS, Multi-user Droplet Combustion Apparatus |          227 |
+| SAME-R (PSI-101)             | ISS                                          |          109 |
+| SAME (PSI-102)               | ISS                                          |           47 |
+| ACME BRE (PSI-20)            | ISS, Combustion Integrated Rack              |           43 |
+| ACME E-FIELD Flames (PSI-22) | ISS, Combustion Integrated Rack              |           28 |
+| BASS-II (PSI-25)             | ISS, Microgravity Science Glovebox           |           26 |
+| BASS (PSI-26)                | ISS, Microgravity Science Glovebox           |           14 |
+| SAFFIRE-II (PSI-99)          | Cygnus spacecraft                            |            9 |
+| FLEX-2 (PSI-68)              | ISS, Multi-user Droplet Combustion Apparatus |            8 |
+| SAFFIRE-III (PSI-100)        | Cygnus spacecraft                            |            2 |
+| SAFFIRE-I (PSI-98)           | Cygnus spacecraft                            |            2 |
 
-_Fuente: [NASA PSI](https://psi.nasa.gov/physci/repo/). Los conteos salen de `data/experiments/` y el de fragmentos de la indexación (`atlas-index`), ambos en la rama [`backend`](../../tree/backend). Las tablas originales se conservan sin cambios en `data/raw/`._
+_Source: [NASA PSI](https://psi.nasa.gov/physci/repo/). Counts come from `data/experiments/` and the chunk count from indexing (`atlas-index`), both on the [`backend`](../../tree/backend) branch. The original tables are kept unchanged in `data/raw/`._
 
-### El hallazgo: un hueco de evidencia lunar
+### The finding: a lunar evidence gap
 
-**Las 1,115 observaciones son en microgravedad; ninguna en gravedad lunar.** El Atlas compara la evidencia con condiciones de referencia de misión, cada una con su fuente (atmósfera de exploración de NASA para hábitats lunares y marcianos, traje EVA lunar y cabina de la ISS), y marca dónde no hay ensayos. Para un hábitat lunar no faltan datos de oxígeno y presión: falta medir el efecto de la gravedad parcial.
+**All 1,115 observations were made in microgravity; none in lunar gravity.** The Atlas compares the evidence with mission reference conditions, each with its own source (NASA's exploration atmosphere for lunar and Martian habitats, the lunar EVA suit and the ISS cabin), and marks where there are no trials. For a lunar habitat, oxygen and pressure data are not what is missing: the effect of partial gravity has yet to be measured.
 
-## Cómo usamos la IA
+## How we use AI
 
-| Etapa      | Herramienta                          | Para qué                                                                                                                                         |
-| ---------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Extracción | Claude                               | Pasar las tablas y reportes de PSI a un formato común, validado con Pydantic y revisado por el equipo.                                           |
-| Búsqueda   | Voyage AI (`voyage-4`, `rerank-2.5`) | Vectorizar los fragmentos de los reportes y ordenar los resultados por relevancia.                                                               |
-| Respuestas | Sistema multiagente con Claude       | Un clasificador entiende la pregunta; un analista filtra los ensayos y un investigador busca citas en paralelo; un compositor arma la respuesta. |
+| Stage      | Tool                                 | Purpose                                                                                                                                             |
+| ---------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Extraction | Claude                               | Turn PSI tables and reports into a common format, validated with Pydantic and reviewed by the team.                                                 |
+| Search     | Voyage AI (`voyage-4`, `rerank-2.5`) | Embed the report chunks and rank results by relevance.                                                                                              |
+| Answers    | Multi-agent system with Claude       | A classifier reads the question; an analyst filters the trials while a researcher looks for citations in parallel; a composer assembles the answer. |
 
-**Los números no los inventa la IA.** Los filtros y cálculos se hacen en Python sobre los datos de NASA, y una capa de verificación sin IA compara cada cifra, tabla y cita de la respuesta contra lo que realmente devolvieron las consultas. Lo que no coincide se descarta. Si los agentes fallan, la respuesta se arma con reglas fijas.
+**The AI does not make up the numbers.** Filters and calculations run in Python over NASA's data, and a verification layer with no AI checks every figure, table and citation in the answer against what the queries actually returned. Anything that does not match is dropped. If the agents fail, the answer is built from fixed rules.
 
-## Rigor científico
+## Scientific rigor
 
-- **El laboratorio ilustra, no predice.** Las llamas muestran tendencias cualitativas de la física (difusión en microgravedad, convección con gravedad); no son un modelo de combustión validado, y la interfaz las marca como ilustrativas.
-- **Toda evidencia es trazable.** Cada punto del mapa y cada cita lleva a la investigación, el archivo y la sección de origen en PSI.
-- **Sin datos alterados.** Los ensayos fuera del rango visible del mapa (0–16 psi, 18–50 % O₂) se omiten en lugar de moverse al borde, y la API reporta cuántos quedaron fuera.
-- **Los datos de demostración se distinguen.** El modo sin backend usa ensayos sintéticos marcados como tales.
+- **The laboratory illustrates; it does not predict.** The flames show qualitative physical trends (diffusion in microgravity, convection under gravity); they are not a validated combustion model, and the interface labels them as illustrative.
+- **All evidence is traceable.** Every map point and citation links to its source investigation, file and section in PSI.
+- **No altered data.** Trials outside the map's visible range (0–16 psi, 18–50% O₂) are left out rather than clamped to the edge, and the API reports how many were left out.
+- **Demo data is labeled.** The no-backend mode uses synthetic trials marked as such.
 
-## Arquitectura
+## Architecture
 
 ```mermaid
 flowchart LR
-  U[Navegador] --> N["Next.js<br/>(Vercel)"]
-  N -->|catálogo| F["API FastAPI<br/>(Railway)"]
-  N -->|preguntas, streaming| F
+  U[Browser] --> N["Next.js<br/>(Vercel)"]
+  N -->|catalog| F["FastAPI<br/>(Railway)"]
+  N -->|questions, streaming| F
   F --> DB[("PostgreSQL + pgvector")]
   F --> V[Voyage AI]
-  F --> C["Agentes Claude"]
+  F --> C["Claude agents"]
 ```
 
-- El navegador solo habla con Next.js; las rutas de servidor consultan la API, validan cada respuesta y mantienen las credenciales fuera del cliente.
-- Las respuestas del copiloto llegan en streaming (SSE): se ve el progreso de cada agente mientras trabaja.
-- Ambos lados siguen Clean Architecture por módulos (dominio, aplicación, infraestructura e interfaz), lo que permite cambiar entre datos de demostración y datos reales solo con configuración.
+- The browser only talks to Next.js; its server routes call the API, validate every response and keep credentials out of the client.
+- Copilot answers stream over SSE, so you can watch each agent's progress as it works.
+- Both sides follow a modular Clean Architecture (domain, application, infrastructure and interface), so switching between demo data and real data is just configuration.
 
-| Área          | Frontend                                      | Backend                                                      |
+| Area          | Frontend                                      | Backend                                                      |
 | ------------- | --------------------------------------------- | ------------------------------------------------------------ |
-| Lenguaje      | TypeScript                                    | Python 3.12                                                  |
+| Language      | TypeScript                                    | Python 3.12                                                  |
 | Framework     | Next.js 16, React 19                          | FastAPI                                                      |
-| Visualización | Three.js, React Three Fiber, D3, Tailwind CSS | —                                                            |
-| Animación     | GSAP, Motion, Lenis                           | —                                                            |
-| Datos e IA    | Zod                                           | PostgreSQL + pgvector, Pydantic, Claude Agent SDK, Voyage AI |
-| Pruebas       | Vitest, Playwright                            | Pytest                                                       |
+| Visualization | Three.js, React Three Fiber, D3, Tailwind CSS | —                                                            |
+| Animation     | GSAP, Motion, Lenis                           | —                                                            |
+| Data and AI   | Zod                                           | PostgreSQL + pgvector, Pydantic, Claude Agent SDK, Voyage AI |
+| Testing       | Vitest, Playwright                            | Pytest                                                       |
 
-## Probarlo localmente
+## Run it locally
 
 ```bash
 pnpm install
@@ -103,21 +103,21 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-Abre <http://localhost:3000>. Por defecto funciona sin backend, con datos de demostración. Para usar los datos reales de NASA y los agentes, sigue la [guía de despliegue](docs/deploy.md).
+Open <http://localhost:3000>. By default it runs without a backend, on demo data. To use real NASA data and the agents, follow the [deployment guide](docs/deploy.md).
 
-## Repositorio
+## Repository
 
-| Rama                            | Contenido                                  |
-| ------------------------------- | ------------------------------------------ |
-| `main`                          | Frontend: laboratorio, mapa y copiloto     |
-| [`backend`](../../tree/backend) | API, datos de NASA PSI, búsqueda y agentes |
+| Branch                          | Contents                              |
+| ------------------------------- | ------------------------------------- |
+| `main`                          | Frontend: laboratory, map and copilot |
+| [`backend`](../../tree/backend) | API, NASA PSI data, search and agents |
 
-Documentación técnica:
+Technical documentation:
 
-- [Despliegue (Vercel y Railway)](docs/deploy.md)
-- [Contratos y arquitectura del frontend](docs/atlas-frontend.md)
-- [Sistema visual](theme.md)
+- [Deployment (Vercel and Railway)](docs/deploy.md)
+- [Frontend contracts and architecture](docs/atlas-frontend.md) (Spanish)
+- [Visual system](theme.md)
 
-## Licencia
+## License
 
-Código privado; ver [LICENSE](LICENSE).
+Private code; see [LICENSE](LICENSE).

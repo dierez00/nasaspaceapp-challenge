@@ -1,24 +1,28 @@
 "use client";
-import Markdown from "react-markdown";
 import { useAtlas } from "@/modules/atlas/ui/atlas-provider";
 import { Flame } from "@/modules/atlas/ui/flame";
 import { gravityLabels, type Source } from "@/modules/atlas/domain/experiment";
+import { atlasGravity, compactColumns } from "../domain/brief";
 import { useSimulation } from "@/modules/simulation/application/simulation-provider";
 import type { UIBlock } from "../domain/contracts";
+import { EvidenceBrief } from "./evidence-brief";
+import { EvidenceTable } from "./evidence-table";
+import { Prose } from "./prose";
+import "./copilot.css";
 
 export function SourceList({ sources }: { sources: Source[] }) {
   return (
     <details className="source-list">
       <summary>
-        <span>⌕ Trazabilidad documental</span>
-        <span>{sources.length.toString().padStart(2, "0")} ↗</span>
+        <span>Fuentes</span>
+        <span>{sources.length} ↗</span>
       </summary>
       {sources.length ? (
         sources.map((source, index) => (
           <article key={index}>
-            <span className="micro-label">
+            <span className="source-kind">
               {source.code} ·{" "}
-              {source.demo ? "REFERENCIA DEMOSTRATIVA" : "FUENTE"}
+              {source.demo ? "Referencia demostrativa" : "Fuente"}
             </span>
             <strong>{source.document}</strong>
             <small>{source.section}</small>
@@ -42,7 +46,7 @@ export function GravityBounds({ explanation }: { explanation: string }) {
   return (
     <article className="immersive-card">
       <div className="card-kicker">
-        <span>EXPLORACIÓN EN TRES GRAVEDADES</span>
+        <span>Tres gravedades</span>
         <span>↗</span>
       </div>
       <h3>Entra en la cámara.</h3>
@@ -71,9 +75,61 @@ export function GravityBounds({ explanation }: { explanation: string }) {
     </article>
   );
 }
+function MapFocus({
+  block,
+}: {
+  block: Extract<UIBlock, { type: "MapFocus" }>;
+}) {
+  const { dispatch, highlightExperiments } = useAtlas();
+  return (
+    <article className="generative-card map-focus">
+      <h3>{block.title}</h3>
+      {block.note && <p>{block.note}</p>}
+      <button
+        type="button"
+        className="brief-button"
+        onClick={() => {
+          dispatch({
+            type: "gravity",
+            gravity: atlasGravity(block.gravity) ?? "all",
+          });
+          if (block.experimentIds.length)
+            highlightExperiments(block.experimentIds);
+          else dispatch({ type: "view", view: "map" });
+        }}
+      >
+        Ver en el mapa
+      </button>
+    </article>
+  );
+}
 export function BlockRenderer({ block }: { block: UIBlock }) {
   const { experiments, state } = useAtlas();
   const { load } = useSimulation();
+  if (block.type === "EvidenceBrief") return <EvidenceBrief block={block} />;
+  if (block.type === "DataTable")
+    return (
+      <article className="generative-card data-table">
+        <h3>{block.title}</h3>
+        <EvidenceTable
+          title={block.title}
+          columns={block.columns}
+          rows={block.rows}
+          visible={compactColumns(block.columns)}
+        />
+      </article>
+    );
+  if (block.type === "Notice")
+    return (
+      <aside className={`notice-card is-${block.level}`}>
+        <span className="label">
+          {block.level === "warning" ? "Ten en cuenta" : "Nota"}
+        </span>
+        <p>{block.message}</p>
+      </aside>
+    );
+  if (block.type === "Narrative") return <Prose markdown={block.markdown} />;
+  if (block.type === "MapFocus") return <MapFocus block={block} />;
   if (block.type === "GravityBounds")
     return <GravityBounds explanation={block.explanation} />;
   if (block.type === "SourceList")
@@ -81,8 +137,7 @@ export function BlockRenderer({ block }: { block: UIBlock }) {
   if (block.type === "FallbackCard")
     return (
       <article className="generative-card fallback-card">
-        <span className="micro-label">RESPUESTA DE RESPALDO</span>
-        <Markdown skipHtml>{block.markdown}</Markdown>
+        <Prose markdown={block.markdown} />
         {block.sources.length > 0 && <SourceList sources={block.sources} />}
       </article>
     );
@@ -105,7 +160,7 @@ export function BlockRenderer({ block }: { block: UIBlock }) {
           <div className="card-kicker">
             <span>{experiment.id}</span>
             <span>
-              {experiment.provenance === "demo" ? "DEMO" : "VERIFICADO"}
+              {experiment.provenance === "demo" ? "Demo" : "Verificado"}
             </span>
           </div>
           <h3>{experiment.material}</h3>
@@ -135,7 +190,7 @@ export function BlockRenderer({ block }: { block: UIBlock }) {
   return (
     <article className="immersive-card">
       <div className="card-kicker">
-        <span>COMPARACIÓN INMERSIVA</span>
+        <span>Comparación</span>
         <span>A / B</span>
       </div>
       <h3>Dos llamas. Un mismo instante.</h3>

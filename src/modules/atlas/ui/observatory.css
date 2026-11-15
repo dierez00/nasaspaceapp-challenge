@@ -1,0 +1,491 @@
+/* Observatory workspace: the instrument stays dark; evidence gets reading light. */
+.dark-instrument {
+  --ink: #edf3fc;
+  --slate: #a9bad2;
+  --instrument-white: #101d31;
+  --surface-sunken: #15253c;
+  --moon-dust: #233650;
+  --nasa-blue: #9bc2ff;
+  --nasa-blue-tint: #1b3150;
+  --line: rgba(190, 211, 240, 0.12);
+  --line-strong: rgba(190, 211, 240, 0.28);
+  --flame-orange-ink: #ffb394;
+  --safe-emerald-ink: #75dec0;
+  color: var(--ink);
+  color-scheme: dark;
+}
+.evidence-paper {
+  --ink: #142237;
+  --slate: #485a70;
+  --instrument-white: #f3f5f8;
+  --surface-sunken: #e6ebf2;
+  --moon-dust: #dfe6f0;
+  --nasa-blue: #174e99;
+  --nasa-blue-tint: #e2eaf6;
+  --line: rgba(14, 23, 38, 0.1);
+  --line-strong: rgba(14, 23, 38, 0.2);
+  --flame-orange-ink: #ac3c18;
+  --safe-emerald-ink: #036d4b;
+  color: var(--ink);
+  color-scheme: light;
+  background: var(--instrument-white);
+}
+.atlas-app .laboratory,
+.atlas-app .camera-panel {
+  background: #0d192b;
+  border: 1px solid var(--console-line);
+  box-shadow: 0 18px 40px -22px #000;
+}
+.atlas-topbar {
+  margin-bottom: 0;
+  background: #0d192b;
+  box-shadow: none;
+}
+.atlas-mark {
+  display: block;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+.atlas-app .brand-mark {
+  width: 40px;
+  height: 40px;
+}
+.workspace-context {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 20px;
+  min-height: 78px;
+  padding: 12px 24px;
+  color: var(--console-text);
+}
+.workspace-context p {
+  flex: 1;
+  color: var(--console-text);
+  font: 500 var(--text-sm) var(--font-data);
+}
+.workspace-context p span {
+  color: var(--console-muted);
+}
+.workspace-lens {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--console-muted);
+  font-size: var(--text-sm);
+}
+.workspace-lens select {
+  border: 1px solid var(--console-line-strong);
+  border-radius: 10px;
+  min-height: 40px;
+  padding: 0 12px;
+  color: var(--console-text);
+  background: #14243a;
+  color-scheme: dark;
+}
+.assistant-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--console-line-strong);
+  border-radius: var(--radius-pill);
+  background: #162b46;
+  color: var(--console-text);
+}
+.assistant-toggle .atlas-mark {
+  width: 24px;
+  height: 24px;
+}
+.assistant-toggle[aria-expanded="true"] {
+  background: #27496e;
+}
+.workspace-context :is(button, select):focus-visible {
+  outline-color: var(--console-focus);
+}
+.atlas-app .atlas-split {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  padding: 0 24px 24px;
+}
+.atlas-app[data-assistant-open="true"] .atlas-split {
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 380px);
+}
+.copilot-panel[hidden] {
+  display: none !important;
+}
+.atlas-app .copilot-panel {
+  background: var(--instrument-white);
+  border: 0;
+  box-shadow: none;
+}
+.copilot-heading {
+  border-bottom: 1px solid var(--line);
+}
+.copilot-heading .copilot-icon {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  color: var(--nasa-blue);
+}
+.copilot-icon .atlas-mark {
+  width: 32px;
+  height: 32px;
+}
+.assistant-label .atlas-mark {
+  width: 22px;
+  height: 22px;
+}
+.close-evidence {
+  margin-left: auto;
+  min-height: 40px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 10px;
+  color: var(--nasa-blue);
+  background: var(--surface-sunken);
+}
+.copilot-heading h2 {
+  font-size: var(--text-base);
+}
+.generated-blocks > div {
+  animation: none;
+}
+.atlas-app .lab-heading h2 {
+  color: var(--ink);
+}
+.atlas-app .lab-window {
+  min-height: 280px;
+  flex: 1 0 340px;
+  background: #243b58;
+  padding: 2px;
+}
+.atlas-app .lab-window.is-three {
+  min-height: 300px;
+  flex: 1 0 340px;
+}
+.atlas-app .lab-viewport {
+  background: #070f1d;
+}
+.atlas-app .lab-playback {
+  background: #14243a;
+}
+.dark-instrument
+  :is(.play-button, .compare-toggle.enabled, .graphics-notice button) {
+  color: #0a1324;
+}
+.dark-instrument :is(.cluster, .segmented) {
+  background: var(--surface-sunken);
+}
+.dark-instrument .segmented button[aria-pressed="true"] {
+  background: #29466b;
+  color: #edf3fc;
+  box-shadow: none;
+}
+.dark-instrument .condition-value input {
+  font-size: var(--text-md);
+}
+.dark-instrument .lab-controls {
+  overflow: visible;
+}
+.dark-instrument .lab-disclaimer {
+  color: var(--slate);
+}
+.dark-instrument .lab-disclaimer strong {
+  color: var(--ink);
+}
+.dark-instrument .physics-note {
+  background: #152a43;
+}
+.dark-instrument .nearest-trials {
+  padding: 0 16px;
+  border-radius: 12px;
+  margin-top: 16px;
+}
+.dark-instrument .nearest-trials[open] {
+  padding-bottom: 16px;
+}
+.dark-instrument .graphics-notice {
+  background: #38291e;
+  color: #f7c7a5;
+}
+.dark-instrument .precision-note {
+  margin: 0 0 12px;
+  color: var(--slate);
+  font-size: var(--text-sm);
+  max-width: 86ch;
+}
+.exploration-guide {
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--text-sm);
+  color: var(--slate);
+}
+.exploration-guide summary {
+  min-height: 40px;
+  padding: 8px 0;
+  color: var(--nasa-blue);
+  font-weight: 600;
+}
+.exploration-guide p {
+  max-width: 80ch;
+  padding-bottom: 10px;
+}
+.exploration-guide > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 10px;
+}
+.exploration-guide button,
+.catalog-actions button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: #1a304b;
+  color: #d9e8ff;
+}
+.dark-instrument :is(button, select, input, summary):focus-visible {
+  outline-color: var(--console-focus);
+}
+.evidence-paper :is(button, select, input, summary):focus-visible {
+  outline-color: var(--nasa-blue);
+}
+.dark-instrument .segmented button:disabled {
+  opacity: 0.85;
+  cursor: default;
+}
+.dark-instrument .scene-bottom > span {
+  max-width: none;
+}
+.catalog-filters {
+  margin-bottom: 12px;
+  color: var(--slate);
+  font-size: var(--text-sm);
+}
+.catalog-filters summary {
+  min-height: 40px;
+  padding: 8px 0;
+  color: var(--nasa-blue);
+  font-weight: 600;
+}
+.catalog-filter-fields {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.catalog-filter-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.catalog-filter-fields :is(input, select) {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: #15253c;
+  color: var(--ink);
+}
+.catalog-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 12px;
+}
+.atlas-app .camera-heading {
+  flex-wrap: wrap;
+}
+.atlas-app .map-stage {
+  min-height: 340px;
+}
+.dark-instrument .grid-line {
+  stroke-opacity: 0.1;
+}
+.dark-instrument .manual-probe {
+  color: var(--slate);
+}
+.dark-instrument .manual-probe button {
+  background: #27496e;
+  color: #e9f2ff;
+}
+.dark-instrument .map-empty {
+  color: var(--slate);
+  padding: 12px;
+  background: #15253c;
+  border-radius: 10px;
+}
+.dark-instrument .probe-readout,
+.dark-instrument .probe-notice {
+  background: #1a304b;
+}
+.dark-instrument .gap-region {
+  stroke: #aacaff;
+}
+.dark-instrument .experiment-node:focus-visible > circle:first-of-type {
+  stroke: #cee1ff;
+}
+.atlas-app :is(.laser-scan, .node-pulse) {
+  animation: none;
+}
+@media (hover: hover) {
+  .dark-instrument .segmented button[aria-pressed="false"]:hover {
+    background: #243b58;
+    color: #fff;
+  }
+  .dark-instrument .compare-toggle:not(.enabled):hover {
+    background: #243b58;
+  }
+}
+@media (max-width: 1279px) {
+  .atlas-brand span {
+    max-width: 170px;
+    white-space: normal;
+    font-size: 13px;
+  }
+  .atlas-app .atlas-topbar {
+    gap: 12px;
+  }
+  .atlas-app .demo-indicator {
+    padding: 0 10px;
+  }
+}
+@media (min-width: 1024px) {
+  .atlas-app .laboratory {
+    padding: 22px 26px;
+  }
+  .atlas-app .lab-heading {
+    flex-wrap: nowrap;
+  }
+  .atlas-app[data-assistant-open="true"] .lab-heading {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 1023px) {
+  .atlas-app .atlas-topbar {
+    grid-template-columns: 40px minmax(0, 1fr);
+    padding: 12px 18px;
+    margin: 0;
+  }
+  .atlas-app .atlas-brand span {
+    display: none;
+  }
+  .atlas-app .topbar-end {
+    min-width: 0;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .atlas-app .return-cabin {
+    padding: 0 10px;
+    min-height: 36px;
+    font-size: var(--text-sm);
+  }
+  .atlas-app .return-cabin svg {
+    display: none;
+  }
+  .atlas-app .demo-indicator {
+    padding: 0 8px;
+    font-size: 13px;
+    min-height: 30px;
+  }
+  .atlas-app .workspace-tabs {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+  .atlas-app .workspace-tabs button {
+    min-width: 0;
+    padding: 0 8px;
+  }
+  .workspace-context {
+    padding: 12px 18px;
+    min-height: 70px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .workspace-context p {
+    flex: 1 1 100%;
+    font-size: var(--text-sm);
+  }
+  .workspace-context .assistant-toggle {
+    display: none;
+  }
+  .workspace-lens {
+    flex: 1;
+    justify-content: space-between;
+  }
+  .atlas-app .mobile-tabs {
+    margin: 0 18px 12px;
+  }
+  .atlas-app .atlas-split,
+  .atlas-app[data-assistant-open="true"] .atlas-split {
+    display: flex;
+    flex-direction: column;
+    padding: 0 18px 20px;
+  }
+  .atlas-app .lab-window,
+  .atlas-app .lab-window.is-three {
+    flex: 0 0 320px;
+    height: 320px;
+    min-height: 320px;
+  }
+  .atlas-app .scene-bottom > span {
+    max-width: 130px;
+  }
+  .catalog-filter-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .catalog-filter-fields label:first-child {
+    grid-column: 1 / -1;
+  }
+  .atlas-app .copilot-panel {
+    height: max(640px, 75dvh);
+  }
+}
+@media (max-width: 380px) {
+  .atlas-app .topbar-end {
+    gap: 4px;
+  }
+  .atlas-app .demo-indicator {
+    white-space: normal;
+    max-width: 115px;
+    line-height: 1.2;
+  }
+}
+/* The fallback has the same silhouette/depth, but no independent animation loop. */
+.dark-instrument .svg-chamber {
+  background: radial-gradient(ellipse at 50% 62%, #18304c, #070f1d 70%);
+}
+.dark-instrument .fallback-flame {
+  filter: drop-shadow(0 8px 16px rgba(55, 125, 235, 0.16));
+}
+.dark-instrument .fallback-specimen {
+  background: linear-gradient(#91a6bc, #263a50);
+}
+.atlas-app .flame-body {
+  animation: none;
+}
+.dark-instrument .comparison-notes {
+  margin-top: 16px;
+}
+.dark-instrument .qualitative-grid {
+  padding-bottom: 4px;
+}
+
+/* Evidence focus belongs above the plot: never cover the trials it reveals. */
+.atlas-app .camera-panel {
+  overflow-y: auto;
+}
+.camera-panel > .overlay-banner {
+  position: static;
+  max-width: 100%;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-bottom: 12px;
+  border-radius: var(--radius-inner);
+}

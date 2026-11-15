@@ -1,5 +1,11 @@
 import { z } from "zod";
 import { sourceSchema } from "@/modules/atlas/domain/experiment";
+import {
+  briefGravitySchema,
+  cellSchema,
+  evidenceBriefSchema,
+  progressSteps,
+} from "./brief";
 
 export const querySchema = z
   .object({
@@ -33,6 +39,32 @@ export const blockSchema = z.discriminatedUnion("type", [
   z
     .object({ type: z.literal("SourceList"), sources: z.array(sourceSchema) })
     .strict(),
+  evidenceBriefSchema,
+  z
+    .object({
+      type: z.literal("DataTable"),
+      title: z.string(),
+      columns: z.array(z.string()),
+      rows: z.array(z.array(cellSchema)),
+    })
+    .strict(),
+  z
+    .object({
+      type: z.literal("Notice"),
+      level: z.enum(["info", "warning"]),
+      message: z.string(),
+    })
+    .strict(),
+  z.object({ type: z.literal("Narrative"), markdown: z.string() }).strict(),
+  z
+    .object({
+      type: z.literal("MapFocus"),
+      title: z.string(),
+      experimentIds: z.array(z.string()),
+      gravity: briefGravitySchema.nullable(),
+      note: z.string().nullable(),
+    })
+    .strict(),
   z
     .object({
       type: z.literal("FallbackCard"),
@@ -44,10 +76,9 @@ export const blockSchema = z.discriminatedUnion("type", [
 export type UIBlock = z.infer<typeof blockSchema>;
 export const eventSchema = z.discriminatedUnion("type", [
   z.object({
-    type: z.literal("agent-status"),
+    type: z.literal("progress"),
     queryId: z.string(),
-    agent: z.enum(["analyst", "physics", "synthesizer"]),
-    status: z.enum(["working", "done"]),
+    step: z.enum(progressSteps),
   }),
   z.object({
     type: z.literal("text-delta"),

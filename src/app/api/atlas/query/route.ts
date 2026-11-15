@@ -10,6 +10,9 @@ import {
 } from "@/modules/copilot/infra/backend-query";
 import { psiApiRepository } from "@/modules/atlas/infra/psi-api";
 
+// The backend agents may stream for up to 120 s; leave headroom on serverless hosts.
+export const maxDuration = 150;
+
 const unavailable = (error: string, status: number) =>
   NextResponse.json({ error }, { status });
 
@@ -49,20 +52,17 @@ export async function POST(request: Request) {
               "Content-Type": "application/json",
               Accept: "text/event-stream",
             },
+            // Briefs take 27-54 s, worst case ~108 s (classifier + agents + composer with retry).
             signal: AbortSignal.any([
               request.signal,
-              AbortSignal.timeout(60000),
+              AbortSignal.timeout(120000),
             ]),
             cache: "no-store",
           },
         );
         if (!upstream.ok || !upstream.body)
           return unavailable("Backend no disponible", 502);
-        events = translateBackendStream(
-          upstream.body,
-          parsed.data.queryId,
-          catalog,
-        );
+        events = translateBackendStream(upstream.body, parsed.data.queryId);
       } catch {
         return unavailable("No se pudo conectar con el backend", 502);
       }

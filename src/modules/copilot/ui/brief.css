@@ -1,0 +1,418 @@
+/* Evidence brief: verdict first, then evidence, gap and next step */
+.brief {
+  display: flex;
+  flex-direction: column;
+  background: var(--instrument-white);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-inner);
+  overflow: hidden;
+}
+.brief-verdict {
+  padding: 16px 16px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.brief-verdict h3 {
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+}
+.brief-lead {
+  margin-top: 10px;
+  font-size: var(--text-base);
+  line-height: 1.55;
+  max-width: 68ch;
+  color: var(--slate);
+}
+
+.brief-lens {
+  padding: 12px 16px 14px;
+  background: var(--surface-sunken);
+  border-bottom: 1px solid var(--line);
+}
+.lens-switch {
+  display: inline-flex;
+  max-width: 100%;
+  padding: 3px;
+  background: var(--instrument-white);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+}
+.lens-switch button {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--slate);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s var(--ease-out),
+    color 0.2s var(--ease-out);
+}
+.lens-switch button[aria-pressed="true"] {
+  background: var(--nasa-blue);
+  color: #fff;
+}
+@media (hover: hover) {
+  .lens-switch button[aria-pressed="false"]:hover {
+    background: var(--nasa-blue-tint);
+    color: var(--nasa-blue);
+  }
+}
+.lens-text {
+  margin-top: 10px;
+  font-size: var(--text-base);
+  line-height: 1.6;
+  max-width: 68ch;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.lens-text strong {
+  font-weight: 600;
+}
+
+.brief-section {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.brief-section:last-child {
+  border-bottom: 0;
+}
+.brief-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.brief-section h4 {
+  font: 600 var(--text-sm) var(--font-data);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--nasa-blue);
+}
+.brief-section-head > span {
+  font: 400 var(--text-sm) var(--font-data);
+  color: var(--slate);
+}
+.brief-caption {
+  margin: 6px 0 10px;
+  font-size: var(--text-base);
+  line-height: 1.45;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.brief-fineprint {
+  margin-top: 8px;
+  font-size: var(--text-sm);
+  line-height: 1.45;
+  color: var(--slate);
+}
+.brief-fineprint:empty {
+  display: none;
+}
+
+/* Table: header stays while the body scrolls; about eight rows are visible */
+.evidence-scroll {
+  max-height: 300px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  scrollbar-width: thin;
+}
+.evidence-scroll:focus-visible {
+  outline: 2px solid var(--nasa-blue);
+  outline-offset: 2px;
+}
+.evidence-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--text-sm);
+}
+.evidence-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 0;
+  background: var(--surface-sunken);
+  border-bottom: 1px solid var(--line-strong);
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink);
+}
+.evidence-table th button {
+  width: 100%;
+  min-height: 36px;
+  padding: 0 8px;
+  padding-block: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  white-space: nowrap;
+}
+.evidence-table th.is-numeric button {
+  justify-content: flex-end;
+}
+.evidence-table th button:focus-visible {
+  outline-offset: -3px;
+}
+.sort-mark {
+  color: var(--slate);
+  opacity: 0.5;
+}
+.evidence-table th[aria-sort="ascending"] .sort-mark,
+.evidence-table th[aria-sort="descending"] .sort-mark {
+  color: var(--nasa-blue);
+  opacity: 1;
+}
+.evidence-table td {
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: var(--ink);
+}
+.evidence-table td.is-long {
+  min-width: 170px;
+  max-width: 240px;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+.evidence-table tr:last-child td {
+  border-bottom: 0;
+}
+.evidence-table td.is-numeric {
+  text-align: right;
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+@media (hover: hover) {
+  .evidence-table tbody tr:hover td {
+    background: var(--nasa-blue-tint);
+  }
+}
+
+/* Buttons inside the brief */
+.brief-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.brief-button {
+  min-height: 40px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1.5px solid var(--nasa-blue);
+  border-radius: var(--radius-pill);
+  background: var(--instrument-white);
+  color: var(--nasa-blue);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition:
+    background-color 0.2s var(--ease-out),
+    transform 0.15s var(--ease-out);
+}
+.brief-button:active {
+  transform: scale(0.97);
+}
+@media (hover: hover) {
+  .brief-button:hover {
+    background: var(--nasa-blue-tint);
+  }
+}
+.brief-button-quiet {
+  border-color: var(--line-strong);
+  color: var(--slate);
+}
+.brief-count {
+  min-width: 22px;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  background: var(--nasa-blue-tint);
+  font: 600 var(--text-sm) var(--font-data);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+/* Gap */
+.brief-gap {
+  margin-top: 8px;
+  font-size: var(--text-base);
+  line-height: 1.55;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.gap-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+.gap-facts > div {
+  padding: 8px 12px;
+  background: var(--surface-sunken);
+  border-radius: 8px;
+}
+.gap-facts dt {
+  font: 400 var(--text-sm) var(--font-body);
+  color: var(--slate);
+}
+.gap-facts dd {
+  margin-top: 2px;
+  font: 500 var(--text-base) var(--font-data);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+}
+
+/* Next steps */
+.next-steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding: 0;
+}
+.next-steps button {
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 14px 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius-inner);
+  background: var(--instrument-white);
+  text-align: left;
+  transition:
+    border-color 0.2s var(--ease-out),
+    background-color 0.2s var(--ease-out),
+    transform 0.15s var(--ease-out);
+}
+.next-steps button:active {
+  transform: scale(0.985);
+}
+@media (hover: hover) {
+  .next-steps button:hover {
+    border-color: var(--nasa-blue);
+    background: var(--nasa-blue-tint);
+  }
+}
+.step-glyph {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--nasa-blue-tint);
+  color: var(--nasa-blue);
+  font-size: var(--text-sm);
+}
+.step-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.step-copy strong {
+  font-size: var(--text-base);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.step-copy small {
+  font: 400 var(--text-sm) var(--font-data);
+  color: var(--slate);
+  overflow-wrap: anywhere;
+}
+.step-notice {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--safe-emerald-tint);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--safe-emerald-ink);
+}
+.step-notice p + p {
+  margin-top: 4px;
+  color: var(--ink);
+}
+
+/* Experiment proposal */
+.proposal {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1.5px dashed var(--nasa-blue);
+  border-radius: var(--radius-inner);
+  background: var(--nasa-blue-tint);
+}
+.proposal h5 {
+  font-size: var(--text-base);
+  font-weight: 600;
+}
+.proposal h5:focus-visible {
+  outline: 2px solid var(--nasa-blue);
+  outline-offset: 3px;
+}
+.proposal-title {
+  margin: 6px 0 10px;
+  font-size: var(--text-base);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.proposal ul {
+  margin: 4px 0 10px;
+  padding-left: 18px;
+  font-size: var(--text-base);
+  line-height: 1.5;
+}
+
+.brief-analysis {
+  border-top: 1px solid var(--line);
+  padding: 0 16px;
+}
+.brief-analysis summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-size: var(--text-base);
+  font-weight: 600;
+}
+.brief-analysis .prose {
+  padding-bottom: 14px;
+}
+
+@media (max-width: 479px) {
+  .brief-verdict,
+  .brief-section,
+  .brief-lens {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .lens-switch button {
+    padding: 0 9px;
+  }
+}

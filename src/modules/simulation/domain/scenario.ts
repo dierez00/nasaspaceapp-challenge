@@ -19,6 +19,10 @@ export type SimulationState = {
   compare: boolean;
   activeSlot: Slot;
   cameraRevision: number;
+  /** Same conditions rendered in µg, 1/6 g and 1 g (mutually exclusive with A/B). */
+  threeGravities: boolean;
+  /** Column the copilot asked to look at; purely a visual emphasis. */
+  focusGravity: Gravity | null;
 };
 export const defaultConditions: Conditions = {
   material: "PMMA",
@@ -58,12 +62,16 @@ export function createSimulationState(
     compare: false,
     activeSlot: "A",
     cameraRevision: 0,
+    threeGravities: false,
+    focusGravity: null,
   };
 }
 export type SimulationAction =
   | { type: "edit"; slot: Slot; patch: Partial<Conditions> }
   | { type: "compare" }
   | { type: "single" }
+  | { type: "three"; on: boolean }
+  | { type: "simulate"; patch: Partial<Conditions> }
   | { type: "slot"; slot: Slot }
   | { type: "swap" }
   | { type: "restore"; slot: Slot }
@@ -100,9 +108,35 @@ export function simulationReducer(
         scenarios: { ...state.scenarios, [action.slot]: next },
       };
     }
+    case "three":
+      return {
+        ...state,
+        threeGravities: action.on,
+        focusGravity: null,
+        compare: action.on ? false : state.compare,
+        activeSlot: "A",
+      };
+    case "simulate": {
+      // A copilot next step sets the shared conditions of the three-gravity
+      // comparison and, when it names a gravity, emphasizes that column.
+      const edited = simulationReducer(state, {
+        type: "edit",
+        slot: "A",
+        patch: action.patch,
+      });
+      return {
+        ...edited,
+        compare: false,
+        activeSlot: "A",
+        threeGravities: true,
+        focusGravity: action.patch.gravity ?? null,
+      };
+    }
     case "compare":
       return {
         ...state,
+        threeGravities: false,
+        focusGravity: null,
         compare: true,
         scenarios: {
           A: state.scenarios.A,
@@ -144,7 +178,12 @@ export function simulationReducer(
         next.scenarios.B = fromExperiment(action.experiments[1]);
         next.compare = true;
       }
-      return { ...next, cameraRevision: state.cameraRevision + 1 };
+      return {
+        ...next,
+        threeGravities: state.threeGravities && !next.compare,
+        focusGravity: null,
+        cameraRevision: state.cameraRevision + 1,
+      };
     }
   }
 }

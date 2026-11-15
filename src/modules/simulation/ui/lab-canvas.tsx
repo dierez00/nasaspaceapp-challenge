@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import {
   useEffect,
   useMemo,
@@ -22,12 +22,9 @@ import {
 } from "three";
 type OrbitControlsImpl = ComponentRef<typeof OrbitControls>;
 import { useSimulation } from "../application/simulation-provider";
-import {
-  flameEnvelope,
-  type SimulationScenario,
-  type Slot,
-} from "../domain/scenario";
+import { flameEnvelope, type SimulationScenario } from "../domain/scenario";
 import type { SimulationClock } from "../application/clock";
+import { gravityScenarios } from "../domain/comparison";
 import { flameFragment, flameVertex } from "./flame-shader";
 
 type Pose = {
@@ -157,7 +154,7 @@ function Specimen({
       <mesh position={[0, -0.23, 0]}>
         <cylinderGeometry args={[2.5, 2.55, 0.12, 64]} />
         <meshStandardMaterial
-          color="#122033"
+          color="#172439"
           metalness={0.75}
           roughness={0.34}
         />
@@ -166,10 +163,7 @@ function Specimen({
         <ringGeometry args={[2.34, 2.35, 96]} />
         <meshBasicMaterial color="#365c83" side={DoubleSide} />
       </mesh>
-      <gridHelper
-        args={[12, 24, "#21354c", "#142339"]}
-        position={[0, -0.3, 0]}
-      />
+
       <mesh position={[0, -0.05, 0]}>
         <boxGeometry args={[3, 0.16, 0.75]} />
         <meshStandardMaterial color="#364657" metalness={0.8} roughness={0.4} />
@@ -198,7 +192,7 @@ function Specimen({
       <pointLight
         ref={light}
         position={[0, 1, 0]}
-        color={scenario.gravity === "micro" ? "#7874ff" : "#ff7738"}
+        color={scenario.gravity === "micro" ? "#4d9cff" : "#ff7738"}
         intensity={4}
         distance={5}
       />
@@ -214,7 +208,7 @@ function Scene({
   active,
 }: {
   scenario: SimulationScenario;
-  slot: Slot;
+  slot: string;
   poseRef: RefObject<Pose>;
   clock: SimulationClock;
   low: boolean;
@@ -327,6 +321,18 @@ function RenderLoop({
   useEffect(() => {
     if (active) invalidate();
   }, [active, invalidate]);
+  // Scissor bounds change when the instrument scrolls, even while time is paused.
+  useEffect(() => {
+    const refresh = () => {
+      if (active) invalidate();
+    };
+    document.addEventListener("scroll", refresh, true);
+    window.addEventListener("resize", refresh);
+    return () => {
+      document.removeEventListener("scroll", refresh, true);
+      window.removeEventListener("resize", refresh);
+    };
+  }, [active, invalidate]);
   useFrame(() => {
     if (!active) return;
     gl.setScissorTest(false);
@@ -362,19 +368,24 @@ export default function LabCanvas({
   host,
   viewA,
   viewB,
+  viewC,
+  threeGravities,
   mobile,
   onLoss,
 }: {
   host: RefObject<HTMLDivElement | null>;
   viewA: RefObject<HTMLDivElement | null>;
   viewB: RefObject<HTMLDivElement | null>;
+  viewC: RefObject<HTMLDivElement | null>;
+  threeGravities: boolean;
   mobile: boolean;
   onLoss: () => void;
 }) {
   const { state, clock, active } = useSimulation();
   const poseRef = useRef<Pose>(initialPose());
   const [degraded, setDegraded] = useState(false);
-  const low = mobile || degraded;
+  const low = mobile || degraded || threeGravities;
+  const comparisons = gravityScenarios(state.scenarios.A);
   useEffect(() => {
     poseRef.current = {
       ...initialPose(),
@@ -399,36 +410,40 @@ export default function LabCanvas({
         gl.domElement.dataset.renderer = "webgl";
       }}
     >
-      <View
-        track={viewA as RefObject<HTMLElement>}
-        visible={!mobile || state.activeSlot === "A" || !state.compare}
-        index={1}
-      >
-        <Scene
-          scenario={state.scenarios.A}
-          slot="A"
-          poseRef={poseRef}
-          clock={clock}
-          low={low}
-          active={active}
-        />
-      </View>
-      {state.compare && (
+      {(threeGravities
+        ? [
+            { slot: "A", track: viewA, scenario: comparisons[0] },
+            { slot: "B", track: viewB, scenario: comparisons[1] },
+            { slot: "C", track: viewC, scenario: comparisons[2] },
+          ]
+        : [
+            { slot: "A", track: viewA, scenario: state.scenarios.A },
+            ...(state.compare
+              ? [{ slot: "B", track: viewB, scenario: state.scenarios.B }]
+              : []),
+          ]
+      ).map(({ slot, track, scenario }, index) => (
         <View
-          track={viewB as RefObject<HTMLElement>}
-          visible={!mobile || state.activeSlot === "B"}
-          index={2}
+          key={slot}
+          track={track as RefObject<HTMLElement>}
+          visible={
+            threeGravities ||
+            !mobile ||
+            state.activeSlot === slot ||
+            !state.compare
+          }
+          index={index + 1}
         >
           <Scene
-            scenario={state.scenarios.B}
-            slot="B"
+            scenario={scenario}
+            slot={slot}
             poseRef={poseRef}
             clock={clock}
             low={low}
             active={active}
           />
         </View>
-      )}
+      ))}
       <RenderLoop
         active={active}
         clock={clock}

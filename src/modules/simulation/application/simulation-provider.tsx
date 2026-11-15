@@ -11,6 +11,7 @@ import {
 } from "react";
 import type { Experiment } from "@/modules/atlas/domain/experiment";
 import { useAtlas } from "@/modules/atlas/ui/atlas-provider";
+import { useExperience } from "@/shared/experience/experience-context";
 import {
   createSimulationState,
   simulationReducer,
@@ -28,6 +29,7 @@ const Context = createContext<{
   active: boolean;
   edit: (slot: Slot, patch: Partial<Conditions>) => void;
   load: (experiments: Experiment[]) => void;
+  simulate: (patch: Partial<Conditions>) => void;
 } | null>(null);
 export function SimulationProvider({
   children,
@@ -45,6 +47,7 @@ export function SimulationProvider({
   const [clock] = useState(() => new SimulationClock());
   const [reduced, setReduced] = useState(true);
   const [visible, setVisible] = useState(true);
+  const [inView, setInView] = useState(true);
   const [mobile, setMobile] = useState(false);
   useEffect(() => {
     const motion = matchMedia("(prefers-reduced-motion: reduce)");
@@ -68,8 +71,25 @@ export function SimulationProvider({
       document.removeEventListener("visibilitychange", updateVisibility);
     };
   }, [clock]);
+  // Pause the lab clock and render while the dashboard is scrolled out of the viewport.
+  useEffect(() => {
+    const target =
+      document.getElementById("dashboard") ?? document.querySelector(".atlas-app");
+    if (!target) return;
+    const observer = new IntersectionObserver(
+      (entries) => setInView(entries[entries.length - 1].isIntersecting),
+      { rootMargin: "100px 0px" },
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+  // Outside the public shell there is no cabin, so the deck is always live.
+  const deckLive = useExperience()?.deckLive ?? true;
   const active =
-    visible && atlas.view === "lab" && (!mobile || atlas.tab === "camera");
+    visible &&
+    inView &&
+    deckLive &&
+    atlas.view === "lab" && (!mobile || atlas.tab === "camera");
   const snapshot = useSyncExternalStore(
     clock.subscribe,
     clock.getSnapshot,
@@ -103,9 +123,16 @@ export function SimulationProvider({
     },
     [atlasDispatch, clock, reduced],
   );
+  const simulate = useCallback(
+    (patch: Partial<Conditions>) => {
+      dispatch({ type: "simulate", patch });
+      clock.restart(!reduced);
+    },
+    [clock, reduced],
+  );
   return (
     <Context.Provider
-      value={{ state, dispatch, clock, reduced, active, edit, load }}
+      value={{ state, dispatch, clock, reduced, active, edit, load, simulate }}
     >
       {children}
     </Context.Provider>

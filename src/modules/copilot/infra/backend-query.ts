@@ -1,6 +1,10 @@
 import { z } from "zod";
 import type { CopilotEvent, Query, UIBlock } from "../domain/contracts";
-import type { Experiment } from "@/modules/atlas/domain/experiment";
+import {
+  informativeLead,
+  progressSteps,
+  type ProgressStep,
+} from "../domain/brief";
 
 /**
  * Translates the FastAPI `/query` stream (events `status`, `ui`, `error`;
@@ -9,18 +13,56 @@ import type { Experiment } from "@/modules/atlas/domain/experiment";
  */
 
 const MAX_QUESTION = 500;
-const MAX_TABLE_ROWS = 8;
-const MAX_CARDS = 3;
+const MAX_ROWS = 200;
 
+const cell = z.union([z.string(), z.number(), z.boolean(), z.null()]);
+const briefGravity = z.enum(["microgravity", "lunar", "martian", "normal"]);
+const briefComponent = z.object({
+  type: z.literal("brief"),
+  verdict: z.string().min(1),
+  evidence: z
+    .object({
+      title: z.string(),
+      columns: z.array(z.string()),
+      rows: z.array(z.array(cell)),
+      experiment_ids: z.array(z.string()),
+    })
+    .nullable(),
+  gap: z
+    .object({
+      description: z.string(),
+      pressure_kpa_min: z.number().nullable(),
+      pressure_kpa_max: z.number().nullable(),
+      o2_percent_min: z.number().nullable(),
+      o2_percent_max: z.number().nullable(),
+      gravity: briefGravity.nullable(),
+    })
+    .nullable(),
+  next_steps: z
+    .array(
+      z.object({
+        kind: z.enum(["simulate", "propose_experiment", "explore_map"]),
+        label: z.string(),
+        pressure_kpa: z.number().nullable(),
+        o2_percent: z.number().nullable(),
+        gravity: briefGravity.nullable(),
+        material: z.string().nullable(),
+      }),
+    )
+    .max(3),
+  lenses: z.object({
+    student: z.string(),
+    teacher: z.string(),
+    researcher: z.string(),
+  }),
+});
 const componentSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("text"), body: z.string() }),
   z.object({
     type: z.literal("table"),
     title: z.string(),
     columns: z.array(z.string()),
-    rows: z.array(
-      z.array(z.union([z.string(), z.number(), z.boolean(), z.null()])),
-    ),
+    rows: z.array(z.array(cell)),
   }),
   z.object({
     type: z.literal("gap_map"),
@@ -45,19 +87,14 @@ const componentSchema = z.discriminatedUnion("type", [
     level: z.string(),
     message: z.string(),
   }),
+  briefComponent,
 ]);
 const uiSchema = z.object({
   summary: z.string(),
   components: z.array(z.unknown()),
 });
 
-const agentByStep = {
-  clasificando: "analyst",
-  consultando_datos: "analyst",
-  buscando_fuentes: "physics",
-  componiendo: "synthesizer",
-} as const;
-type Agent = (typeof agentByStep)[keyof typeof agentByStep];
+const knownSteps = new Set<string>(progressSteps);
 
 /** Backend request body: the question plus the probe, if any. */
 export function backendQuestion({ text, context }: Query) {
@@ -67,65 +104,119 @@ export function backendQuestion({ text, context }: Query) {
   return { q: `${text}${probe}`.slice(0, MAX_QUESTION) };
 }
 
-export function translateUi(value: unknown, catalog: Experiment[]) {
+type Brief = z.infer<typeof briefComponent>;
+type Table = Extract<z.infer<typeof componentSchema>, { type: "table" }>;
+
+function toBriefBlock(
+  brief: Brief,
+  summary: string,
+  analysis: string[],
+  sourceFiles: string[],
+): UIBlock {
+  const { evidence, gap } = brief;
+  return {
+    type: "EvidenceBrief",
+    verdict: brief.verdict,
+    lead: informativeLead(summary, brief.verdict),
+    evidence: evidence && {
+      title: evidence.title,
+      columns: evidence.columns,
+      rows: evidence.rows.slice(0, MAX_ROWS),
+      experimentIds: evidence.experiment_ids,
+    },
+    gap: gap && {
+      description: gap.description,
+      pressureKpaMin: gap.pressure_kpa_min,
+      pressureKpaMax: gap.pressure_kpa_max,
+      o2PercentMin: gap.o2_percent_min,
+      o2PercentMax: gap.o2_percent_max,
+      gravity: gap.gravity,
+    },
+    nextSteps: brief.next_steps.map((step) => ({
+      kind: step.kind,
+      label: step.label,
+      pressureKpa: step.pressure_kpa,
+      o2Percent: step.o2_percent,
+      gravity: step.gravity,
+      material: step.material,
+    })),
+    lenses: brief.lenses,
+    sourceFiles,
+    analysis: analysis.length ? analysis.join("\n\n") : null,
+  };
+}
+
+const sameTable = (table: Table, brief: Brief) =>
+  JSON.stringify([table.columns, table.rows]) ===
+  JSON.stringify([brief.evidence?.columns, brief.evidence?.rows]);
+
+/**
+ * Backend `ui` payload to front blocks. A `brief` component becomes the
+ * evidence brief (verdict, evidence, gap, steps, lenses); the rest keep their
+ * own shape: real tables, notices, sources. Unknown components are ignored.
+ */
+export function translateUi(value: unknown) {
   const ui = uiSchema.parse(value);
-  const texts = [ui.summary];
-  const blocks: UIBlock[] = [];
-  for (const raw of ui.components) {
+  const components = ui.components.flatMap((raw) => {
     const parsed = componentSchema.safeParse(raw);
-    if (!parsed.success) continue;
-    const component = parsed.data;
-    if (component.type === "text") texts.push(component.body);
-    if (component.type === "table") {
-      const lines = component.rows
-        .slice(0, MAX_TABLE_ROWS)
-        .map(
-          (row) =>
-            `- ${row
-              .map((cell, i) => `${component.columns[i] ?? i}: ${cell ?? "—"}`)
-              .join(" · ")}`,
-        );
-      if (component.rows.length > MAX_TABLE_ROWS)
-        lines.push(`- … ${component.rows.length - MAX_TABLE_ROWS} filas más`);
-      blocks.push({
-        type: "FallbackCard",
-        markdown: `**${component.title}**\n\n${lines.join("\n")}`,
-        sources: [],
-      });
-    }
-    if (component.type === "gap_map") {
-      blocks.push({
-        type: "GravityBounds",
-        explanation: component.note ?? component.title,
-      });
-      const ids = component.experiment_ids.length
-        ? component.experiment_ids
-        : [...new Set(catalog.map((e) => e.id.split("/")[0]))];
-      for (const id of ids.slice(0, MAX_CARDS)) {
-        const point = catalog.find((e) => e.id.startsWith(`${id}/`));
-        if (point)
-          blocks.push({ type: "ExperimentCard", experimentId: point.id });
-      }
-    }
-    if (component.type === "citations")
+    return parsed.success ? [parsed.data] : [];
+  });
+  const brief = components.find((c) => c.type === "brief");
+  const sourceFiles = [
+    ...new Set(
+      components.flatMap((c) =>
+        c.type === "citations" ? c.items.map((item) => item.source_file) : [],
+      ),
+    ),
+  ];
+  const analysis = components.flatMap((c) =>
+    c.type === "text" ? [c.body] : [],
+  );
+  const blocks: UIBlock[] = [];
+  for (const component of components) {
+    if (component.type === "brief") {
+      if (component === brief)
+        blocks.push(toBriefBlock(component, ui.summary, analysis, sourceFiles));
+    } else if (component.type === "text") {
+      if (!brief) blocks.push({ type: "Narrative", markdown: component.body });
+    } else if (component.type === "table") {
+      if (!(brief && sameTable(component, brief)))
+        blocks.push({
+          type: "DataTable",
+          title: component.title,
+          columns: component.columns,
+          rows: component.rows.slice(0, MAX_ROWS),
+        });
+    } else if (component.type === "gap_map") {
+      if (!brief)
+        blocks.push({
+          type: "MapFocus",
+          title: component.title,
+          experimentIds: component.experiment_ids,
+          gravity:
+            briefGravity.safeParse(component.gravity_environment).data ?? null,
+          note: component.note,
+        });
+    } else if (component.type === "citations") {
       blocks.push({
         type: "SourceList",
         sources: component.items.map((item) => ({
-          document: `${item.experiment_id} · ${item.source_file}`,
+          document: `${item.source_file}`,
           code: item.experiment_id,
           section: item.section ?? "—",
           excerpt: item.quote,
           demo: false,
         })),
       });
-    if (component.type === "notice")
+    } else if (component.type === "notice") {
       blocks.push({
-        type: "FallbackCard",
-        markdown: `**Aviso:** ${component.message}`,
-        sources: [],
+        type: "Notice",
+        level: component.level === "warning" ? "warning" : "info",
+        message: component.message,
       });
+    }
   }
-  return { text: texts.filter(Boolean).join("\n\n"), blocks };
+  return { text: brief ? "" : ui.summary, blocks };
 }
 
 /** Reads `event:`/`data:` frames from a backend SSE body. */
@@ -163,29 +254,26 @@ async function* frames(body: ReadableStream<Uint8Array>) {
 export async function* translateBackendStream(
   body: ReadableStream<Uint8Array>,
   queryId: string,
-  catalog: Experiment[],
 ): AsyncGenerator<CopilotEvent> {
-  let current: Agent | null = null;
-  const finish = function* (): Generator<CopilotEvent> {
-    if (current)
-      yield { type: "agent-status", queryId, agent: current, status: "done" };
-    current = null;
-  };
+  let last: string | null = null;
   for await (const { event, data } of frames(body)) {
     if (event === "status") {
       const step = z.object({ step: z.string() }).safeParse(data);
-      const agent = step.success
-        ? agentByStep[step.data.step as keyof typeof agentByStep]
-        : undefined;
-      if (agent && agent !== current) {
-        yield* finish();
-        current = agent;
-        yield { type: "agent-status", queryId, agent, status: "working" };
+      if (
+        step.success &&
+        knownSteps.has(step.data.step) &&
+        step.data.step !== last
+      ) {
+        last = step.data.step;
+        yield {
+          type: "progress",
+          queryId,
+          step: step.data.step as ProgressStep,
+        };
       }
     } else if (event === "ui") {
-      yield* finish();
-      const { text, blocks } = translateUi(data, catalog);
-      yield { type: "text-delta", queryId, text };
+      const { text, blocks } = translateUi(data);
+      if (text) yield { type: "text-delta", queryId, text };
       for (const block of blocks) yield { type: "ui-block", queryId, block };
       yield { type: "done", queryId };
       return;

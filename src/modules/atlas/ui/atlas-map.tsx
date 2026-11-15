@@ -1,19 +1,66 @@
 "use client";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { scaleLinear } from "d3-scale";
 import { ticks } from "d3-array";
 import {
   groupCoordinates,
   isLunarZone,
+  resolveProbe,
   gravityLabels,
   type Experiment,
 } from "../domain/experiment";
+import { highlightVisibility, isHighlighted } from "../domain/overlays";
 import { useAtlas } from "./atlas-provider";
+import "./atlas-map.css";
+import { useAudience } from "@/modules/copilot/ui/audience-store";
+import { catalogCsv, filterCatalog } from "../domain/catalog";
 import { Flame } from "./flame";
 import { useSimulation } from "@/modules/simulation/application/simulation-provider";
 
 export function AtlasMap() {
-  const { state, dispatch, experiments } = useAtlas();
+  const { state, dispatch, experiments, clearOverlays } = useAtlas();
+  const audience = useAudience();
+  const [filters, setFilters] = useState({
+    material: "",
+    oxygenMin: 18,
+    oxygenMax: 50,
+    pressureMin: 0,
+    pressureMax: 16,
+  });
+  const filtered = useMemo(
+    () => filterCatalog(experiments, { ...filters, gravity: state.gravity }),
+    [experiments, filters, state.gravity],
+  );
+  const filterError =
+    filters.oxygenMin > filters.oxygenMax ||
+    filters.pressureMin > filters.pressureMax;
+  const { highlight, gap, focusPending } = state.overlays;
+  const highlightSet = useMemo(() => new Set(highlight), [highlight]);
+  const [revealedHighlight, setRevealedHighlight] = useState<string | null>(
+    null,
+  );
+  const highlightKey = [...highlightSet].sort().join("|");
+  const revealingEvidence =
+    highlight.length > 0 && revealedHighlight === highlightKey;
+  const displayed = useMemo(() => {
+    if (!revealingEvidence) return filtered;
+    const filteredIds = new Set(filtered.map((trial) => trial.id));
+    return experiments.filter(
+      (trial) =>
+        filteredIds.has(trial.id) || isHighlighted(trial, highlightSet),
+    );
+  }, [experiments, filtered, highlightSet, revealingEvidence]);
+  const { visible: matchedCount, hidden: hiddenMatches } = useMemo(
+    () => highlightVisibility(experiments, displayed, highlightSet),
+    [experiments, displayed, highlightSet],
+  );
+  const outsideFilters = displayed.length - filtered.length;
+  const bannerButton = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!focusPending) return;
+    bannerButton.current?.focus();
+    dispatch({ type: "overlay-focused" });
+  }, [focusPending, dispatch]);
   const { load } = useSimulation();
   const container = useRef<HTMLDivElement>(null);
   const svg = useRef<SVGSVGElement>(null);
@@ -23,7 +70,14 @@ export function AtlasMap() {
     oxygen: number;
   } | null>(null);
   const [overlap, setOverlap] = useState<Experiment[]>([]);
-  const [manual, setManual] = useState({ pressure: 8.2, oxygen: 34 });
+  const [manual, setManual] = useState({ pressure: "8.2", oxygen: "34" });
+  const [manualError, setManualError] = useState("");
+  const [mapNotice, setMapNotice] = useState("");
+  useEffect(() => {
+    if (!mapNotice) return;
+    const timer = setTimeout(() => setMapNotice(""), 3200);
+    return () => clearTimeout(timer);
+  }, [mapNotice]);
   useEffect(() => {
     if (!container.current) return;
     const observer = new ResizeObserver(([entry]) =>
@@ -37,7 +91,7 @@ export function AtlasMap() {
   }, []);
   const w = Math.max(size.width, 300),
     h = Math.max(size.height, 260);
-  const left = w < 500 ? 42 : 65,
+  const left = w < 500 ? 50 : 65,
     right = 25,
     top = 24,
     bottom = 56;
@@ -49,9 +103,10 @@ export function AtlasMap() {
     .domain([18, 50])
     .range([h - bottom, top])
     .clamp(true);
+  const crowded = experiments.length > 80;
+  const nodeScale = crowded ? 0.5 : 1;
   const lunar = probe && isLunarZone(probe.pressure, probe.oxygen);
   function queryPoint(point: { pressure: number; oxygen: number }) {
-    if (!isLunarZone(point.pressure, point.oxygen)) return;
     dispatch({
       type: "query",
       query: {
@@ -75,30 +130,193 @@ export function AtlasMap() {
     };
   }
   return (
-    <section className="camera-panel" aria-label="Cámara del Atlas">
+    <section
+      className="camera-panel dark-instrument"
+      aria-label="Cámara del Atlas"
+    >
       <header className="camera-heading">
         <div>
-          <p className="micro-label">EXPLORADOR DE COMBUSTIÓN</p>
-          <h1>
-            Atlas del fuego lunar<span>.</span>
-          </h1>
-          <p>La próxima frontera del fuego está en lo que aún no sabemos.</p>
+          <h2>Mapa de evidencias</h2>
+          <p>
+            Cada llama es un ensayo real o de demostración. Toca una zona vacía
+            para preguntar qué pasaría allí.
+          </p>
         </div>
-        <span className="coordinate-mark" aria-hidden="true">
-          ⊕
-        </span>
-      </header>
-      <div className="map-meta">
-        <span>
-          <i className="status-dot" />{" "}
-          {String(experiments.length).padStart(2, "0")} ENSAYOS{" "}
+        <span className="map-count">
+          <i className="status-dot" />
+          {displayed.length} / {experiments.length} ensayos ·{" "}
           {experiments.some((e) => e.provenance === "verified")
             ? "NASA PSI"
-            : "DEMO"}
+            : "demo"}
         </span>
-        <span className="map-coordinate">PRESIÓN × CONCENTRACIÓN O₂</span>
-        <span className="live-tag">EXPLORACIÓN EN VIVO</span>
-      </div>
+      </header>
+      <details className="catalog-filters" open={audience === "researcher"}>
+        <summary>Filtros y exportación del catálogo</summary>
+        <div className="catalog-filter-fields">
+          <label>
+            Material
+            <select
+              aria-label="Filtrar material"
+              value={filters.material}
+              onChange={(event) =>
+                setFilters({ ...filters, material: event.target.value })
+              }
+            >
+              <option value="">Todos los materiales</option>
+              {[...new Set(experiments.map((trial) => trial.material))]
+                .sort()
+                .map((material) => (
+                  <option key={material}>{material}</option>
+                ))}
+            </select>
+          </label>
+          {(
+            [
+              {
+                key: "pressureMin",
+                label: "Presión mínima",
+                unit: "psi",
+                min: 0,
+                max: 16,
+              },
+              {
+                key: "pressureMax",
+                label: "Presión máxima",
+                unit: "psi",
+                min: 0,
+                max: 16,
+              },
+              {
+                key: "oxygenMin",
+                label: "Oxígeno mínimo",
+                unit: "%",
+                min: 18,
+                max: 50,
+              },
+              {
+                key: "oxygenMax",
+                label: "Oxígeno máximo",
+                unit: "%",
+                min: 18,
+                max: 50,
+              },
+            ] as const
+          ).map((field) => (
+            <label key={field.key}>
+              {field.label} ({field.unit})
+              <input
+                aria-label={field.label}
+                type="number"
+                min={field.min}
+                max={field.max}
+                step="0.1"
+                value={filters[field.key]}
+                onChange={(event) => {
+                  const value = event.target.valueAsNumber;
+                  if (Number.isFinite(value))
+                    setFilters({ ...filters, [field.key]: value });
+                }}
+              />
+            </label>
+          ))}
+        </div>
+        {filterError && (
+          <p role="alert">El mínimo no puede superar al máximo.</p>
+        )}
+        <div className="catalog-actions">
+          <button
+            disabled={!filtered.length || filterError}
+            onClick={() => {
+              const url = URL.createObjectURL(
+                new Blob(["\uFEFF", catalogCsv(filtered)], {
+                  type: "text/csv;charset=utf-8",
+                }),
+              );
+              const link = document.createElement("a");
+              link.href = url;
+              link.download = "atlas-filtered-trials.csv";
+              link.click();
+              URL.revokeObjectURL(url);
+            }}
+          >
+            Exportar {filtered.length} ensayos CSV
+          </button>
+          <button
+            onClick={() => {
+              setFilters({
+                material: "",
+                oxygenMin: 18,
+                oxygenMax: 50,
+                pressureMin: 0,
+                pressureMax: 16,
+              });
+              dispatch({ type: "gravity", gravity: "all" });
+            }}
+          >
+            Restablecer filtros
+          </button>
+          <span role="status">
+            {filtered.length} ensayos en tus filtros · la exportación conserva
+            procedencia y fuentes.
+          </span>
+        </div>
+      </details>
+      {(highlight.length > 0 || gap) && (
+        <div
+          className="overlay-banner"
+          role="group"
+          aria-label="Resaltado de la ficha"
+        >
+          <p id="overlay-banner-text" role="status">
+            {highlight.length > 0 &&
+              `${matchedCount} ${matchedCount === 1 ? "ensayo resaltado" : "ensayos resaltados"}`}
+            {hiddenMatches > 0 &&
+              ` · ${hiddenMatches} ensayos de la ficha ocultos por tus filtros`}
+            {outsideFilters > 0 &&
+              ` · ${outsideFilters} ensayos de la ficha fuera de tus filtros; el CSV conserva los filtros`}
+            {highlight.length > 0 && gap && " · "}
+            {gap &&
+              `${gap.label}${gap.region ? "" : ": sin ensayos en este régimen"}`}
+          </p>
+          {(hiddenMatches > 0 || revealingEvidence) && (
+            <button
+              ref={hiddenMatches > 0 ? bannerButton : undefined}
+              type="button"
+              aria-describedby="overlay-banner-text"
+              onClick={() =>
+                setRevealedHighlight(revealingEvidence ? null : highlightKey)
+              }
+            >
+              {revealingEvidence
+                ? "Volver a mis filtros"
+                : "Mostrar ensayos ocultos"}
+            </button>
+          )}
+          <button
+            ref={hiddenMatches === 0 ? bannerButton : undefined}
+            type="button"
+            aria-describedby="overlay-banner-text"
+            onClick={() => {
+              setRevealedHighlight(null);
+              clearOverlays();
+            }}
+          >
+            Quitar resaltado
+          </button>
+          <button
+            type="button"
+            className="back-to-assistant"
+            onClick={() => {
+              dispatch({ type: "assistant", open: true });
+              document
+                .getElementById("contextual-evidence")
+                ?.scrollIntoView({ block: "start" });
+            }}
+          >
+            Volver al asistente
+          </button>
+        </div>
+      )}
       <div className="map-stage" ref={container}>
         <svg
           ref={svg}
@@ -110,49 +328,41 @@ export function AtlasMap() {
           onPointerLeave={() => setProbe(null)}
           onClick={(event) => {
             const point = pointAt(event);
-            if (point) queryPoint(point);
+            if (!point) return;
+            const result = resolveProbe(point.pressure, point.oxygen);
+            if (result.ok) {
+              setMapNotice("");
+              queryPoint(result.point);
+            } else
+              setMapNotice("Fuera de la zona lunar · 0–10.2 psi, 30–50 % O₂");
           }}
         >
           <defs>
             <pattern
-              id="lunar-hatch"
+              id="gap-hatch"
               width="9"
               height="9"
               patternUnits="userSpaceOnUse"
               patternTransform="rotate(45)"
             >
-              <line y2="9" stroke="#FC3D21" strokeOpacity=".055" />
-            </pattern>
-            <linearGradient id="scan-gradient" x1="0" y1="0" x2="0" y2="1">
-              <stop stopColor="#FC3D21" stopOpacity="0" />
-              <stop offset="1" stopColor="#FC3D21" stopOpacity=".12" />
-            </linearGradient>
-            <clipPath id="lunar-clip">
-              <rect
-                x={x(0)}
-                y={y(50)}
-                width={x(10.2) - x(0)}
-                height={y(30) - y(50)}
+              <rect width="9" height="9" fill="rgba(155, 194, 255, 0.08)" />
+              <line
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="9"
+                stroke="rgba(155, 194, 255, 0.45)"
+                strokeWidth="1.5"
               />
-            </clipPath>
+            </pattern>
           </defs>
           <rect
             x={x(0)}
             y={y(50)}
             width={x(10.2) - x(0)}
             height={y(30) - y(50)}
-            fill="url(#lunar-hatch)"
+            className="lunar-fill"
           />
-          <g clipPath="url(#lunar-clip)" pointerEvents="none">
-            <rect
-              className="laser-scan"
-              x={x(0)}
-              y={y(50)}
-              width={x(10.2) - x(0)}
-              height="65"
-              fill="url(#scan-gradient)"
-            />
-          </g>
           {ticks(0, 16, 8).map((value) => (
             <g key={`x${value}`}>
               <line
@@ -193,11 +403,37 @@ export function AtlasMap() {
           ))}
           <path
             d={`M${x(0)} ${y(50)} H${x(10.2)} V${y(30)} H${x(0)} Z`}
-            fill="none"
-            stroke="#FC3D21"
-            strokeOpacity=".65"
-            strokeDasharray="5 5"
+            className="lunar-outline"
           />
+          {gap?.region && (
+            <g
+              className="gap-overlay"
+              data-testid="gap-overlay"
+              pointerEvents="none"
+            >
+              <rect
+                x={x(gap.region.pressureMin)}
+                y={y(gap.region.oxygenMax)}
+                width={Math.max(
+                  2,
+                  x(gap.region.pressureMax) - x(gap.region.pressureMin),
+                )}
+                height={Math.max(
+                  2,
+                  y(gap.region.oxygenMin) - y(gap.region.oxygenMax),
+                )}
+                fill="url(#gap-hatch)"
+                className="gap-region"
+              />
+              <text
+                x={x(gap.region.pressureMin) + 8}
+                y={y(gap.region.oxygenMin) - 10}
+                className="gap-region-label"
+              >
+                {gap.label}
+              </text>
+            </g>
+          )}
           <text x={x(10.2) + 7} y={y(30) - 8} className="threshold-label">
             10.2 psi
           </text>
@@ -207,21 +443,24 @@ export function AtlasMap() {
             textAnchor="middle"
             className="axis-title"
           >
-            PRESIÓN ABSOLUTA (psi)
+            Presión absoluta (psi)
           </text>
           <text
             transform={`translate(14 ${(top + h - bottom) / 2}) rotate(-90)`}
             textAnchor="middle"
             className="axis-title"
           >
-            CONCENTRACIÓN O₂ (%)
+            Concentración de O₂ (%)
           </text>
           <g pointerEvents="none">
             <text x={x(1)} y={y(46)} className="zone-label">
-              ZONA DE OPERACIÓN LUNAR
+              Zona de operación lunar
             </text>
             <text x={x(1)} y={y(46) + 19} className="zone-subtitle">
-              ≥ 30% O₂ / ≤ 10.2 psi
+              ≥ 30 % O₂ · ≤ 10.2 psi
+            </text>
+            <text x={x(1)} y={y(46) + 38} className="zone-note">
+              Región de consulta · no es un límite de seguridad
             </text>
             <text
               x={x(4.7)}
@@ -237,7 +476,7 @@ export function AtlasMap() {
               className="gap-label"
               textAnchor="middle"
             >
-              UN TERRITORIO POR EXPLORAR
+              Un territorio por explorar
             </text>
             <text
               x={x(4.7)}
@@ -248,11 +487,14 @@ export function AtlasMap() {
               Toca el vacío. Formula una hipótesis.
             </text>
           </g>
-          {groupCoordinates(experiments).map((group) => {
+          {groupCoordinates(displayed).map((group) => {
             const experiment =
               group.find((e) => e.id === state.selectedId) ?? group[0];
-            const active =
-              state.gravity === "all" || state.gravity === experiment.gravity;
+            const matched =
+              highlightSet.size === 0 ||
+              group.some((e) => isHighlighted(e, highlightSet));
+            const active = matched;
+            const emphasized = highlightSet.size > 0 && matched;
             const focused = group.some((e) => e.id === state.selectedId);
             return (
               <g
@@ -289,38 +531,49 @@ export function AtlasMap() {
                       experiment.id,
                     ].join(" / ")}
                   </title>
-                  <circle r="22" fill="transparent" />
-                  {focused && (
-                    <g fill="none" stroke="#0B3D91">
-                      <circle r="23" />
-                      <circle r="27" strokeOpacity=".3" />
-                    </g>
-                  )}
-                  {experiment.outcome === "ignition" && (
-                    <circle
-                      className="node-pulse"
-                      r="17"
-                      fill="none"
-                      stroke={
-                        experiment.gravity === "micro" ? "#5B21B6" : "#FC3D21"
-                      }
-                      strokeOpacity=".25"
-                    />
-                  )}
-                  <svg
-                    x="-23"
-                    y="-31"
-                    width="46"
-                    height="51"
-                    viewBox="0 0 100 110"
-                  >
-                    <Flame
-                      gravity={experiment.gravity}
-                      outcome={experiment.outcome}
-                      compact
-                    />
-                  </svg>
-                  {group.length > 1 && (
+                  <g transform={`scale(${nodeScale})`}>
+                    <circle r="22" fill="transparent" />
+                    {emphasized && (
+                      <circle
+                        className="node-highlight"
+                        r="25"
+                        fill="rgba(11, 61, 145, 0.08)"
+                        stroke="var(--nasa-blue)"
+                        strokeWidth="2"
+                      />
+                    )}
+                    {focused && (
+                      <g fill="none" stroke="var(--nasa-blue)">
+                        <circle r="23" />
+                        <circle r="27" strokeOpacity=".3" />
+                      </g>
+                    )}
+                    {experiment.outcome === "ignition" && (
+                      <circle
+                        className="node-outline"
+                        r="17"
+                        fill="none"
+                        stroke={
+                          experiment.gravity === "micro" ? "#3B82F6" : "#FF5A1F"
+                        }
+                        strokeOpacity=".35"
+                      />
+                    )}
+                    <svg
+                      x="-23"
+                      y="-31"
+                      width="46"
+                      height="51"
+                      viewBox="0 0 100 110"
+                    >
+                      <Flame
+                        gravity={experiment.gravity}
+                        outcome={experiment.outcome}
+                        compact
+                      />
+                    </svg>
+                  </g>
+                  {group.length > 1 && !crowded && (
                     <text x="16" y="-15" className="node-count">
                       {group.length}
                     </text>
@@ -330,7 +583,10 @@ export function AtlasMap() {
             );
           })}
           {probe && (
-            <g pointerEvents="none" stroke={lunar ? "#FC3D21" : "#0B3D91"}>
+            <g
+              pointerEvents="none"
+              stroke={lunar ? "var(--flame-orange-ink)" : "var(--nasa-blue)"}
+            >
               <line
                 x1={x(probe.pressure)}
                 x2={x(probe.pressure)}
@@ -361,10 +617,6 @@ export function AtlasMap() {
             </g>
           )}
         </svg>
-        <div className="zone-badge glass backdrop-blur-xl">
-          <span>△</span> RIESGO DE IGNICIÓN{" "}
-          <small>REGIÓN LUNAR · ILUSTRATIVO</small>
-        </div>
         {probe && (
           <output
             className={`probe-readout ${lunar ? "critical" : ""}`}
@@ -374,12 +626,17 @@ export function AtlasMap() {
             <b> / </b>
             {probe.oxygen.toFixed(2)} <small>% O₂</small>
             <span>
-              {lunar ? "REGIÓN CRÍTICA · ILUSTRATIVA" : "RIESGO NO ESTIMADO"}
+              {lunar ? "Región crítica · ilustrativa" : "Riesgo no estimado"}
             </span>
           </output>
         )}
+        {mapNotice && (
+          <output className="probe-notice" role="status">
+            {mapNotice}
+          </output>
+        )}
         {overlap.length > 1 && (
-          <div className="overlap-menu glass">
+          <div className="overlap-menu">
             <strong>Ensayos en esta coordenada ({overlap.length})</strong>
             {overlap.map((e) => (
               <button
@@ -402,6 +659,12 @@ export function AtlasMap() {
           </div>
         )}
       </div>
+      {displayed.length === 0 && (
+        <p className="map-empty" role="status">
+          No hay ensayos con estos filtros. Restablécelos para volver al
+          catálogo completo.
+        </p>
+      )}
       <div className="map-legend">
         <span>
           <i className="legend-ignition" /> Ignición propagada
@@ -412,48 +675,68 @@ export function AtlasMap() {
         <span>
           <i className="legend-micro" /> Microgravedad
         </span>
+        <span>
+          <i className="legend-zone" /> Zona lunar
+        </span>
       </div>
       <footer className="gravity-footer">
         <div className="gravity-title">
-          <span className="micro-label" />
+          <span className="gravity-name">Régimen gravitacional</span>
           <span>
             {state.gravity === "lunar"
-              ? "Sin ensayos lunares en el catálogo"
+              ? `${experiments.filter((trial) => trial.gravity === "lunar").length} ensayos lunares en el catálogo`
               : ""}
           </span>
         </div>
         <div
-          className="gravity-control"
+          className="gravity-control segmented"
           role="group"
           aria-label="Régimen gravitacional"
         >
           {(
             [
-              { value: "all", title: "Todas", sub: "VISTA GLOBAL" },
+              { value: "all", title: "Todas", sub: "" },
               { value: "micro", title: "µg", sub: "ISS" },
-              { value: "lunar", title: "1/6g", sub: "LUNA" },
-              { value: "earth", title: "1g", sub: "TIERRA" },
+              { value: "lunar", title: "1/6g", sub: "Luna" },
+              { value: "earth", title: "1g", sub: "Tierra" },
             ] as const
           ).map((item) => (
             <button
               key={item.value}
+              data-gravity={item.value}
               aria-pressed={state.gravity === item.value}
               onClick={() => dispatch({ type: "gravity", gravity: item.value })}
             >
               <strong>{item.title}</strong>
-              <small>{item.sub}</small>
+              {item.sub && <small>{item.sub}</small>}
             </button>
           ))}
         </div>
       </footer>
       <details className="manual-probe">
         <summary>
-          Sonda por coordenadas <span>↗</span>
+          Sonda por coordenadas <span aria-hidden="true">↗</span>
         </summary>
         <form
+          noValidate
           onSubmit={(event) => {
             event.preventDefault();
-            queryPoint(manual);
+            const parse = (value: string) =>
+              value.trim() === "" ? Number.NaN : Number(value);
+            const result = resolveProbe(
+              parse(manual.pressure),
+              parse(manual.oxygen),
+            );
+            if (!result.ok) {
+              setManualError(
+                result.reason === "invalid"
+                  ? "Ingresa valores numéricos de presión y oxígeno."
+                  : "Fuera de la zona lunar: usa 0–10.2 psi y 30–50 % O₂.",
+              );
+              return;
+            }
+            setManualError("");
+            queryPoint(result.point);
           }}
         >
           <label>
@@ -465,9 +748,12 @@ export function AtlasMap() {
               min="0"
               max="10.2"
               value={manual.pressure}
-              onChange={(e) =>
-                setManual({ ...manual, pressure: Number(e.target.value) })
-              }
+              aria-invalid={manualError ? true : undefined}
+              aria-describedby={manualError ? "probe-error" : undefined}
+              onChange={(e) => {
+                setManualError("");
+                setManual({ ...manual, pressure: e.target.value });
+              }}
             />
           </label>
           <label>
@@ -479,12 +765,20 @@ export function AtlasMap() {
               min="30"
               max="50"
               value={manual.oxygen}
-              onChange={(e) =>
-                setManual({ ...manual, oxygen: Number(e.target.value) })
-              }
+              aria-invalid={manualError ? true : undefined}
+              aria-describedby={manualError ? "probe-error" : undefined}
+              onChange={(e) => {
+                setManualError("");
+                setManual({ ...manual, oxygen: e.target.value });
+              }}
             />
           </label>
           <button type="submit">Consultar punto →</button>
+          {manualError && (
+            <p id="probe-error" className="probe-error" role="alert">
+              {manualError}
+            </p>
+          )}
         </form>
       </details>
     </section>

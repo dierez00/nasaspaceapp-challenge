@@ -31,3 +31,7 @@ test-results/
 # Python caches from local data validation
 __pycache__/
 *.py[cod]
+
+# local agent tooling
+.codegraph/
+.atl/

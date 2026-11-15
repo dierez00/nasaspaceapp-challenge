@@ -1,7 +1,5 @@
 # Documentación
 
-Usa esta carpeta para registrar decisiones de arquitectura, contratos, recorridos funcionales y procedimientos operativos del producto.
-
-El starter no incluye una propuesta funcional: cada proyecto debe documentar aquí su propio dominio antes de añadir módulos.
+Decisiones de arquitectura, contratos y procedimientos del frontend del Atlas. La visión general, la arquitectura completa y el despliegue están en el [README principal](../README.md).
 
 - [Atlas: frontend, contratos y adaptadores](atlas-frontend.md)

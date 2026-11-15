@@ -58,6 +58,51 @@
           "doi": "10.1016/j.firesaf.2011.08.002"
         }
       ]
+    },
+    {
+      "id": "PSI-106",
+      "title": "Structure and Liftoff In Combustion Experiment",
+      "acronym": "SLICE",
+      "doi": "10.60555/pm12-rg61",
+      "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-106",
+      "scope": "search_only",
+      "reason": "Coflow laminar gas-jet diffusion flames (structure, liftoff, soot) in ISS cabin air; the CSV lists 11 SLICE test days without run-level conditions or burn/no-burn outcomes, so it is not a point on the gap map. Pending draft kept in data/raw/PSI-106/.",
+      "topics": [
+        "flame liftoff",
+        "flame structure",
+        "soot",
+        "laminar coflow diffusion flames",
+        "fuel dilution",
+        "microgravity"
+      ],
+      "documents": [
+        {
+          "file": "PSI-106_Experimental table_Slice.csv",
+          "kind": "experimental_table"
+        }
+      ],
+      "publications": [
+        {
+          "title": "A computational and experimental study of coflow laminar methane/air diffusion flames: Effects of fuel dilution, inlet velocity, and gravity",
+          "doi": "10.1016/j.proci.2014.05.138"
+        },
+        {
+          "title": "A Combined Experimental and Computational Study of Soot Formation in Normal and Microgravity Conditions",
+          "doi": "10.1080/00102202.2022.2041621"
+        },
+        {
+          "title": "Effects of Fuel Dilution and Gravity on Laminar Coflow Methane-Air Diffusion Flames: A Computational and Experimental Investigation",
+          "doi": null
+        },
+        {
+          "title": "An experimental and computational study of soot formation in a coflow jet flame under microgravity and normal gravity",
+          "doi": "10.1016/j.proci.2014.05.064"
+        },
+        {
+          "title": "Analysis of CH* concentration and flame heat release rate in laminar coflow diffusion flames under microgravity and normal gravity",
+          "doi": "10.1016/j.combustflame.2016.02.012"
+        }
+      ]
     }
   ]
 }

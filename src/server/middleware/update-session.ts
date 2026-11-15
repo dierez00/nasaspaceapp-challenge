@@ -4,6 +4,7 @@ import { getPublicEnv } from "@/shared/config/env";
 import type { Database } from "@/server/db/database.types";
 
 export async function updateSession(request: NextRequest) {
+  if (["/", "/api/atlas/experiments", "/api/atlas/query"].includes(request.nextUrl.pathname)) return NextResponse.next();
   let response = NextResponse.next({ request });
   const env = getPublicEnv();
   const supabase = createServerClient<Database>(

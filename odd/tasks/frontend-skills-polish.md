@@ -34,7 +34,7 @@ A read-only audit (impeccable critique/audit/harden, web-design-guidelines, verc
 - Baseline (before edits): lint, typecheck, test (31 passed) all green.
 - T1 reduced motion: `d1c632e`. lint/typecheck/test green (31 passed). Hero: gsap.matchMedia (opacity-only under reduce), Lenis not created under reduce (reacts to live changes), flame drift off, 3D renders one static frame, loading spinner/pulse `motion-reduce:animate-none`. New hook `useReducedMotion`.
 - T2 WebGL/lab performance: `671cc6a`. lint/typecheck/test green (31 passed). Hero loop pauses on visibilitychange/off-screen/context loss, segments 64->32 (Earth) and 128->64 (Moon), dpr cap 1.5; lab `active` also requires dashboard in viewport (IntersectionObserver); invalid `will-change-opacity` removed, `will-change: transform` only during active hero scroll.
-- T3 LoadingScreen robustness: COMMIT_T3. lint/typecheck/test green (31 passed). No `three` import (progress via `atlas:hero-load-progress` window event from SpaceBackdrop3D's own LoadingManager), progress written through refs, all timers cleaned, 8 s JS safety timeout + 12 s CSS-only failsafe, `h1`->`p`, `aria-busy`/`aria-hidden`. Duration unchanged.
+- T3 LoadingScreen robustness: `f8c7ae9`. lint/typecheck/test green (31 passed). No `three` import (progress via `atlas:hero-load-progress` window event from SpaceBackdrop3D's own LoadingManager), progress written through refs, all timers cleaned, 8 s JS safety timeout + 12 s CSS-only failsafe, `h1`->`p`, `aria-busy`/`aria-hidden`. Duration unchanged.
 
 ## Next step
 T4.

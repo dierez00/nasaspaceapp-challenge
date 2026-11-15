@@ -6,11 +6,10 @@ Demo pública de exploración visual en `/`. Usa el sistema `atlas-fuego-lunar-u
 
 ```sh
 pnpm install
-pnpm prisma:generate
 pnpm dev
 ```
 
-La página del Atlas y sus dos endpoints públicos no requieren Supabase, PostgreSQL ni claves de IA. Las pantallas de autenticación, workspace y administración conservan sus requisitos originales. El cliente Prisma se genera porque esas rutas siguen formando parte del build.
+En modo `demo` la página del Atlas y sus endpoints no requieren backend, base de datos ni claves de IA.
 
 ## Arquitectura
 
@@ -124,7 +123,7 @@ Reiniciar Next.js. El navegador sigue consultando la misma fachada; Next.js habl
 - `guided` (predeterminado): los tres accesos rápidos y la sonda responden con cálculos sobre el catálogo PSI, sin agentes ni tokens (`DemoCopilotGateway` con catálogo `psi`).
 - `remote`: Next.js envía `{"q": texto + sonda}` a `POST {ATLAS_API_URL}/query` y traduce sus eventos (`src/modules/copilot/infra/backend-query.ts`): `status` → `progress` (mismos nombres de paso); `ui` con un componente `brief` (campo `brief_version: 1`) → bloque `EvidenceBrief` y sus filas verbatim, sin aplanar a markdown; `table` → `DataTable`, `citations` → `SourceList`, `notice` → `Notice`, `gap_map` → `MapFocus`; `error` → `error`. El cliente valida cada bloque y nunca muestra texto interno del agente. Contrato del backend: `curren_repo_context/eventos-sse.md` y `contrato-ui.md`, y `docs/` de la rama `test/evidence-brief`.
 
-El modo predeterminado es `demo`. El modo remoto no cae silenciosamente en datos sintéticos: muestra carga, error y reintento. Implementar las mismas formas en Pydantic y comprobar los fixtures contra ambos esquemas antes de conectar datos reales. Autenticación de backend, cuotas y persistencia de conversaciones quedan para esa integración; esta entrega no modifica el modelo multiempresa.
+El modo predeterminado es `demo`. El modo remoto no cae silenciosamente en datos sintéticos: muestra carga, error y reintento. Implementar las mismas formas en Pydantic y comprobar los fixtures contra ambos esquemas antes de conectar datos reales. Autenticación de backend, cuotas y persistencia de conversaciones quedan fuera de esta entrega.
 
 ## Comportamiento científico de la demo
 
@@ -144,11 +143,7 @@ pnpm build
 
 Playwright utiliza Edge instalado (`channel: msedge`); para otros entornos instalar Chromium y cambiar ese canal. Cubre escritorio 1440×900 y 1366×768, móvil 390×844, filtros, sincronización, re-ignición, consultas, teclado, coincidencias, movimiento reducido, error/reintento, cancelación y fallback. Genera capturas en `test-results/`, ignorado por Git. Vitest cubre dominios, contratos y transporte SSE fragmentado, Unicode, abortos y consultas obsoletas.
 
-El modo demo requiere el servidor Next.js local, pero no servicios externos en ejecución. No es una PWA ni un sitio completamente estático. La conexión contra FastAPI real sigue pendiente hasta disponer del servicio.
-
-### Entorno del build heredado
-
-Las rutas SaaS importan Prisma y validan `DATABASE_URL` durante el build. Para `pnpm build`, usa la URL local de `.env.example` (igual que CI); no hace falta un servidor PostgreSQL activo. La demo en `/` no consulta esa base.
+El modo demo requiere el servidor Next.js local, pero no servicios externos en ejecución. No es una PWA ni un sitio completamente estático.
 
 ## Laboratorio inmersivo 3D
 

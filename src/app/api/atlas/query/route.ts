@@ -10,6 +10,9 @@ import {
 } from "@/modules/copilot/infra/backend-query";
 import { psiApiRepository } from "@/modules/atlas/infra/psi-api";
 
+// The backend agents may stream for up to 120 s; leave headroom on serverless hosts.
+export const maxDuration = 150;
+
 const unavailable = (error: string, status: number) =>
   NextResponse.json({ error }, { status });
 

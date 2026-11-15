@@ -83,3 +83,4 @@ With `AGENTS_MOCK=1`, `/query` answers without AI keys. Open <http://localhost:8
 - Mario Lira
 - Emiliano Holguin
 - Diego Antunez
+- Alejandro De Busk

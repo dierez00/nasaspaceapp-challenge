@@ -10,10 +10,18 @@ import {
 } from "react";
 import { motion } from "motion/react";
 import { useSimulation, usePlayback } from "../application/simulation-provider";
-import { flameEnvelope, type Slot, type FlameState } from "../domain/scenario";
+import {
+  flameEnvelope,
+  type Slot,
+  type FlameState,
+  type SimulationScenario,
+} from "../domain/scenario";
 import { useAtlas } from "@/modules/atlas/ui/atlas-provider";
 import { Flame } from "@/modules/atlas/ui/flame";
 import { gravityLabels } from "@/modules/atlas/domain/experiment";
+import { gravityScenarios } from "../domain/comparison";
+import { ExplorationGuide } from "./exploration-guide";
+import { ComparisonNotes } from "./comparison-notes";
 import "./laboratory.css";
 const LabCanvas = dynamic(() => import("./lab-canvas"), {
   ssr: false,
@@ -39,7 +47,13 @@ class SceneBoundary extends Component<
     return this.state.failed ? null : this.props.children;
   }
 }
-function ScenarioControls({ slot }: { slot: Slot }) {
+function ScenarioControls({
+  slot,
+  shared = false,
+}: {
+  slot: Slot;
+  shared?: boolean;
+}) {
   const { state, edit, dispatch, clock, reduced } = useSimulation();
   const { experiments } = useAtlas();
   const scenario = state.scenarios[slot];
@@ -140,7 +154,9 @@ function ScenarioControls({ slot }: { slot: Slot }) {
       </div>
       <div className="control-row control-row-modes">
         <div className="cluster">
-          <span className="cluster-label">Gravedad</span>
+          <span className="cluster-label">
+            {shared ? "Tres gravedades · condiciones compartidas" : "Gravedad"}
+          </span>
           <div
             className="segmented"
             role="group"
@@ -151,7 +167,8 @@ function ScenarioControls({ slot }: { slot: Slot }) {
                 key={gravity}
                 data-gravity={gravity}
                 aria-label={`${gravityLabels[gravity]} ${slot}`}
-                aria-pressed={scenario.gravity === gravity}
+                aria-pressed={shared || scenario.gravity === gravity}
+                disabled={shared}
                 onClick={() => edit(slot, { gravity })}
               >
                 {gravityLabels[gravity]}
@@ -234,10 +251,14 @@ function Playback() {
     </div>
   );
 }
-function FallbackScene({ slot }: { slot: Slot }) {
-  const { state } = useSimulation();
+function FallbackScene({
+  slot,
+  scenario,
+}: {
+  slot: string;
+  scenario: SimulationScenario;
+}) {
   const { time } = usePlayback();
-  const scenario = state.scenarios[slot];
   const intensity = flameEnvelope(scenario.flameState, time, scenario.pressure);
   return (
     <div className="svg-chamber" data-testid={`svg-scene-${slot}`}>
@@ -265,7 +286,10 @@ export function Laboratory() {
   const { state, dispatch, active, reduced } = useSimulation();
   const host = useRef<HTMLDivElement>(null),
     viewA = useRef<HTMLDivElement>(null),
-    viewB = useRef<HTMLDivElement>(null);
+    viewB = useRef<HTMLDivElement>(null),
+    viewC = useRef<HTMLDivElement>(null);
+  const [gravityComparison, setThreeGravities] = useState(false);
+  const threeGravities = gravityComparison && !state.compare;
   const [mobile, setMobile] = useState(false),
     [unsupported, setUnsupported] = useState(false),
     [attempt, setAttempt] = useState(0);
@@ -278,8 +302,17 @@ export function Laboratory() {
   }, []);
   const fail = useCallback(() => setUnsupported(true), []);
   const slots: Slot[] = state.compare ? ["A", "B"] : ["A"];
+  const views = threeGravities
+    ? gravityScenarios(state.scenarios.A).map((scenario, index) => ({
+        slot: ["A", "B", "C"][index],
+        scenario,
+      }))
+    : slots.map((slot) => ({ slot, scenario: state.scenarios[slot] }));
   return (
-    <section className="laboratory" aria-label="Laboratorio de combustión">
+    <section
+      className="laboratory dark-instrument"
+      aria-label="Laboratorio de combustión"
+    >
       <header className="lab-heading">
         <div>
           <h2>
@@ -287,16 +320,35 @@ export function Laboratory() {
           </h2>
           <p>Cambia las condiciones y observa cómo responde la llama.</p>
         </div>
-        <button
-          className={`compare-toggle ${state.compare ? "enabled" : ""}`}
-          aria-pressed={state.compare}
-          onClick={() =>
-            dispatch({ type: state.compare ? "single" : "compare" })
-          }
-        >
-          {state.compare ? "✕ Cerrar A/B" : "⊕ Comparar A/B"}
-        </button>
+        <div className="lab-comparison-actions">
+          <button
+            className={`compare-toggle ${threeGravities ? "enabled" : ""}`}
+            aria-pressed={threeGravities}
+            onClick={() => {
+              setThreeGravities(!threeGravities);
+              dispatch({ type: "single" });
+            }}
+          >
+            Tres gravedades
+          </button>
+          <button
+            className={`compare-toggle ${state.compare ? "enabled" : ""}`}
+            aria-pressed={state.compare}
+            onClick={() => {
+              setThreeGravities(false);
+              dispatch({ type: state.compare ? "single" : "compare" });
+            }}
+          >
+            {state.compare ? "✕ Cerrar A/B" : "⊕ Comparar A/B"}
+          </button>
+        </div>
       </header>
+      <ExplorationGuide
+        onCompare={() => {
+          setThreeGravities(true);
+          dispatch({ type: "single" });
+        }}
+      />
       {state.compare && (
         <div className="comparison-toolbar">
           <span>
@@ -323,10 +375,10 @@ export function Laboratory() {
         </div>
       )}
       <div
-        className={`lab-window cupola-octagon ${state.compare ? "is-comparing" : ""}`}
+        className={`lab-window cupola-octagon ${threeGravities ? "is-three" : ""} ${state.compare ? "is-comparing" : ""}`}
       >
         <motion.div
-          className={`lab-viewport cupola-octagon ${state.compare ? "is-comparing" : ""}`}
+          className={`lab-viewport cupola-octagon ${threeGravities ? "is-three" : ""} ${state.compare ? "is-comparing" : ""}`}
           ref={host}
           data-active-slot={state.activeSlot}
           data-render-mode={unsupported ? "svg" : "3d"}
@@ -340,26 +392,35 @@ export function Laboratory() {
                 host={host}
                 viewA={viewA}
                 viewB={viewB}
+                viewC={viewC}
+                threeGravities={threeGravities}
                 mobile={mobile}
                 onLoss={fail}
               />
             </SceneBoundary>
           )}
           <div className="scene-views">
-            {slots.map((slot) => {
-              const scenario = state.scenarios[slot];
+            {views.map(({ slot, scenario }) => {
               return (
                 <div
                   key={slot}
-                  ref={slot === "A" ? viewA : viewB}
+                  ref={slot === "A" ? viewA : slot === "B" ? viewB : viewC}
                   className={`scene-view scene-${slot}`}
                   data-testid={`scene-${slot}`}
                 >
-                  {unsupported && <FallbackScene slot={slot} />}
+                  {unsupported && (
+                    <FallbackScene slot={slot} scenario={scenario} />
+                  )}
                   <div className="scene-label">
-                    <span className="scene-letter">{slot}</span>
+                    {!threeGravities && (
+                      <span className="scene-letter">{slot}</span>
+                    )}
                     <div>
-                      <strong>{scenario.material}</strong>
+                      <strong>
+                        {threeGravities
+                          ? gravityLabels[scenario.gravity]
+                          : scenario.material}
+                      </strong>
                       <small>
                         {scenario.experimentId
                           ? `${scenario.experimentId} · `
@@ -373,7 +434,9 @@ export function Laboratory() {
                               : "Escenario libre"}
                       </small>
                     </div>
-                    <span className="scene-gravity">
+                    <span
+                      className={`scene-gravity ${threeGravities ? "sr-only" : ""}`}
+                    >
                       {gravityLabels[scenario.gravity]}
                     </span>
                   </div>
@@ -437,15 +500,23 @@ export function Laboratory() {
           </button>
         </div>
       )}
+      {threeGravities && (
+        <p className="shared-conditions">
+          {state.scenarios.A.material} · {state.scenarios.A.pressure.toFixed(1)}{" "}
+          psi · {state.scenarios.A.oxygen.toFixed(1)} % O₂ · misma fase en las
+          tres vistas
+        </p>
+      )}
       <Playback />
       <div
         className={`lab-controls ${state.compare ? "is-comparing" : ""}`}
         data-active-slot={state.activeSlot}
       >
-        {slots.map((slot) => (
-          <ScenarioControls key={slot} slot={slot} />
+        {(threeGravities ? ["A" as const] : slots).map((slot) => (
+          <ScenarioControls key={slot} slot={slot} shared={threeGravities} />
         ))}
       </div>
+      <ComparisonNotes threeGravities={threeGravities} />
       <footer className="lab-disclaimer">
         <p>
           <strong>Representación cualitativa.</strong> Los controles modifican

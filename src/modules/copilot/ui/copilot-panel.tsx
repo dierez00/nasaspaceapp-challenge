@@ -1,4 +1,5 @@
 "use client";
+import { AtlasMark } from "@/components/brand/atlas-mark";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAtlas } from "@/modules/atlas/ui/atlas-provider";
 import { HttpCopilotGateway } from "../infra/http-gateway";
@@ -182,19 +183,37 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
     void start({ version: 1, queryId: crypto.randomUUID(), text: text.trim() });
   }
   return (
-    <aside className="copilot-panel" aria-label="Copiloto de investigación">
+    <aside
+      id="contextual-evidence"
+      className="copilot-panel evidence-paper"
+      hidden={!state.assistantOpen}
+      aria-label="Evidencia y asistente"
+    >
       <header className="copilot-heading">
         <div className="copilot-icon" aria-hidden="true">
-          ✳
+          <AtlasMark monochrome />
         </div>
         <div>
-          <h2>Copiloto de investigación</h2>
+          <h2>Evidencia en contexto</h2>
           <span>
             {mode === "demo"
               ? "Demo · respuestas simuladas"
               : "Datos NASA PSI · en vivo"}
           </span>
         </div>
+        <button
+          className="close-evidence"
+          aria-label="Cerrar evidencia y asistente"
+          onClick={() => {
+            dispatch({ type: "assistant", open: false });
+            const toggle = document.getElementById(
+              innerWidth < 1024 ? "mobile-evidence-toggle" : "evidence-toggle",
+            );
+            toggle?.focus({ preventScroll: true });
+          }}
+        >
+          Cerrar
+        </button>
       </header>
       <div
         className="chat-history"
@@ -211,36 +230,36 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
               80;
         }}
       >
-        <section className="welcome-message" aria-labelledby="welcome-title">
-          <h3 id="welcome-title">
-            ¿Qué quieres saber del fuego fuera de la Tierra?
-          </h3>
-          <p>
-            Pregunta con tus palabras. Cada respuesta llega como una ficha: lo
-            que dicen los datos, la evidencia, lo que falta y qué probar
-            después.
-          </p>
-          <ul className="starters">
-            {starters.map((starter) => (
-              <li key={starter.audience}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAudience(starter.audience);
-                    submit(starter.prompt);
-                  }}
-                >
-                  <span className="label">{starter.who}</span>
-                  <strong>{starter.prompt}</strong>
-                  <small>{starter.hint}</small>
-                </button>
-              </li>
-            ))}
-          </ul>
-          <p className="welcome-hint">
-            También puedes tocar un ensayo o una zona vacía del mapa.
-          </p>
-        </section>
+        {messages.length === 0 && (
+          <section className="welcome-message" aria-labelledby="welcome-title">
+            <h3 id="welcome-title">Del experimento a la evidencia</h3>
+            <p>
+              Contrasta lo que ves con los datos: conclusión, ensayos, fuentes y
+              límites. Puedes seguir explorando el instrumento mientras preparas
+              una pregunta.
+            </p>
+            <ul className="starters">
+              {starters.map((starter) => (
+                <li key={starter.audience}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAudience(starter.audience);
+                      submit(starter.prompt);
+                    }}
+                  >
+                    <span className="label">{starter.who}</span>
+                    <strong>{starter.prompt}</strong>
+                    <small>{starter.hint}</small>
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <p className="welcome-hint">
+              También puedes tocar un ensayo o una zona vacía del mapa.
+            </p>
+          </section>
+        )}
         {messages.map((message) => (
           <section
             className="chat-turn"
@@ -249,18 +268,15 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
           >
             <div className="user-message">{message.query.text}</div>
             <div className="assistant-label">
-              <span aria-hidden="true">✳</span> Atlas{" "}
-              <small>{mode === "demo" ? "Demo" : "Copiloto"}</small>
+              <span aria-hidden="true">
+                <AtlasMark monochrome />
+              </span>{" "}
+              Atlas <small>{mode === "demo" ? "Demo" : "Copiloto"}</small>
             </div>
             {message.text && <p className="assistant-text">{message.text}</p>}
             <div className="generated-blocks">
               {message.blocks.map((block, index) => (
-                <div
-                  key={index}
-                  style={{
-                    animationDelay: `${40 + Math.min(index, 2) * 100}ms`,
-                  }}
-                >
+                <div key={index}>
                   <BlockRenderer block={block} />
                 </div>
               ))}

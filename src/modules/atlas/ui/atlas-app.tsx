@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { AtlasMark } from "@/components/brand/atlas-mark";
 import type { Experiment } from "../domain/experiment";
 import { HttpExperimentRepository } from "../infra/experiments";
 import { AtlasProvider, useAtlas } from "./atlas-provider";
@@ -10,14 +11,25 @@ import "./atlas.css";
 import { SimulationProvider } from "@/modules/simulation/application/simulation-provider";
 import { Laboratory } from "@/modules/simulation/ui/laboratory";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { setAudience, useAudience } from "@/modules/copilot/ui/audience-store";
+import { audiences, audienceLabels } from "@/modules/copilot/domain/brief";
+import { useSimulation } from "@/modules/simulation/application/simulation-provider";
+import "./observatory.css";
 import { useExperience } from "@/shared/experience/experience-context";
 
 function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
   const { state, dispatch } = useAtlas();
   const reduced = useReducedMotion();
+  const audience = useAudience();
+  const { state: simulation } = useSimulation();
+  const scenario = simulation.scenarios.A;
   const experience = useExperience();
   return (
-    <main className="atlas-app" data-tab={state.tab}>
+    <main
+      className="atlas-app"
+      data-tab={state.tab}
+      data-assistant-open={state.assistantOpen}
+    >
       <nav className="atlas-topbar" aria-label="Atlas">
         <Link
           className="atlas-brand"
@@ -30,21 +42,7 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
             experience.returnToCabin();
           }}
         >
-          <svg className="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
-            <rect width="32" height="32" rx="10" fill="#0b3d91" />
-            <path
-              d="M16 6c.6 4.6 5.6 6.8 5.6 11.4A5.6 5.6 0 0 1 16 23a5.6 5.6 0 0 1-5.6-5.6C10.4 14 13 12.6 13.6 9.6c.9.9 1.2 2 1.2 3.2C16 11 16.2 8.4 16 6Z"
-              fill="#ff5a1f"
-            />
-            <path
-              d="M4.5 22.5c6 3.2 17 1.6 23-4.6"
-              fill="none"
-              stroke="#fff"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              opacity=".9"
-            />
-          </svg>
+          <AtlasMark className="brand-mark" />
           <span>Atlas del fuego lunar</span>
         </Link>
         <div
@@ -100,40 +98,77 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
           </span>
         </div>
       </nav>
+      <div className="workspace-context">
+        <label className="workspace-lens">
+          Perspectiva
+          <select
+            aria-label="Perspectiva de exploración"
+            value={audience}
+            onChange={(event) =>
+              setAudience(event.target.value as typeof audience)
+            }
+          >
+            {audiences.map((value) => (
+              <option key={value} value={value}>
+                {audienceLabels[value]}
+              </option>
+            ))}
+          </select>
+        </label>
+        <p>
+          {state.view === "lab" ? (
+            <>
+              {scenario.material}{" "}
+              <span>
+                · {scenario.pressure.toFixed(1)} psi ·{" "}
+                {scenario.oxygen.toFixed(1)} % O₂
+              </span>
+            </>
+          ) : (
+            "Selecciona un ensayo para contrastar sus condiciones y fuentes."
+          )}
+        </p>
+        <button
+          id="evidence-toggle"
+          className="assistant-toggle"
+          aria-controls="contextual-evidence"
+          aria-expanded={state.assistantOpen}
+          onClick={() =>
+            dispatch({ type: "assistant", open: !state.assistantOpen })
+          }
+        >
+          <AtlasMark monochrome /> Evidencia y asistente
+        </button>
+      </div>
       <div className="mobile-tabs" role="group" aria-label="Panel visible">
         <button
           aria-pressed={state.tab === "camera"}
           onClick={() => dispatch({ type: "tab", tab: "camera" })}
         >
-          ⊕ Cámara
+          Instrumento
         </button>
         <button
+          id="mobile-evidence-toggle"
+          aria-label="Evidencia y asistente"
+          aria-expanded={state.assistantOpen}
+          aria-controls="contextual-evidence"
           aria-pressed={state.tab === "copilot"}
           onClick={() => dispatch({ type: "tab", tab: "copilot" })}
         >
-          ✳ Copiloto
+          Evidencia y asistente
         </button>
       </div>
       <div className="atlas-split">
         <div className="simulation-workspace">
-          {/* Camera-like move between views: the incoming screen slides in from the
-              side it lives on. Only transform/opacity; reduced motion just fades. */}
+          {/* A single opacity handoff keeps fixed WebGL scissor bounds stable. */}
           <AnimatePresence initial={false}>
             <motion.div
               key={state.view}
               className="workspace-view"
-              initial={
-                reduced
-                  ? { opacity: 0 }
-                  : {
-                      opacity: 0,
-                      x: state.view === "map" ? 40 : -40,
-                      scale: 0.985,
-                    }
-              }
-              animate={{ opacity: 1, x: 0, scale: 1 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{
-                duration: reduced ? 0.12 : 0.42,
+                duration: reduced ? 0.12 : 0.18,
                 ease: [0.45, 0, 0.15, 1],
               }}
             >

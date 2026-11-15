@@ -41,3 +41,20 @@ export function isHighlighted(
     highlight.has(investigationId(experiment.id))
   );
 }
+
+/** Count source trial rows, not requested ids or coincident map glyphs. */
+export function highlightVisibility(
+  experiments: Experiment[],
+  displayed: Experiment[],
+  highlight: ReadonlySet<string>,
+) {
+  const matched = new Set(
+    experiments
+      .filter((trial) => isHighlighted(trial, highlight))
+      .map((trial) => trial.id),
+  );
+  const visible = new Set(
+    displayed.filter((trial) => matched.has(trial.id)).map((trial) => trial.id),
+  );
+  return { visible: visible.size, hidden: matched.size - visible.size };
+}

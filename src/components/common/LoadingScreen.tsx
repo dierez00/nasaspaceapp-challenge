@@ -1,5 +1,6 @@
 "use client";
 
+import { AtlasMark } from "@/components/brand/atlas-mark";
 import React, { useEffect, useRef, useState } from "react";
 import {
   HERO_LOAD_PROGRESS_EVENT,
@@ -41,7 +42,7 @@ export function LoadingScreen() {
       rootRef.current?.setAttribute("aria-valuenow", String(rounded));
       ringRef.current?.setAttribute(
         "stroke-dashoffset",
-        String(RING_LENGTH - (RING_LENGTH * p) / 100)
+        String(RING_LENGTH - (RING_LENGTH * p) / 100),
       );
       if (percentRef.current) percentRef.current.textContent = `${rounded}%`;
       if (messageRef.current) messageRef.current.textContent = getMessage(p);
@@ -58,7 +59,7 @@ export function LoadingScreen() {
           setIsFading(true);
           // Desmontar completamente tras el fundido de 700ms
           timers.push(window.setTimeout(() => setIsMounted(false), FADE_MS));
-        }, 250)
+        }, 250),
       );
     };
 
@@ -70,7 +71,10 @@ export function LoadingScreen() {
     window.addEventListener(HERO_LOAD_PROGRESS_EVENT, onHeroProgress);
 
     const tick = (currentTime: number) => {
-      const simulated = Math.min(((currentTime - startTime) / duration) * 100, 100);
+      const simulated = Math.min(
+        ((currentTime - startTime) / duration) * 100,
+        100,
+      );
       // El progreso avanza de forma fluida y se apoya en la carga real de texturas
       const current = Math.max(simulated, realProgress);
       if (current >= 100) {
@@ -104,25 +108,13 @@ export function LoadingScreen() {
       aria-valuemin={0}
       aria-valuemax={100}
       className={`loading-screen-failsafe theme-cabin fixed inset-0 z-50 flex flex-col items-center justify-center select-none transition-opacity duration-700 ease-out ${
-        isFading ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"
+        isFading
+          ? "opacity-0 pointer-events-none"
+          : "opacity-100 pointer-events-auto"
       }`}
     >
       <div className="relative z-10 flex w-full max-w-xl flex-col items-center px-8 text-center">
-        <svg viewBox="0 0 32 32" aria-hidden="true" className="mb-5 h-12 w-12">
-          <rect width="32" height="32" rx="10" fill="#0b3d91" />
-          <path
-            d="M16 6c.6 4.6 5.6 6.8 5.6 11.4A5.6 5.6 0 0 1 16 23a5.6 5.6 0 0 1-5.6-5.6C10.4 14 13 12.6 13.6 9.6c.9.9 1.2 2 1.2 3.2C16 11 16.2 8.4 16 6Z"
-            fill="#ff5a1f"
-          />
-          <path
-            d="M4.5 22.5c6 3.2 17 1.6 23-4.6"
-            fill="none"
-            stroke="#fff"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            opacity=".9"
-          />
-        </svg>
+        <AtlasMark className="mb-5 h-12 w-12" />
 
         <p className="font-display text-2xl font-semibold tracking-tight text-[#f4f7fb] sm:text-3xl">
           Atlas del fuego lunar
@@ -130,7 +122,11 @@ export function LoadingScreen() {
 
         {/* Anillo de progreso */}
         <div className="relative mt-9 mb-6 flex h-24 w-24 items-center justify-center">
-          <svg className="h-full w-full -rotate-90" viewBox="0 0 100 100" aria-hidden="true">
+          <svg
+            className="h-full w-full -rotate-90"
+            viewBox="0 0 100 100"
+            aria-hidden="true"
+          >
             <circle
               cx="50"
               cy="50"
@@ -161,10 +157,7 @@ export function LoadingScreen() {
           </span>
         </div>
 
-        <p
-          ref={messageRef}
-          className="h-6 text-base text-[#cfd8e6]"
-        >
+        <p ref={messageRef} className="h-6 text-base text-[#cfd8e6]">
           {getMessage(0)}
         </p>
       </div>

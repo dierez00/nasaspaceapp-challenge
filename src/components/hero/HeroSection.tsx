@@ -3,6 +3,7 @@
 import React, { type RefObject } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { AtlasMark } from "@/components/brand/atlas-mark";
 import { MicrogravityFlame } from "./MicrogravityFlame";
 import { CupolaFrame } from "./CupolaFrame";
 
@@ -42,21 +43,7 @@ export function HeroSection({ live, dive, onStart, ctaRef }: HeroSectionProps) {
       </div>
 
       <div className="cabin-mark">
-        <svg viewBox="0 0 32 32" aria-hidden="true" className="cabin-mark-logo">
-          <rect width="32" height="32" rx="10" fill="#0b3d91" />
-          <path
-            d="M16 6c.6 4.6 5.6 6.8 5.6 11.4A5.6 5.6 0 0 1 16 23a5.6 5.6 0 0 1-5.6-5.6C10.4 14 13 12.6 13.6 9.6c.9.9 1.2 2 1.2 3.2C16 11 16.2 8.4 16 6Z"
-            fill="#ff5a1f"
-          />
-          <path
-            d="M4.5 22.5c6 3.2 17 1.6 23-4.6"
-            fill="none"
-            stroke="#fff"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            opacity=".9"
-          />
-        </svg>
+        <AtlasMark className="cabin-mark-logo" />
       </div>
       <Image
         src="/NASA_logo.webp"
@@ -88,7 +75,11 @@ export function HeroSection({ live, dive, onStart, ctaRef }: HeroSectionProps) {
           onClick={onStart}
         >
           Comenzar inmersión
-          <svg viewBox="0 0 20 20" aria-hidden="true" className="cabin-cta-arrow">
+          <svg
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+            className="cabin-cta-arrow"
+          >
             <path
               d="M4 10h11m-4.5-5L15.5 10l-5 5"
               fill="none"

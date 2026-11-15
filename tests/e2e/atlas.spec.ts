@@ -1,4 +1,4 @@
-﻿import { test, expect, type Locator, type Page } from "@playwright/test";
+import { test, expect, type Locator, type Page } from "@playwright/test";
 async function slider(locator: Locator, value: number) {
   await locator.evaluate((element, value) => {
     const input = element as HTMLInputElement;
@@ -17,6 +17,14 @@ async function openAtlas(page: Page) {
     "data-phase",
     "deck",
   );
+}
+async function openEvidence(page: Page) {
+  const button = page.getByRole("button", {
+    name: "Evidencia y asistente",
+    exact: true,
+  });
+  if ((await button.getAttribute("aria-expanded")) !== "true")
+    await button.click();
 }
 const phase = (page: Page) => page.locator(".experience");
 // The hero backdrop is a second canvas, so scope lab assertions to the lab renderer.
@@ -47,9 +55,7 @@ for (const viewport of [
     await expect(page.locator("canvas[data-fps]")).toHaveCount(1, {
       timeout: 15000,
     });
-    const singleFps = Number(
-      await labCanvas(page).getAttribute("data-fps"),
-    );
+    const singleFps = Number(await labCanvas(page).getAttribute("data-fps"));
     await page.screenshot({
       path: `test-results/laboratory-${viewport.width}.png`,
     });
@@ -85,15 +91,8 @@ for (const viewport of [
       await labCanvas(page).getAttribute("data-fps"),
     );
     console.log(JSON.stringify({ viewport, singleFps, comparisonFps }));
-    expect(singleFps).toBeGreaterThanOrEqual(viewport.width < 1024 ? 30 : 45);
-    expect(comparisonFps).toBeGreaterThanOrEqual(
-      viewport.width < 1024 ? 30 : 45,
-    );
     await page.getByRole("button", { name: "Pausar simulación" }).click();
-    await expect(labCanvas(page)).not.toHaveAttribute(
-      "data-draw-calls",
-      "0",
-    );
+    await expect(labCanvas(page)).not.toHaveAttribute("data-draw-calls", "0");
     await page.screenshot({
       path: `test-results/comparison-${viewport.width}.png`,
     });
@@ -124,19 +123,19 @@ for (const viewport of [
     await page.getByTestId("node-DEMO-004").focus();
     await page.keyboard.press("Enter");
     await expect(page.getByTestId("scene-A")).toContainText("DEMO-004");
-    if (viewport.width < 1024)
-      await page
-        .getByRole("button", { name: "✳ Copiloto", exact: true })
-        .click();
-    await page
-      .getByRole("button", { name: /Comparar µg vs 1g/ })
-      .click();
-    await page
-      .getByRole("button", { name: "Abrir comparación 3D", exact: false })
-      .click();
-    await expect(page.getByTestId("scene-A")).toContainText("DEMO-001");
-    await expect(page.getByTestId("scene-B")).toContainText("DEMO-004");
+    await openEvidence(page);
+    await page.getByRole("button", { name: /Compara µg vs 1g/ }).click();
+    await expect(page.getByRole("table")).toBeVisible();
+    await page.getByRole("button", { name: /Simular PMMA a 1\/6 g/ }).click();
+    await expect(
+      page.getByRole("button", { name: "1/6g A", exact: true }),
+    ).toHaveAttribute("aria-pressed", "true");
     expect(errors).toEqual([]);
+    // Keep the hardware budget intact, after functional regression coverage.
+    expect(singleFps).toBeGreaterThanOrEqual(viewport.width < 1024 ? 30 : 45);
+    expect(comparisonFps).toBeGreaterThanOrEqual(
+      viewport.width < 1024 ? 30 : 45,
+    );
   });
 }
 test("explicit states, vacuum, keyboard and reduced motion", async ({
@@ -184,11 +183,12 @@ test("map collision selection and lunar probe preserve chat integration", async 
   await page.getByLabel("Oxígeno de la sonda").fill("30");
   await page.getByRole("button", { name: "Consultar punto →" }).click();
   await expect(
-    page.getByText("Sonda situada en 10.2 psi", { exact: false }),
+    page.getByRole("heading", {
+      name: /No hay evidencia en gravedad lunar para 10.2 psi/,
+    }),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "Explorar 1/6g", exact: true })
-    .last()
+    .getByRole("button", { name: /Simular este punto en el laboratorio/ })
     .click();
   await expect(
     page.getByRole("button", { name: "1/6g A", exact: true }),
@@ -221,8 +221,8 @@ test("WebGL loss falls back to SVG and can retry", async ({ page }) => {
   await openAtlas(page);
   await expect(page.locator('canvas[data-renderer="webgl"]')).toHaveCount(1);
   await labCanvas(page).evaluate((canvas) =>
-      canvas.dispatchEvent(new Event("webglcontextlost", { cancelable: true })),
-    );
+    canvas.dispatchEvent(new Event("webglcontextlost", { cancelable: true })),
+  );
   await expect(
     page.getByText("La cámara 3D no está disponible.", { exact: false }),
   ).toBeVisible();
@@ -273,9 +273,8 @@ test("invalid block isolated, error retry and cancellation", async ({
     });
   });
   await openAtlas(page);
-  await page
-    .getByRole("button", { name: /Sólidos > 30% O₂/ })
-    .click();
+  await openEvidence(page);
+  await page.getByRole("button", { name: /¿Hay ensayos de sólidos/ }).click();
   await expect(page.getByText("Respuesta incompleta.")).toBeVisible();
   await expect(
     page.getByRole("button", { name: /Abrir en laboratorio 3D/ }),
@@ -284,18 +283,20 @@ test("invalid block isolated, error retry and cancellation", async ({
   await page.route("**/api/atlas/query", (route) =>
     route.fulfill({ status: 503, body: "offline" }),
   );
-  await page
-    .getByRole("button", { name: /Comparar µg vs 1g/ })
-    .click();
+  await page.getByRole("button", { name: /Compara µg vs 1g/ }).click();
   await expect(page.locator(".chat-error")).toContainText("No se completó");
   await page.unroute("**/api/atlas/query");
   await page.getByRole("button", { name: "Reintentar consulta ↻" }).click();
   await expect(
-    page.getByRole("button", { name: /Abrir comparación 3D/ }),
+    page.getByRole("button", { name: /Simular PMMA a 1\/6 g/ }),
   ).toBeVisible();
-  await page
-    .getByRole("button", { name: /Análogos E-FIELD/ })
-    .click();
+  await page.route("**/api/atlas/query", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await route
+      .fulfill({ status: 503, body: "cancelled test" })
+      .catch(() => {});
+  });
+  await page.getByRole("button", { name: /Sólidos con más/ }).click();
   await page.getByRole("button", { name: "Cancelar consulta" }).click();
   await expect(
     page.getByText("Consulta cancelada.", { exact: false }),

@@ -16,6 +16,7 @@ import {
 } from "../domain/overlays";
 import type { Query } from "@/modules/copilot/domain/contracts";
 export type AtlasState = {
+  assistantOpen: boolean;
   selectedId: string | null;
   view: "lab" | "map";
   gravity: Gravity | "all";
@@ -24,6 +25,7 @@ export type AtlasState = {
   overlays: Overlays;
 };
 export type AtlasAction =
+  | { type: "assistant"; open: boolean }
   | { type: "select"; id: string }
   | { type: "gravity"; gravity: AtlasState["gravity"] }
   | { type: "tab"; tab: AtlasState["tab"] }
@@ -36,6 +38,7 @@ export type AtlasAction =
   | { type: "clear-overlays" }
   | { type: "overlay-focused" };
 export const initialState: AtlasState = {
+  assistantOpen: false,
   selectedId: null,
   view: "lab",
   gravity: "all",
@@ -48,8 +51,20 @@ export function atlasReducer(
   action: AtlasAction,
 ): AtlasState {
   switch (action.type) {
+    case "assistant":
+      return {
+        ...state,
+        assistantOpen: action.open,
+        tab: action.open ? "copilot" : "camera",
+      };
     case "select":
-      return { ...state, selectedId: action.id, tab: "camera", view: "lab" };
+      return {
+        ...state,
+        selectedId: action.id,
+        tab: "camera",
+        assistantOpen: false,
+        view: "lab",
+      };
     case "view":
       return { ...state, view: action.view };
     case "close":
@@ -57,9 +72,18 @@ export function atlasReducer(
     case "gravity":
       return { ...state, gravity: action.gravity };
     case "tab":
-      return { ...state, tab: action.tab };
+      return {
+        ...state,
+        tab: action.tab,
+        assistantOpen: action.tab === "copilot",
+      };
     case "query":
-      return { ...state, pending: action.query, tab: "copilot" };
+      return {
+        ...state,
+        pending: action.query,
+        tab: "copilot",
+        assistantOpen: true,
+      };
     case "clear-query":
       return { ...state, pending: null };
     // Overlays are asked for from the copilot: bring the map into view (and the
@@ -137,11 +161,7 @@ export function AtlasProvider({
     }),
     [state, experiments, highlightExperiments, showGap, clearOverlays],
   );
-  return (
-    <Context.Provider value={value}>
-      {children}
-    </Context.Provider>
-  );
+  return <Context.Provider value={value}>{children}</Context.Provider>;
 }
 export function useAtlas() {
   const context = useContext(Context);

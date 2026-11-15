@@ -48,18 +48,9 @@ body:has(.experience) {
   opacity: 0;
   pointer-events: none;
 }
-.bloom {
-  background: radial-gradient(
-    circle at 50% 64%,
-    #ffffff 0%,
-    #ffffff 18%,
-    rgba(244, 247, 251, 0.92) 38%,
-    rgba(233, 237, 243, 0.6) 58%,
-    rgba(233, 237, 243, 0) 80%
-  );
-}
+.bloom,
 .veil {
-  background: var(--moon-dust);
+  display: none;
 }
 
 /* Skip link */
@@ -106,7 +97,11 @@ body:has(.experience) {
   inset: 0;
   z-index: 1;
   background:
-    radial-gradient(ellipse 75% 70% at 50% 46%, transparent 40%, rgba(5, 9, 20, 0.5) 100%),
+    radial-gradient(
+      ellipse 75% 70% at 50% 46%,
+      transparent 40%,
+      rgba(5, 9, 20, 0.5) 100%
+    ),
     linear-gradient(115deg, rgba(233, 237, 243, 0.07) 0%, transparent 28%);
 }
 .cabin-frame {
@@ -125,7 +120,11 @@ body:has(.experience) {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 80% 80% at 50% 48%, transparent 45%, rgba(3, 6, 14, 0.55) 100%);
+  background: radial-gradient(
+    ellipse 80% 80% at 50% 48%,
+    transparent 45%,
+    rgba(3, 6, 14, 0.55) 100%
+  );
   pointer-events: none;
 }
 .cupola-frame svg {
@@ -228,7 +227,9 @@ body:has(.experience) {
   font-weight: 600;
   cursor: pointer;
   pointer-events: auto;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 14px 32px -10px rgba(0, 0, 0, 0.65);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 14px 32px -10px rgba(0, 0, 0, 0.65);
   transition:
     transform 0.2s var(--ease-out),
     background-color 0.2s var(--ease-out);

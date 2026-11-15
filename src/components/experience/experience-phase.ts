@@ -37,8 +37,8 @@ export function isTransitioning(phase: ExperiencePhase) {
 
 /**
  * The deck owns rendering (lab clock and WebGL) only once it is the visible
- * surface; the cabin owns it otherwise. `peak` marks the whiteout midpoint of a
- * transition, the one moment where handing the GPU over is invisible.
+ * surface; the cabin owns it otherwise. `peak` marks the midpoint of the dark crossfade, where rendering hands off
+ * without running both WebGL surfaces continuously.
  */
 export function selectSurface(phase: ExperiencePhase, peak: boolean) {
   const deckLive = phase === "deck" || (isTransitioning(phase) && peak);

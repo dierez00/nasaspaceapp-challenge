@@ -573,8 +573,12 @@ export function citationText(
 ) {
   const title = brief.evidence?.title ?? "Consulta al Atlas";
   const ids = brief.evidence?.experimentIds ?? [];
+  const synthetic = ids.length > 0 && ids.every((id) => id.startsWith("DEMO-"));
+  const dataset = synthetic
+    ? "Atlas del fuego lunar. Catálogo de demostración (datos sintéticos)"
+    : "NASA Physical Sciences Informatics (PSI)";
   return [
-    `NASA Physical Sciences Informatics (PSI). (s. f.). ${title}. Consultado en Atlas del fuego lunar el ${longDate(accessed)}.`,
+    `${dataset}. (s. f.). ${title}. Consultado en Atlas del fuego lunar el ${longDate(accessed)}.`,
     ids.length ? `Experimentos: ${ids.join(", ")}.` : null,
     brief.sourceFiles.length
       ? `Archivos fuente: ${brief.sourceFiles.join("; ")}.`

@@ -47,12 +47,30 @@ describe("experience phase machine", () => {
     expect(isTransitioning("deck")).toBe(false);
   });
 
-  it("hands rendering to exactly one surface, switching at the whiteout peak", () => {
-    expect(selectSurface("cabin", false)).toEqual({ deckLive: false, cabinLive: true });
-    expect(selectSurface("diving", false)).toEqual({ deckLive: false, cabinLive: true });
-    expect(selectSurface("diving", true)).toEqual({ deckLive: true, cabinLive: false });
-    expect(selectSurface("deck", false)).toEqual({ deckLive: true, cabinLive: false });
-    expect(selectSurface("returning", true)).toEqual({ deckLive: true, cabinLive: false });
-    expect(selectSurface("returning", false)).toEqual({ deckLive: false, cabinLive: true });
+  it("hands rendering to exactly one surface, switching at the crossfade midpoint", () => {
+    expect(selectSurface("cabin", false)).toEqual({
+      deckLive: false,
+      cabinLive: true,
+    });
+    expect(selectSurface("diving", false)).toEqual({
+      deckLive: false,
+      cabinLive: true,
+    });
+    expect(selectSurface("diving", true)).toEqual({
+      deckLive: true,
+      cabinLive: false,
+    });
+    expect(selectSurface("deck", false)).toEqual({
+      deckLive: true,
+      cabinLive: false,
+    });
+    expect(selectSurface("returning", true)).toEqual({
+      deckLive: true,
+      cabinLive: false,
+    });
+    expect(selectSurface("returning", false)).toEqual({
+      deckLive: false,
+      cabinLive: true,
+    });
   });
 });

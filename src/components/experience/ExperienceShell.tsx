@@ -40,6 +40,7 @@ const SKIP_GUARD_MS = 300;
 export function ExperienceShell({ children }: { children: ReactNode }) {
   const [phase, dispatch] = useReducer(experienceReducer, "cabin");
   const [peak, setPeak] = useState(false);
+  const [showLoader, setShowLoader] = useState(true);
   const reduced = useReducedMotion();
 
   const rootRef = useRef<HTMLDivElement>(null);
@@ -82,6 +83,7 @@ export function ExperienceShell({ children }: { children: ReactNode }) {
     const root = rootRef.current;
     if (!root || phaseRef.current !== "cabin") return;
     startedAt.current = performance.now();
+    setShowLoader(false);
     setPeak(false);
     dispatch({ type: "start" });
     stopTimeline();
@@ -110,6 +112,7 @@ export function ExperienceShell({ children }: { children: ReactNode }) {
     if (!root || phaseRef.current !== "deck") return;
     startedAt.current = performance.now();
     setPeak(true);
+    setShowLoader(false);
     stopTimeline();
     dispatch({ type: "back" });
     timeline.current = buildReturn(
@@ -151,7 +154,8 @@ export function ExperienceShell({ children }: { children: ReactNode }) {
     } else if (phase === "cabin" && previous !== "cabin") {
       resetCabin(root, dive.current);
       syncHash(false);
-      if (previous === "returning") ctaRef.current?.focus({ preventScroll: true });
+      if (previous === "returning")
+        ctaRef.current?.focus({ preventScroll: true });
     }
   }, [phase, syncHash]);
 
@@ -217,7 +221,7 @@ export function ExperienceShell({ children }: { children: ReactNode }) {
         >
           Saltar al Atlas
         </a>
-        <LoadingScreen />
+        {showLoader && phase === "cabin" && <LoadingScreen />}
 
         <div
           className="experience-layer"

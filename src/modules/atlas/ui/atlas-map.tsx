@@ -685,7 +685,7 @@ export function AtlasMap() {
           <span>
             {state.gravity === "lunar"
               ? `${experiments.filter((trial) => trial.gravity === "lunar").length} ensayos lunares en el catálogo`
-              : "Una misma materia. Otra física."}
+              : ""}
           </span>
         </div>
         <div

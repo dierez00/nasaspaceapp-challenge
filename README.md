@@ -75,3 +75,11 @@ With `AGENTS_MOCK=1`, `/query` answers without AI keys. Open <http://localhost:8
 - [Technical reference: endpoints, search, tests and operations](docs/referencia.md) (Spanish)
 - [PSI data extraction format and rules](docs/data-extraction.md) (Spanish)
 - [Agent flow, UI contract and SSE events](curren_repo_context/README.md) (Spanish)
+
+## Team
+
+- Diego Daher Diaz
+- Karen Vazquez
+- Mario Lira
+- Emiliano Holguin
+- Diego Antunez

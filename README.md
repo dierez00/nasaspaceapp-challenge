@@ -1,6 +1,6 @@
 # Atlas del Fuego Lunar · Backend
 
-Backend en Python del Atlas: datos de investigaciones de NASA PSI, búsqueda y agentes. El front vive en la rama `main`.
+Backend en Python del Atlas: datos de investigaciones de NASA PSI, búsqueda y agentes. El front (Next.js, desplegado en Vercel) vive en la rama [`main`](../../tree/main); este servicio se despliega en Railway.
 
 ## Arranque
 
@@ -53,6 +53,37 @@ curl -X POST localhost:8000/search -H 'content-type: application/json' \
 
 Para integrar el front sin gastar tokens ni levantar Postgres: `AGENTS_MOCK=1 .venv/bin/uvicorn atlas.main:app --reload`.
 El diseño de los agentes, el contrato de UI, los eventos SSE y las variables de entorno están en `curren_repo_context/`.
+
+## Despliegue en Railway
+
+El repositorio trae la configuración lista: [`Dockerfile`](Dockerfile) (Python 3.12, instala el paquete y copia `db/` y `data/`) y [`railway.json`](railway.json) (builder Dockerfile, `atlas-load` como *pre-deploy*, health check en `/health`).
+
+1. **Base de datos.** Crea en el proyecto de Railway una base Postgres con **pgvector** (plantilla *pgvector* de Railway); la plantilla estándar de Postgres no incluye la extensión que exige `db/schema.sql`.
+2. **Servicio.** Crea un servicio desde este repositorio con la rama `backend` como origen. Railway detecta `railway.json` y construye con el `Dockerfile`.
+3. **Variables** (pestaña *Variables* del servicio):
+
+   | Variable | Valor |
+   | --- | --- |
+   | `DATABASE_URL` | Referencia a la base: `${{pgvector.DATABASE_URL}}` (ajusta al nombre de tu servicio) |
+   | `VOYAGE_API_KEY` | Clave de Voyage AI (búsqueda y reranking) |
+   | `CLAUDE_CODE_OAUTH_TOKEN` | Token de Claude Code para los agentes |
+   | `CORS_ORIGINS` | `["https://<tu-proyecto>.vercel.app"]`; solo hace falta si un navegador llama directo a la API |
+   | `AGENTS_MOCK` | `0` en producción; `1` responde `/query` sin Claude ni Voyage |
+
+   El resto (`AGENT_MODEL`, `AGENT_EFFORT`, `COMPOSITOR_MODE`, …) tiene valores por defecto; ver `.env.example` y `curren_repo_context/env.md`. `PORT` lo inyecta Railway.
+4. **Dominio.** En *Settings → Networking* genera un dominio público y úsalo como `ATLAS_API_URL` en Vercel.
+5. **Índice RAG (una vez, y cada vez que cambie `data/`).** `atlas-load` corre en cada despliegue y es idempotente; el indexado gasta cuota de Voyage, así que se lanza a mano:
+
+   ```bash
+   railway run atlas-index
+   ```
+
+Notas:
+
+- El front consulta la API desde sus rutas de servidor (`/api/atlas/*`), así que el navegador nunca habla directo con Railway y CORS no interviene en el flujo normal.
+- `/query` puede transmitir hasta ~120 s; el front ya fija `maxDuration` en su ruta de Vercel para esperarlo.
+- La caché de respuestas (`data/query_cache.json`) vive en el disco efímero del contenedor y se reinicia en cada despliegue. Para conservarla, monta un volumen y apunta `QUERY_CACHE_FILE` a él.
+- Prueba local de la imagen: `docker build -t atlas-api . && docker run --rm -e PORT=8000 -e AGENTS_MOCK=1 -p 8000:8000 atlas-api`.
 
 ## Pruebas
 

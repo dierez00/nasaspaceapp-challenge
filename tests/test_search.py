@@ -1,6 +1,7 @@
 import asyncio
 import hashlib
 import os
+import uuid
 from pathlib import Path
 
 import pytest
@@ -119,32 +120,42 @@ def test_search_validates_the_request_body():
         assert client.post("/search", json={"query": "x", "k": 500}).status_code == 422
 
 
+def _with_search_path(url: str, schema: str) -> str:
+    separator = "&" if "?" in url else "?"
+    return f"{url}{separator}options=-csearch_path%3D{schema},public"
+
+
 @pytest.mark.skipif(not DATABASE_URL, reason="set ATLAS_TEST_DATABASE_URL (pgvector) to run")
 def test_index_and_search_roundtrip_in_postgres():
     chunks = build_chunks(DATA_DIR)
     embedder = FakeEmbedder()
+    # A throwaway schema keeps fake vectors and stale-chunk removal away from the real index in public.
+    schema = f"atlas_test_{uuid.uuid4().hex[:12]}"
+    isolated_url = _with_search_path(DATABASE_URL, schema)
 
     async def index_twice():
-        async with await AsyncConnection.connect(DATABASE_URL, row_factory=dict_row) as conn:
+        async with await AsyncConnection.connect(DATABASE_URL) as conn:
+            await conn.execute(f"create schema {schema}")
+            await conn.commit()
+        async with await AsyncConnection.connect(isolated_url, row_factory=dict_row) as conn:
             await apply_schema(conn)
             await conn.commit()
             repository = PostgresChunkRepository(conn)
             await index_chunks(chunks, repository, embedder)
             return await index_chunks(chunks, repository, embedder)
 
-    async def clean_up():
-        # Fake vectors must not linger: they would make a real atlas-index run skip these chunks.
+    async def drop_schema():
         async with await AsyncConnection.connect(DATABASE_URL) as conn:
-            await conn.execute("delete from document_chunks")
+            await conn.execute(f"drop schema if exists {schema} cascade")
             await conn.commit()
 
     try:
         second = asyncio.run(index_twice())
         query = chunks[0].content
-        with TestClient(create_app(Settings(database_url=DATABASE_URL), embedder)) as client:
+        with TestClient(create_app(Settings(database_url=isolated_url), embedder)) as client:
             response = client.post("/search", json={"query": query, "k": 3})
     finally:
-        asyncio.run(clean_up())
+        asyncio.run(drop_schema())
 
     assert second.new == 0
 

@@ -3,71 +3,37 @@
 import { useMemo } from "react";
 import { useAtlas } from "@/modules/atlas/ui/atlas-provider";
 import { gravityLabels } from "@/modules/atlas/domain/experiment";
-import { usePlayback, useSimulation } from "../application/simulation-provider";
+import { useSimulation } from "../application/simulation-provider";
 import {
   comparisonGravities,
   gravityNames,
-  gravityScenarios,
   nearestTrials,
-  qualitativeReading,
-  timelineExplanation,
 } from "../domain/comparison";
 
-const appearance = {
-  micro: "Redondeada · azul ilustrativo",
-  lunar: "Intermedia · color ilustrativo",
-  earth: "Alargada · naranja ilustrativo",
-};
 const observedLabels = {
   ignition: "Ignición registrada",
   extinction: "Extinción registrada",
   unknown: "Resultado no determinado",
 };
 
-export function ComparisonNotes({
-  threeGravities,
-}: {
-  threeGravities: boolean;
-}) {
-  const { experiments } = useAtlas();
+export function ComparisonNotes() {
+  const { experiments, highlightExperiments, dispatch } = useAtlas();
   const { state, load } = useSimulation();
-  const { time } = usePlayback();
   const base = state.scenarios.A;
   const nearest = useMemo(
     () =>
       comparisonGravities.map((gravity) => ({
         gravity,
-        trials: nearestTrials(experiments, base, gravity),
+        trials: nearestTrials(experiments, base, gravity, 3),
       })),
     [experiments, base],
   );
-  const explanation = timelineExplanation(time);
   return (
     <section className="comparison-notes" aria-label="Lectura comparativa">
-      {threeGravities && (
-        <>
-          <div className="qualitative-grid">
-            {gravityScenarios(base).map((scenario) => (
-              <div key={scenario.gravity}>
-                <h3>
-                  {gravityNames[scenario.gravity]}{" "}
-                  <span>{gravityLabels[scenario.gravity]}</span>
-                </h3>
-                <p>{appearance[scenario.gravity]}</p>
-                <strong>{qualitativeReading(scenario, time)}</strong>
-              </div>
-            ))}
-          </div>
-          <div className="physics-note" data-testid="physics-note">
-            <h3>{explanation.title}</h3>
-            <p>{explanation.text}</p>
-          </div>
-        </>
-      )}
       <details className="nearest-trials evidence-paper">
         <summary>Ensayos y fuentes · contrastar con datos reales</summary>
         <p>
-          Mismo material y gravedad; proximidad por presión / 16 psi y O₂ / 32
+          Hasta tres por gravedad, del mismo material; proximidad por presión / 16 psi y O₂ / 32
           puntos porcentuales. No implica equivalencia física ni predice este
           escenario.
         </p>
@@ -109,12 +75,23 @@ export function ComparisonNotes({
                       de O₂
                     </p>
                   </div>
-                  <button
-                    className="restore-scenario"
-                    onClick={() => load([trial])}
-                  >
-                    Cargar {trial.id}
-                  </button>
+                  <div className="trial-actions">
+                    <button
+                      className="restore-scenario"
+                      onClick={() => {
+                        dispatch({ type: "gravity", gravity: trial.gravity });
+                        highlightExperiments([trial.id]);
+                      }}
+                    >
+                      Ver en el mapa
+                    </button>
+                    <button
+                      className="restore-scenario"
+                      onClick={() => load([trial])}
+                    >
+                      Cargar {trial.id}
+                    </button>
+                  </div>
                   <details className="trial-sources">
                     <summary>Fuente y condiciones observadas</summary>
                     {trial.sources

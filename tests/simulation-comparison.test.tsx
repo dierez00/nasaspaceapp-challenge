@@ -127,7 +127,7 @@ it("renders original source text and unknown outcomes separately from the illust
   const markup = renderToStaticMarkup(
     <AtlasProvider experiments={[trial]}>
       <SimulationProvider initialExperiment={trial}>
-        <ComparisonNotes threeGravities />
+        <ComparisonNotes />
       </SimulationProvider>
     </AtlasProvider>,
   );

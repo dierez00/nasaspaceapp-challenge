@@ -22,7 +22,15 @@ export function gravityScenarios(
   }));
 }
 
-/** Same material/gravity only. Distance is normalized by the UI's axis ranges,
+/** "PMMA" matches "PMMA film (polímero)": same family, ignoring the class suffix. */
+export function sameMaterial(a: string, b: string) {
+  const clean = (value: string) =>
+    value.replace(/\s*\([^)]*\)\s*$/, "").trim().toLocaleLowerCase();
+  const [x, y] = [clean(a), clean(b)];
+  return x === y || y.startsWith(`${x} `) || x.startsWith(`${y} `);
+}
+
+/** Same material family/gravity only. Distance is normalized by the UI's axis ranges,
  * not a physical similarity metric. Synthetic rows must never count as evidence. */
 export function nearestTrials(
   experiments: Experiment[],
@@ -30,7 +38,6 @@ export function nearestTrials(
   gravity: Gravity,
   limit = 2,
 ): Experiment[] {
-  const material = conditions.material.trim().toLocaleLowerCase();
   const distance = (trial: Experiment) =>
     Math.hypot(
       (trial.pressure - conditions.pressure) / 16,
@@ -42,7 +49,7 @@ export function nearestTrials(
         trial.provenance === "verified" &&
         trial.sources.some((source) => !source.demo) &&
         trial.gravity === gravity &&
-        trial.material.trim().toLocaleLowerCase() === material,
+        sameMaterial(trial.material, conditions.material),
     )
     .sort((a, b) => distance(a) - distance(b) || a.id.localeCompare(b.id))
     .slice(0, Math.max(0, limit));

@@ -20,6 +20,7 @@ docker compose up -d db          # Postgres 17 + pgvector en localhost:5433
   - Filtros opcionales de `GET /experiments`, con límites inclusivos: `min_o2_percent`, `max_o2_percent`, `min_pressure_kpa`, `max_pressure_kpa` y `exclude_assumed=true` (descarta puntos con O₂ o presión supuestos). Cada experimento conserva solo sus `tests` que cumplen y se omiten los que quedan sin ninguno; un rango invertido responde 422.
   - Ejemplo, hábitat lunar (34 % O₂, 56.5 kPa en `data/reference/conditions.json`): `GET /experiments?min_o2_percent=30&max_pressure_kpa=70.3` devuelve PSI-159 (45 puntos) y PSI-20 (13 puntos a 34 % y 56.5 kPa, presión supuesta según su objetivo 1); con `exclude_assumed=true` queda solo PSI-159. En las llamas inversas de PSI-159, `o2_percent` es la corriente que sale del quemador, no el aire de la cámara.
 - `GET /coverage`: cobertura del mapa y brechas frente a condiciones de misión
+- `POST /query` (`{"q": "..."}`) y `GET /query?q=...` (EventSource): respuesta de los agentes en streaming SSE con eventos `status`, `ui` y `error`
 
 ## Búsqueda (RAG)
 
@@ -48,6 +49,11 @@ curl -X POST localhost:8000/search -H 'content-type: application/json' \
 
 `data/reference/conditions.json` (gravedad lunar y marciana, atmósfera de exploración de NASA, traje EVA, cabina de la ISS) cita una fuente con URL para cada valor numérico y se valida con Pydantic al responder. Para agregar una condición, copia una existente y cita la fuente; no se aceptan valores sin ella.
 
+## Consultas con agentes (`/query`)
+
+Para integrar el front sin gastar tokens ni levantar Postgres: `AGENTS_MOCK=1 .venv/bin/uvicorn atlas.main:app --reload`.
+El diseño de los agentes, el contrato de UI, los eventos SSE y las variables de entorno están en `curren_repo_context/`.
+
 ## Pruebas
 
 ```bash
@@ -66,8 +72,8 @@ Cada módulo de `src/atlas/` es un área del producto con sus capas `domain`, `a
 | `experiments` | 1 | Contrato de datos, validación, carga a Postgres y endpoints del mapa |
 | `search` | 2 | Ingesta de documentos, embeddings con Voyage, pgvector, reranker y citas |
 | `coverage` | 1 | Mapa de cobertura y brechas (`GET /coverage`) con condiciones de referencia de misión |
-| `agents` | 3 | Orquestador, analista, investigador, compositor y extractor (offline) |
-| `query` | 3 y 5 | `POST /query` con streaming por SSE del JSON de UI (contrato pendiente) |
+| `agents` | 3 | Orquestador en Python, clasificador, analista (filtros en Python sobre los experimentos), investigador (RAG) y compositor; extractor (offline) pendiente |
+| `query` | 3 y 5 | `POST`/`GET /query` con streaming SSE del JSON de UI, caché de demo en archivo |
 | `shared` | 3 | Configuración, conexión a la base y dependencias de FastAPI |
 
 Otros directorios:
@@ -78,5 +84,6 @@ Otros directorios:
 - `data/search/sources.json`: investigaciones que solo alimentan la búsqueda con citas (no son puntos del mapa).
 - `data/schema/experiment.schema.json`: JSON Schema generado para el front; no se edita a mano.
 - `docs/data-extraction.md`: formato, reglas del equipo y prompt de extracción.
+- `curren_repo_context/`: contexto vigente del repo (flujo de agentes, contrato de UI, eventos SSE, variables de entorno).
 
 Las credenciales (`VOYAGE_API_KEY`, `CLAUDE_CODE_OAUTH_TOKEN`) van solo en `.env`, que nunca se sube a Git.

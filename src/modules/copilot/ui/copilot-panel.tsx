@@ -94,6 +94,7 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
   const { state, dispatch, experiments } = useAtlas();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [steps, setSteps] = useState<ProgressStep[]>([]);
   const active = useRef<{ id: string; controller: AbortController } | null>(
     null,
@@ -173,9 +174,27 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
     },
     [],
   );
+  const pinned = useRef<string | null>(null);
   useEffect(() => {
-    if (messages.length > 0 && follow.current && history.current)
-      history.current.scrollTop = history.current.scrollHeight;
+    const container = history.current;
+    const last = messages.at(-1);
+    if (!container || !last) return;
+    // A new answer opens at its verdict; progress and errors keep following the end.
+    if (last.blocks.length > 0) {
+      if (pinned.current !== last.id) {
+        pinned.current = last.id;
+        follow.current = false;
+        const turn = container.querySelector<HTMLElement>(
+          ".chat-turn:last-of-type",
+        );
+        if (turn)
+          container.scrollTop +=
+            turn.getBoundingClientRect().top -
+            container.getBoundingClientRect().top;
+      }
+      return;
+    }
+    if (follow.current) container.scrollTop = container.scrollHeight;
   }, [messages]);
   function submit(text: string) {
     if (!text.trim()) return;
@@ -309,13 +328,14 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
         ))}
       </div>
       <div className="chat-composer">
-        {messages.length > 0 && (
-          <div className="demo-chips">
+        {messages.length > 0 && suggestionsOpen && (
+          <div className="demo-chips" id="composer-suggestions">
             {starters.map((starter) => (
               <button
                 key={starter.audience}
                 type="button"
                 onClick={() => {
+                  setSuggestionsOpen(false);
                   setAudience(starter.audience);
                   submit(starter.prompt);
                 }}
@@ -373,11 +393,24 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
             )}
           </div>
         </form>
-        <p>
-          {mode === "demo"
-            ? ""
-            : "Contrasta las respuestas con sus fuentes originales"}
-        </p>
+        <div className="composer-foot">
+          {messages.length > 0 && (
+            <button
+              type="button"
+              className="suggest-toggle"
+              aria-expanded={suggestionsOpen}
+              aria-controls="composer-suggestions"
+              onClick={() => setSuggestionsOpen((open) => !open)}
+            >
+              Sugerencias {suggestionsOpen ? "▴" : "▾"}
+            </button>
+          )}
+          <p>
+            {mode === "demo"
+              ? "Datos sintéticos · Sin predicciones de seguridad"
+              : "Contrasta las respuestas con sus fuentes originales"}
+          </p>
+        </div>
       </div>
     </aside>
   );

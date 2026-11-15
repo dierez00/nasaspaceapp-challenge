@@ -529,3 +529,9 @@
     white-space: nowrap;
   }
 }
+/* Wide screens show the assistant beside the map; narrow ones swap tabs. */
+@media (min-width: 1024px) {
+  [data-assistant-open="true"] .back-to-assistant {
+    display: none;
+  }
+}

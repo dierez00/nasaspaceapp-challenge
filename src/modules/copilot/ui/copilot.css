@@ -259,11 +259,37 @@
 .composer-bottom button:focus-visible {
   outline-offset: 3px;
 }
-.chat-composer > p {
+.chat-composer > p,
+.composer-foot p {
   margin-top: 8px;
   text-align: center;
   font-size: var(--text-sm);
   color: var(--slate);
+}
+.composer-foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 12px;
+}
+.composer-foot .suggest-toggle {
+  flex-shrink: 0;
+}
+.composer-foot .suggest-toggle + p {
+  text-align: right;
+  font-size: var(--text-xs, 12px);
+  line-height: 1.3;
+}
+.suggest-toggle {
+  margin-top: 8px;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--nasa-blue);
+  font-size: var(--text-sm);
+  font-weight: 600;
 }
 
 /* Generative blocks */

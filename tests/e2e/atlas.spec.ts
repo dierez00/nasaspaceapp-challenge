@@ -283,6 +283,7 @@ test("invalid block isolated, error retry and cancellation", async ({
   await page.route("**/api/atlas/query", (route) =>
     route.fulfill({ status: 503, body: "offline" }),
   );
+  await page.getByRole("button", { name: /Sugerencias/ }).click();
   await page.getByRole("button", { name: /Compara µg vs 1g/ }).click();
   await expect(page.locator(".chat-error")).toContainText("No se completó");
   await page.unroute("**/api/atlas/query");
@@ -296,6 +297,7 @@ test("invalid block isolated, error retry and cancellation", async ({
       .fulfill({ status: 503, body: "cancelled test" })
       .catch(() => {});
   });
+  await page.getByRole("button", { name: /Sugerencias/ }).click();
   await page.getByRole("button", { name: /Sólidos con más/ }).click();
   await page.getByRole("button", { name: "Cancelar consulta" }).click();
   await expect(

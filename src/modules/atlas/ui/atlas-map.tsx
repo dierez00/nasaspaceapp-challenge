@@ -303,6 +303,18 @@ export function AtlasMap() {
           >
             Quitar resaltado
           </button>
+          <button
+            type="button"
+            className="back-to-assistant"
+            onClick={() => {
+              dispatch({ type: "assistant", open: true });
+              document
+                .getElementById("contextual-evidence")
+                ?.scrollIntoView({ block: "start" });
+            }}
+          >
+            Volver al asistente
+          </button>
         </div>
       )}
       <div className="map-stage" ref={container}>

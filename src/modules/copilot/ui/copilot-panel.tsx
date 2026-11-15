@@ -123,7 +123,7 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
           <span>
             {mode === "demo"
               ? "ENTORNO DEMO · RESPUESTAS SIMULADAS"
-              : "BACKEND REMOTO · CONEXIÓN SSE"}
+              : "DATOS NASA PSI · CONEXIÓN SSE"}
           </span>
         </div>
         <span className="copilot-menu" aria-hidden="true">

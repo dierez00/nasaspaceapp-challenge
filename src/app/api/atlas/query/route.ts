@@ -1,61 +1,85 @@
 import { NextResponse } from "next/server";
-import { querySchema } from "@/modules/copilot/domain/contracts";
+import {
+  querySchema,
+  type CopilotEvent,
+} from "@/modules/copilot/domain/contracts";
 import { DemoCopilotGateway } from "@/modules/copilot/infra/demo-gateway";
+import {
+  backendQuestion,
+  translateBackendStream,
+} from "@/modules/copilot/infra/backend-query";
+import { psiApiRepository } from "@/modules/atlas/infra/psi-api";
+
+const unavailable = (error: string, status: number) =>
+  NextResponse.json({ error }, { status });
 
 export async function POST(request: Request) {
   let input: unknown;
   try {
     input = await request.json();
   } catch {
-    return NextResponse.json({ error: "JSON inválido" }, { status: 400 });
+    return unavailable("JSON inválido", 400);
   }
   const parsed = querySchema.safeParse(input);
-  if (!parsed.success)
-    return NextResponse.json({ error: "Consulta inválida" }, { status: 400 });
-  if (process.env.ATLAS_DATA_MODE === "remote") {
-    if (!process.env.ATLAS_API_URL)
-      return NextResponse.json(
-        { error: "Backend sin configurar" },
-        { status: 503 },
-      );
+  if (!parsed.success) return unavailable("Consulta inválida", 400);
+
+  let events: AsyncGenerator<CopilotEvent>;
+  if (process.env.ATLAS_DATA_MODE !== "remote") {
+    events = new DemoCopilotGateway().query(parsed.data, request.signal);
+  } else {
+    const repository = psiApiRepository();
+    if (!repository) return unavailable("Backend sin configurar", 503);
+    let catalog;
     try {
-      const upstream = await fetch(
-        `${process.env.ATLAS_API_URL.replace(/\/$/, "")}/query`,
-        {
-          method: "POST",
-          body: JSON.stringify(parsed.data),
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "text/event-stream",
-          },
-          signal: AbortSignal.any([request.signal, AbortSignal.timeout(60000)]),
-          cache: "no-store",
-        },
+      catalog = await repository.list(
+        AbortSignal.any([request.signal, AbortSignal.timeout(15000)]),
       );
-      if (!upstream.ok || !upstream.body)
-        return NextResponse.json(
-          { error: "Backend no disponible" },
-          { status: 502 },
-        );
-      return new Response(upstream.body, {
-        headers: {
-          "Content-Type": "text/event-stream",
-          "Cache-Control": "no-cache, no-transform",
-        },
-      });
     } catch {
-      return NextResponse.json(
-        { error: "No se pudo conectar con el backend" },
-        { status: 502 },
+      return unavailable("No se pudo conectar con el backend", 502);
+    }
+    if (process.env.ATLAS_QUERY_MODE === "remote") {
+      // Agents in FastAPI: POST /query, translated to the copilot events.
+      try {
+        const upstream = await fetch(
+          `${process.env.ATLAS_API_URL!.replace(/\/$/, "")}/query`,
+          {
+            method: "POST",
+            body: JSON.stringify(backendQuestion(parsed.data)),
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "text/event-stream",
+            },
+            signal: AbortSignal.any([
+              request.signal,
+              AbortSignal.timeout(60000),
+            ]),
+            cache: "no-store",
+          },
+        );
+        if (!upstream.ok || !upstream.body)
+          return unavailable("Backend no disponible", 502);
+        events = translateBackendStream(
+          upstream.body,
+          parsed.data.queryId,
+          catalog,
+        );
+      } catch {
+        return unavailable("No se pudo conectar con el backend", 502);
+      }
+    } else {
+      // Guided answers computed from the NASA PSI catalog, no agents.
+      events = new DemoCopilotGateway(catalog, "psi").query(
+        parsed.data,
+        request.signal,
       );
     }
   }
-  const iterator = new DemoCopilotGateway().query(parsed.data, request.signal);
+
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
     async pull(controller) {
       try {
-        const { done, value } = await iterator.next();
+        const { done, value } = await events.next();
         if (done) controller.close();
         else
           controller.enqueue(
@@ -68,7 +92,7 @@ export async function POST(request: Request) {
       }
     },
     async cancel() {
-      await iterator.return(undefined);
+      await events.return(undefined);
     },
   });
   return new Response(stream, {

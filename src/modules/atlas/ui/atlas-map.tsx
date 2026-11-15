@@ -93,7 +93,10 @@ export function AtlasMap() {
       <div className="map-meta">
         <span>
           <i className="status-dot" />{" "}
-          {String(experiments.length).padStart(2, "0")} ENSAYOS DEMO
+          {String(experiments.length).padStart(2, "0")} ENSAYOS{" "}
+          {experiments.some((e) => e.provenance === "verified")
+            ? "NASA PSI"
+            : "DEMO"}
         </span>
         <span className="map-coordinate">PRESIÓN × CONCENTRACIÓN O₂</span>
         <span className="live-tag">EXPLORACIÓN EN VIVO</span>
@@ -379,7 +382,7 @@ export function AtlasMap() {
         )}
         {overlap.length > 1 && (
           <div className="overlap-menu glass">
-            <strong>Ensayos en esta coordenada</strong>
+            <strong>Ensayos en esta coordenada ({overlap.length})</strong>
             {overlap.map((e) => (
               <button
                 key={e.id}
@@ -417,7 +420,7 @@ export function AtlasMap() {
           <span className="micro-label">RÉGIMEN GRAVITACIONAL</span>
           <span>
             {state.gravity === "lunar"
-              ? "Sin ensayos lunares en la demo"
+              ? "Sin ensayos lunares en el catálogo"
               : "Una misma materia. Otra física."}
           </span>
         </div>

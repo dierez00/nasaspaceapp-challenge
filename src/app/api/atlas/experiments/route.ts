@@ -1,27 +1,26 @@
 import { NextResponse } from "next/server";
-import {
-  DemoExperimentRepository,
-  HttpExperimentRepository,
-} from "@/modules/atlas/infra/experiments";
+import { DemoExperimentRepository } from "@/modules/atlas/infra/experiments";
+import { psiApiRepository } from "@/modules/atlas/infra/psi-api";
 
 export async function GET(request: Request) {
   try {
-    const remote = process.env.ATLAS_DATA_MODE === "remote";
-    if (remote && !process.env.ATLAS_API_URL)
+    const signal = AbortSignal.any([
+      request.signal,
+      AbortSignal.timeout(15000),
+    ]);
+    if (process.env.ATLAS_DATA_MODE !== "remote")
+      return NextResponse.json(await new DemoExperimentRepository().list());
+    const repository = psiApiRepository();
+    if (!repository)
       return NextResponse.json(
         { error: "Backend sin configurar" },
         { status: 503 },
       );
-    const repository = remote
-      ? new HttpExperimentRepository(
-          `${process.env.ATLAS_API_URL!.replace(/\/$/, "")}/experiments`,
-        )
-      : new DemoExperimentRepository();
-    return NextResponse.json(
-      await repository.list(
-        AbortSignal.any([request.signal, AbortSignal.timeout(15000)]),
-      ),
-    );
+    const experiments = await repository.list(signal);
+    return NextResponse.json(experiments, {
+      // Backend points outside the map domain (0–16 psi, 18–50% O₂).
+      headers: { "X-Atlas-Omitted": String(repository.omitted) },
+    });
   } catch {
     return NextResponse.json(
       { error: "No fue posible cargar el catálogo" },

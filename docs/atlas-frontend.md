@@ -108,7 +108,14 @@ ATLAS_DATA_MODE=remote
 ATLAS_API_URL=http://127.0.0.1:8000
 ```
 
-Reiniciar Next.js. El navegador sigue consultando la misma fachada; Next.js solicita `GET {ATLAS_API_URL}/experiments` y reenvía `POST {ATLAS_API_URL}/query`, preservando el stream. Tiempo límite: 15 segundos para catálogo y 60 segundos para consultas. La URL del backend no usa `NEXT_PUBLIC_`. Nunca enviar credenciales de agentes al navegador.
+Reiniciar Next.js. El navegador sigue consultando la misma fachada; Next.js habla con FastAPI (rama `backend`). Tiempo límite: 15 segundos para catálogo y 60 segundos para consultas. La URL del backend no usa `NEXT_PUBLIC_`. Nunca enviar credenciales de agentes al navegador.
+
+**Catálogo** (`src/modules/atlas/infra/psi-api.ts`). `GET {ATLAS_API_URL}/experiments` devuelve investigaciones PSI (contrato 1.1) con sus `tests`. Cada prueba se vuelve un punto: id `PSI-n/<test_id>`, presión de kPa a psi (÷ 6.895, un decimal), `material` con su clase entre paréntesis (`Nomex (tela)`), gravedad `microgravity → micro`, `lunar`/`partial → lunar`, `normal → earth`, resultado `no_ignition`/`no_sustained_burn → extinction` y `partial_burn`/`complete_burn → ignition`, `provenance: verified` y la fuente con archivo, ubicación, notas y enlace a PSI. Los puntos fuera del dominio del mapa (0–16 psi, 18–50 % O₂) se omiten, nunca se recortan; el encabezado `X-Atlas-Omitted` dice cuántos (407 de 1,115 con los datos actuales).
+
+**Copiloto** (`ATLAS_QUERY_MODE`):
+
+- `guided` (predeterminado): los tres accesos rápidos y la sonda responden con cálculos sobre el catálogo PSI, sin agentes ni tokens (`DemoCopilotGateway` con catálogo `psi`).
+- `remote`: Next.js envía `{"q": texto + sonda}` a `POST {ATLAS_API_URL}/query` y traduce sus eventos (`src/modules/copilot/infra/backend-query.ts`): `status` → `agent-status` (`clasificando`/`consultando_datos` → analista, `buscando_fuentes` → física, `componiendo` → sintetizador); `ui` → `text-delta` con `summary` y los `text`, más bloques: `table` → `FallbackCard` en lista, `gap_map` → `GravityBounds` y hasta 3 `ExperimentCard`, `citations` → `SourceList`, `notice` → `FallbackCard`; `error` → `error`. Contrato del backend: `curren_repo_context/eventos-sse.md` y `contrato-ui.md` en la rama `backend`.
 
 El modo predeterminado es `demo`. El modo remoto no cae silenciosamente en datos sintéticos: muestra carga, error y reintento. Implementar las mismas formas en Pydantic y comprobar los fixtures contra ambos esquemas antes de conectar datos reales. Autenticación de backend, cuotas y persistencia de conversaciones quedan para esa integración; esta entrega no modifica el modelo multiempresa.
 

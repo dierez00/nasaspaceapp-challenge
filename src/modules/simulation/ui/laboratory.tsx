@@ -22,6 +22,7 @@ import { gravityLabels } from "@/modules/atlas/domain/experiment";
 import { gravityScenarios } from "../domain/comparison";
 import { ExplorationGuide } from "./exploration-guide";
 import { ComparisonNotes } from "./comparison-notes";
+import { GravityIndicators, PhysicsCallout } from "./gravity-indicators";
 import "./laboratory.css";
 const LabCanvas = dynamic(() => import("./lab-canvas"), {
   ssr: false,
@@ -288,8 +289,7 @@ export function Laboratory() {
     viewA = useRef<HTMLDivElement>(null),
     viewB = useRef<HTMLDivElement>(null),
     viewC = useRef<HTMLDivElement>(null);
-  const [gravityComparison, setThreeGravities] = useState(false);
-  const threeGravities = gravityComparison && !state.compare;
+  const threeGravities = state.threeGravities && !state.compare;
   const [mobile, setMobile] = useState(false),
     [unsupported, setUnsupported] = useState(false),
     [attempt, setAttempt] = useState(0);
@@ -324,30 +324,23 @@ export function Laboratory() {
           <button
             className={`compare-toggle ${threeGravities ? "enabled" : ""}`}
             aria-pressed={threeGravities}
-            onClick={() => {
-              setThreeGravities(!threeGravities);
-              dispatch({ type: "single" });
-            }}
+            onClick={() => dispatch({ type: "three", on: !threeGravities })}
           >
             Tres gravedades
           </button>
           <button
             className={`compare-toggle ${state.compare ? "enabled" : ""}`}
             aria-pressed={state.compare}
-            onClick={() => {
-              setThreeGravities(false);
-              dispatch({ type: state.compare ? "single" : "compare" });
-            }}
+            onClick={() =>
+              dispatch({ type: state.compare ? "single" : "compare" })
+            }
           >
             {state.compare ? "✕ Cerrar A/B" : "⊕ Comparar A/B"}
           </button>
         </div>
       </header>
       <ExplorationGuide
-        onCompare={() => {
-          setThreeGravities(true);
-          dispatch({ type: "single" });
-        }}
+        onCompare={() => dispatch({ type: "three", on: true })}
       />
       {state.compare && (
         <div className="comparison-toolbar">
@@ -405,8 +398,13 @@ export function Laboratory() {
                 <div
                   key={slot}
                   ref={slot === "A" ? viewA : slot === "B" ? viewB : viewC}
-                  className={`scene-view scene-${slot}`}
+                  className={`scene-view scene-${slot} ${threeGravities && state.focusGravity === scenario.gravity ? "is-focus" : ""}`}
                   data-testid={`scene-${slot}`}
+                  data-focus={
+                    threeGravities && state.focusGravity === scenario.gravity
+                      ? "true"
+                      : undefined
+                  }
                 >
                   {unsupported && (
                     <FallbackScene slot={slot} scenario={scenario} />
@@ -434,6 +432,9 @@ export function Laboratory() {
                               : "Escenario libre"}
                       </small>
                     </div>
+                    {threeGravities && state.focusGravity === scenario.gravity && (
+                      <span className="scene-focus-badge">Destacada</span>
+                    )}
                     <span
                       className={`scene-gravity ${threeGravities ? "sr-only" : ""}`}
                     >
@@ -508,6 +509,8 @@ export function Laboratory() {
         </p>
       )}
       <Playback />
+      {threeGravities && <PhysicsCallout />}
+      {threeGravities && <GravityIndicators />}
       <div
         className={`lab-controls ${state.compare ? "is-comparing" : ""}`}
         data-active-slot={state.activeSlot}
@@ -516,7 +519,7 @@ export function Laboratory() {
           <ScenarioControls key={slot} slot={slot} shared={threeGravities} />
         ))}
       </div>
-      <ComparisonNotes threeGravities={threeGravities} />
+      <ComparisonNotes />
       <footer className="lab-disclaimer">
         <p>
           <strong>Representación cualitativa.</strong> Los controles modifican

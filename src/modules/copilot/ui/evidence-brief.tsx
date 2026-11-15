@@ -51,7 +51,7 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
   const id = useId();
   const audience = useAudience();
   const { dispatch, experiments, highlightExperiments, showGap } = useAtlas();
-  const { edit } = useSimulation();
+  const { simulate } = useSimulation();
   const [notice, setNotice] = useState<string[]>([]);
   const [proposal, setProposal] = useState<BriefStep | null>(null);
   const [copied, setCopied] = useState("");
@@ -93,7 +93,7 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
     setProposal(null);
     if (step.kind === "simulate") {
       const { patch, summary, notes } = labParamsFromStep(step, materials);
-      edit("A", patch);
+      simulate(patch);
       dispatch({ type: "view", view: "lab" });
       dispatch({ type: "tab", tab: "camera" });
       setNotice([summary, ...notes]);

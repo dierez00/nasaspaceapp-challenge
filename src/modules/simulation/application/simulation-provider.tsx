@@ -29,6 +29,7 @@ const Context = createContext<{
   active: boolean;
   edit: (slot: Slot, patch: Partial<Conditions>) => void;
   load: (experiments: Experiment[]) => void;
+  simulate: (patch: Partial<Conditions>) => void;
 } | null>(null);
 export function SimulationProvider({
   children,
@@ -122,9 +123,16 @@ export function SimulationProvider({
     },
     [atlasDispatch, clock, reduced],
   );
+  const simulate = useCallback(
+    (patch: Partial<Conditions>) => {
+      dispatch({ type: "simulate", patch });
+      clock.restart(!reduced);
+    },
+    [clock, reduced],
+  );
   return (
     <Context.Provider
-      value={{ state, dispatch, clock, reduced, active, edit, load }}
+      value={{ state, dispatch, clock, reduced, active, edit, load, simulate }}
     >
       {children}
     </Context.Provider>

@@ -125,6 +125,7 @@ Technical documentation:
 - Mario Lira
 - Emiliano Holguin
 - Diego Antunez
+- Alejandro De Busk
 
 ## License
 

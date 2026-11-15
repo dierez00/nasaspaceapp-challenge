@@ -45,6 +45,7 @@ class CoveragePoint:
     gravity_g: float
     outcome: BurnOutcome
     needs_review: bool
+    o2_basis: Literal["ambient", "oxidizer_stream"] = "ambient"
 
     @property
     def assumed_conditions(self) -> bool:
@@ -154,7 +155,7 @@ def build_regime_coverage(points: list[CoveragePoint]) -> list[RegimeCoverage]:
     regimes = []
     for regime in REGIMES:
         grid: dict[tuple[int, int], list[CoveragePoint]] = {}
-        in_regime = [p for p in points if gravity_regime(p.gravity_g) == regime]
+        in_regime = [p for p in points if p.o2_basis == "ambient" and gravity_regime(p.gravity_g) == regime]
         for p in in_regime:
             key = (math.floor(p.o2_percent / O2_BIN_PERCENT), math.floor(p.pressure_kpa / PRESSURE_BIN_KPA))
             grid.setdefault(key, []).append(p)
@@ -173,7 +174,8 @@ def evaluate_condition(
     nearby = [
         p
         for p in points
-        if abs(p.o2_percent - condition.o2_percent) <= o2_tolerance
+        if p.o2_basis == "ambient"
+        and abs(p.o2_percent - condition.o2_percent) <= o2_tolerance
         and abs(p.pressure_kpa - condition.pressure_kpa) <= pressure_tolerance
     ]
     matching = [p for p in nearby if gravity_regime(p.gravity_g) == regime]
@@ -213,6 +215,7 @@ def evaluate_condition(
 
 
 def build_coverage_map(points: list[CoveragePoint], conditions: list[ReferenceCondition]) -> CoverageMap:
+    points = [p for p in points if p.o2_basis == "ambient"]
     types = Counter(p.point_type for p in points)
     return CoverageMap(
         o2_bin_percent=O2_BIN_PERCENT,

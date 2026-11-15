@@ -72,6 +72,16 @@
           ],
           "title": "Thickness Mm"
         },
+        "o2_basis": {
+          "default": "ambient",
+          "description": "Whether O2 describes the atmosphere or the burner oxidizer stream",
+          "enum": [
+            "ambient",
+            "oxidizer_stream"
+          ],
+          "title": "O2 Basis",
+          "type": "string"
+        },
         "o2_percent": {
           "maximum": 100,
           "minimum": 0,

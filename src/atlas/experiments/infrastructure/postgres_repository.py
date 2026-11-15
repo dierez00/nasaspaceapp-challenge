@@ -11,6 +11,7 @@ _TEST_COLUMNS = (
     "material_class",
     "thickness_mm",
     "o2_percent",
+    "o2_basis",
     "o2_status",
     "pressure_kpa",
     "pressure_status",

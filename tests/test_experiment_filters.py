@@ -51,7 +51,7 @@ def test_lunar_envelope_keeps_only_matching_points(experiments):
     assert points
     assert all(t.o2_percent >= 30 and t.pressure_kpa <= 70.3 for t in points)
     by_id = {e.id: len(e.tests) for e in result}
-    assert by_id["PSI-159"] == 45  # ACME CFI-G high-O2, sub-atmospheric runs
+    assert by_id["PSI-159"] == 18  # Ambient chamber O2 only; 27 inverse burner-stream points excluded
     assert by_id["PSI-20"] == 13  # ACME BRE 34% O2 days, pressure paired by its Objective 1 (assumed)
     assert "PSI-22" not in by_id  # E-FIELD runs are all at nominal air
 
@@ -62,8 +62,7 @@ def test_lunar_envelope_keeps_only_matching_points(experiments):
 def test_bounds_are_inclusive_and_pick_the_cfi_g_85_percent_peak(experiments):
     result = filter_experiments(experiments, PointFilter(min_o2_percent=85, max_o2_percent=85))
 
-    assert [e.id for e in result] == ["PSI-159"]
-    assert len(result[0].tests) == 78
+    assert result == []  # The 85% points describe inverse burner oxygen, not atmosphere.
 
 
 def test_exclude_assumed_drops_filled_in_conditions(experiments):
@@ -112,4 +111,4 @@ def test_lunar_filter_against_postgres():
     with TestClient(create_app(Settings(database_url=DATABASE_URL))) as client:
         body = client.get("/experiments", params=LUNAR_HABITAT).json()
 
-    assert {e["id"]: len(e["tests"]) for e in body} == {"PSI-159": 45, "PSI-20": 13}
+    assert {e["id"]: len(e["tests"]) for e in body} == {"PSI-159": 18, "PSI-20": 13}

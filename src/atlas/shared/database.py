@@ -18,5 +18,5 @@ def create_pool(database_url: str) -> AsyncConnectionPool:
 
 
 async def apply_schema(conn: AsyncConnection) -> None:
-    """Idempotent: every statement in db/schema.sql uses IF NOT EXISTS."""
+    """Apply idempotent schema changes and known-source metadata backfills."""
     await conn.execute(SCHEMA_FILE.read_text(encoding="utf-8"))

@@ -23,7 +23,7 @@ The audit demonstrated destructive empty-source synchronization, ambiguous atmos
 ## Tasks
 - [x] T1 Protect the existing search index when input directories are missing, records are invalid, or the resulting corpus is unexpectedly empty. Fail before repository mutation; test preservation and CLI behavior.
 - [x] T2 Bound query-provider latency without removing ingestion retries, and acquire Postgres connections only for SQL in both `/search` and the existing researcher adapter. Test provider failures, timeout/fallback, and connection lifetime.
-- [ ] T3 Distinguish ambient oxygen from oxidizer-stream oxygen with explicit backward-compatible point metadata. Annotate the 153 PSI-159 inverse-flame points using their cited inverse CSV, persist the metadata, exclude stream oxygen from atmospheric filters/coverage, preserve it in full records and RAG with an explicit label, and document the database upgrade.
+- [x] T3 Distinguish ambient oxygen from oxidizer-stream oxygen with explicit backward-compatible point metadata. Annotate the 153 PSI-159 inverse-flame points using their cited inverse CSV, persist the metadata, exclude stream oxygen from atmospheric filters/coverage, preserve it in full records and RAG with an explicit label, and document the database upgrade.
 - [ ] T4 Reject duplicate `test_id` values within an investigation before database writes. Test validation and loader reporting.
 
 ## Acceptance and checks
@@ -62,8 +62,13 @@ Focused checks use the same isolation and append the relevant test paths to `pyt
   - Focused: isolated pytest `tests/test_search_latency.py tests/test_rerank.py tests/test_query.py` — 71 passed. Full suite: 117 passed, 3 database skips. `git diff --check`: clean.
   - Runtime harness: TestClient HTTP failure/deadline and provider/pool probes; researcher adapter same probe; SQL cancellation/error context cleanup; simulated quota retry keeps eight ingestion attempts without sleeping.
   - Rollback boundary: provider deadlines/query embedding path, pooled chunk search and its HTTP/researcher wiring, latency tests and README guidance. Existing query orchestration unchanged.
+  - Commit: `0059576bd4ead50760baa08dd0e4cdd2a2680674`; 222 authored additions + deletions.
+- T3: additive contract 1.1 `o2_basis` persisted in JSON/flat rows; exactly 153 inverse-source points annotated, scientific record canonical digest unchanged after removing only this new field. Atmospheric filters and each public coverage domain entrypoint exclude oxidizer streams; unfiltered records/RAG retain them with explicit oxygen labels.
+  - Focused: isolated pytest `tests/test_oxygen_basis.py tests/test_coverage.py tests/test_experiment_filters.py tests/test_search.py` — 43 passed, 2 database skips. Full suite: 127 passed, 3 database skips. `atlas-validate`: 13/13 valid; generated schema equality asserted. `git diff --check`: clean.
+  - Runtime harness: existing TestClient experiment/coverage cases and SQL writer/reader spies; schema/backfill source-bound structural checks. Live migration/index refresh NOT executed. Exact-source legacy JSON compatibility prevents pre-reload atmospheric misclassification.
+  - Rollback boundary: oxygen metadata in model, PSI-159, schema and export, atmospheric filter/coverage guards, labeled chunks and oxygen regression tests/docs; additive database column can remain when reverting application code.
+  - Data totals: all 1115 observations retained, 962 atmospheric coverage points; lunar filter PSI-159 45 → 18 and PSI-20 remains 13. No blanket gas exclusion. Required operator `atlas-load` then `atlas-index` documented.
   - Commit: pending creation in this work unit.
-- T3: pending.
 - T4: pending.
 - Native risk assessment / independent checks: pending.
 - Running authored line count and commit identities: pending.

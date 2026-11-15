@@ -62,7 +62,7 @@ def _describe_test(experiment: Experiment, t: ExperimentTest) -> str:
         f"{experiment.id} {experiment.acronym or experiment.title}, {kind} {t.test_id}.",
         f"Material: {t.material} ({t.material_class})"
         + (f", thickness {t.thickness_mm} mm." if t.thickness_mm is not None else "."),
-        f"Conditions: {t.o2_percent}% O2, {t.pressure_kpa} kPa, {t.gravity_environment} ({t.gravity_g} g)"
+        f"Conditions: {t.o2_percent}% O2 ({t.o2_basis}), {t.pressure_kpa} kPa, {t.gravity_environment} ({t.gravity_g} g)"
         + (f", {t.flow_direction} flow at {t.flow_velocity_cm_s} cm/s." if t.flow_velocity_cm_s is not None else "."),
         f"Outcome: {t.outcome.replace('_', ' ')}"
         + (f", burn length {t.burn_length_cm} cm" if t.burn_length_cm is not None else "")

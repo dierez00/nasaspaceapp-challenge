@@ -47,6 +47,9 @@ class ExperimentTest(Contract):
     material: NonEmpty
     material_class: MaterialClass
     thickness_mm: Annotated[float, Field(gt=0)] | None
+    o2_basis: Literal["ambient", "oxidizer_stream"] = Field(
+        default="ambient", description="Whether O2 describes the atmosphere or the burner oxidizer stream"
+    )
     o2_percent: Annotated[float, Field(ge=0, le=100)]
     o2_percent_range: tuple[float, float] | None
     o2_status: ValueStatus
@@ -68,6 +71,17 @@ class ExperimentTest(Contract):
     source: SourceRef
     confidence: Literal["high", "medium", "low"]
     needs_review: bool
+
+    @model_validator(mode="before")
+    @classmethod
+    def label_legacy_inverse_oxygen(cls, value):
+        # Old persisted JSON lacks the additive field. Use the exact cited table,
+        # never free-text notes, until atlas-load refreshes those records.
+        if isinstance(value, dict) and "o2_basis" not in value:
+            source = value.get("source")
+            if isinstance(source, dict) and source.get("file") == "PSI-159_Experimental table_CFI-G_Inverse Flames.csv":
+                return {**value, "o2_basis": "oxidizer_stream"}
+        return value
 
     @model_validator(mode="after")
     def assumed_values_need_review(self) -> "ExperimentTest":

@@ -101,3 +101,26 @@ Las consultas de búsqueda limitan el embedding a 4 s y el reranking a 2 s
 503 sin detalles del proveedor; el reranker conserva el orden vectorial si falla
 o vence su plazo. La ingesta mantiene sus reintentos de cuota. `/search` y el
 investigador solo toman una conexión del pool durante la consulta SQL.
+
+### Actualización de la base: significado del oxígeno
+
+El contrato 1.1 añade `o2_basis` (`ambient` por defecto, `oxidizer_stream` para
+el oxígeno del quemador). Los 153 ensayos inversos de PSI-159 conservan sus
+mediciones y citas, pero quedan fuera de filtros atmosféricos O₂/presión y de
+`/coverage`. El conjunto completo sigue disponible sin filtros y en RAG.
+Con los archivos actuales: 1115 observaciones completas; 962 puntos atmosféricos
+en cobertura. El filtro lunar devuelve 18 puntos de PSI-159, no 45; los otros
+27 describen la corriente oxidante, no una atmósfera de hábitat.
+
+Antes de desplegar, con respaldo y autorización sobre la base correspondiente:
+
+1. Ejecuta `atlas-validate` para verificar los archivos y el esquema exportado.
+2. Ejecuta `atlas-load`: aplica `db/schema.sql` de forma idempotente, añade la
+   columna plana y actualiza los registros JSON desde los archivos validados.
+3. Ejecuta `atlas-index` para refrescar los fragmentos y sus etiquetas de O₂.
+
+La migración protege filas planas antiguas mediante la identidad exacta del CSV
+inverso citado. Las lecturas de JSON anteriores al reload reconocen esa misma
+fuente si falta `o2_basis`; nunca interpretan las notas libres. El backfill no
+reescribe el JSON: `atlas-load` completa esa actualización. El despliegue y estas
+operaciones **no** fueron ejecutados como parte de las pruebas locales.

@@ -30,6 +30,11 @@ class PointFilter:
         return self == PointFilter()
 
     def matches(self, test: ExperimentTest) -> bool:
+        atmospheric_bounds = any(value is not None for value in (
+            self.min_o2_percent, self.max_o2_percent, self.min_pressure_kpa, self.max_pressure_kpa
+        ))
+        if atmospheric_bounds and test.o2_basis != "ambient":
+            return False
         if self.exclude_assumed and "assumed" in (test.o2_status, test.pressure_status):
             return False
         return _within(test.o2_percent, self.min_o2_percent, self.max_o2_percent) and _within(

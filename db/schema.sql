@@ -22,6 +22,7 @@ create table if not exists experiment_tests (
   material_class text not null,
   thickness_mm double precision,
   o2_percent double precision not null,
+  o2_basis text not null default 'ambient' check (o2_basis in ('ambient', 'oxidizer_stream')),
   o2_status text not null,
   pressure_kpa double precision not null,
   pressure_status text not null,
@@ -40,6 +41,20 @@ create table if not exists experiment_tests (
 -- Columns added after the first release; keep the file idempotent.
 alter table experiment_tests add column if not exists point_type text not null default 'test';
 alter table experiment_tests add column if not exists limit_type text;
+alter table experiment_tests add column if not exists o2_basis text not null default 'ambient'
+  check (o2_basis in ('ambient', 'oxidizer_stream'));
+
+-- Protect legacy flat rows before atlas-load refreshes the full JSON records.
+-- Exact cited source identity, not an interpretation of free-text notes.
+update experiment_tests as t
+set o2_basis = 'oxidizer_stream'
+from experiments as e, lateral jsonb_array_elements(e.record->'tests') as point
+where e.id = 'PSI-159' and t.experiment_id = e.id
+  and t.test_id = point->>'test_id'
+  and (point->>'o2_basis' = 'oxidizer_stream'
+       or point->'source'->>'file' = 'PSI-159_Experimental table_CFI-G_Inverse Flames.csv')
+  and t.o2_basis <> 'oxidizer_stream';
+
 
 -- RAG chunks of PSI documents; 1024 = Voyage default embedding size.
 create table if not exists document_chunks (

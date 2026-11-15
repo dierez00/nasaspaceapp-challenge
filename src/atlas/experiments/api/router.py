@@ -30,7 +30,8 @@ async def list_experiments(
     ] = False,
 ) -> list[Experiment]:
     """List experiments. With any filter set, each experiment keeps only its matching tests
-    and experiments with no matching tests are omitted."""
+    and experiments with no matching tests are omitted. Atmospheric O2/pressure
+    bounds exclude oxidizer-stream oxygen; exclude_assumed alone is independent."""
     try:
         criteria = PointFilter(min_o2_percent, max_o2_percent, min_pressure_kpa, max_pressure_kpa, exclude_assumed)
     except ValueError as error:

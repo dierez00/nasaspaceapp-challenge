@@ -33,7 +33,7 @@ A read-only audit (impeccable critique/audit/harden, web-design-guidelines, verc
 - Skills vendored: `c2f6561`.
 - Baseline (before edits): lint, typecheck, test (31 passed) all green.
 - T1 reduced motion: `d1c632e`. lint/typecheck/test green (31 passed). Hero: gsap.matchMedia (opacity-only under reduce), Lenis not created under reduce (reacts to live changes), flame drift off, 3D renders one static frame, loading spinner/pulse `motion-reduce:animate-none`. New hook `useReducedMotion`.
-- T2 WebGL/lab performance: COMMIT_T2. lint/typecheck/test green (31 passed). Hero loop pauses on visibilitychange/off-screen/context loss, segments 64->32 (Earth) and 128->64 (Moon), dpr cap 1.5; lab `active` also requires dashboard in viewport (IntersectionObserver); invalid `will-change-opacity` removed, `will-change: transform` only during active hero scroll.
+- T2 WebGL/lab performance: `671cc6a`. lint/typecheck/test green (31 passed). Hero loop pauses on visibilitychange/off-screen/context loss, segments 64->32 (Earth) and 128->64 (Moon), dpr cap 1.5; lab `active` also requires dashboard in viewport (IntersectionObserver); invalid `will-change-opacity` removed, `will-change: transform` only during active hero scroll.
 
 ## Next step
 T3.

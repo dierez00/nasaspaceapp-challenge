@@ -1,4 +1,8 @@
-"""JSON file cache of UI answers for the demo questions: {normalized question: {question, summary, components}}.
+"""JSON file cache of UI answers for the demo questions: {"v2|" + normalized question: {question, summary, components}}.
+
+The key carries a contract version: bump CACHE_VERSION whenever the UI contract or the tone
+changes so older entries are never served. `get` also validates the entry against UIPayload;
+an entry that does not validate is a miss.
 
 Commit the file to ship pre-warmed demo answers; delete an entry to regenerate it.
 """
@@ -11,7 +15,14 @@ import unicodedata
 from pathlib import Path
 from typing import Any
 
+from pydantic import ValidationError
+
+from atlas.agents.domain.ui import UIPayload
+
 log = logging.getLogger(__name__)
+
+
+CACHE_VERSION = "v2"
 
 
 def normalize(question: str) -> str:
@@ -23,19 +34,29 @@ def normalize(question: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+def _key(question: str) -> str:
+    return f"{CACHE_VERSION}|{normalize(question)}"
+
+
 class FileQueryCache:
     def __init__(self, path: Path) -> None:
         self._path = path
         self._entries: dict[str, dict[str, Any]] = self._read()
 
     def get(self, question: str) -> dict[str, Any] | None:
-        entry = self._entries.get(normalize(question))
+        entry = self._entries.get(_key(question))
         if not isinstance(entry, dict) or "summary" not in entry or "components" not in entry:
             return None
-        return {"summary": entry["summary"], "components": entry["components"]}
+        ui = {"summary": entry["summary"], "components": entry["components"]}
+        try:
+            UIPayload.model_validate(ui)
+        except ValidationError:
+            log.warning("ignoring a cached answer that no longer matches the UI contract")
+            return None
+        return ui
 
     def put(self, question: str, ui: dict[str, Any]) -> None:
-        self._entries[normalize(question)] = {
+        self._entries[_key(question)] = {
             "question": question,
             "summary": ui["summary"],
             "components": ui["components"],

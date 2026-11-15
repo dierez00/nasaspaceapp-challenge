@@ -1,125 +1,155 @@
-"use client";
+// The ISS cupola seen from the inside: an octagonal window ringed by eight
+// trapezoidal panels split by ribs that radiate from the viewer. Geometry is
+// generated per orientation so the bevels keep their proportions on phones.
 
-import React from "react";
+type Point = [number, number];
+
+interface Layout {
+  w: number;
+  h: number;
+  /** Horizontal and vertical inset of the window from the viewport edge. */
+  ix: number;
+  iy: number;
+  /** Chamfer of the window's corners. */
+  c: number;
+}
+
+// Panel tones, clockwise from the top: lit from above, falling into shadow below.
+const PANEL_TONES = [
+  "#33466b",
+  "#2b3d60",
+  "#223250",
+  "#18253f",
+  "#121d34",
+  "#18253f",
+  "#223250",
+  "#2b3d60",
+];
+
+function build({ w, h, ix, iy, c }: Layout) {
+  const opening: Point[] = [
+    [ix + c, iy],
+    [w - ix - c, iy],
+    [w - ix, iy + c],
+    [w - ix, h - iy - c],
+    [w - ix - c, h - iy],
+    [ix + c, h - iy],
+    [ix, h - iy - c],
+    [ix, iy + c],
+  ];
+  const cx = w / 2;
+  const cy = h / 2;
+  // Extend each window vertex along the ray from the centre until it meets the viewport edge.
+  const outer: Point[] = opening.map(([x, y]) => {
+    const dx = x - cx;
+    const dy = y - cy;
+    const k = Math.min(
+      dx === 0 ? Infinity : (dx > 0 ? w - cx : cx) / Math.abs(dx),
+      dy === 0 ? Infinity : (dy > 0 ? h - cy : cy) / Math.abs(dy),
+    );
+    return [cx + dx * k, cy + dy * k];
+  });
+  const corners: Record<number, Point> = {
+    1: [w, 0],
+    3: [w, h],
+    5: [0, h],
+    7: [0, 0],
+  };
+  const panels = opening.map((v, i) => {
+    const n = (i + 1) % 8;
+    const pts: Point[] = [v, outer[i]];
+    if (corners[i]) pts.push(corners[i]);
+    pts.push(outer[n], opening[n]);
+    return pts;
+  });
+  const bolts = opening.map(([x, y], i): Point => {
+    const [ox, oy] = outer[i];
+    return [x + (ox - x) * 0.34, y + (oy - y) * 0.34];
+  });
+  return { opening, outer, panels, bolts };
+}
+
+const str = (pts: Point[]) => pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+
+function Orientation({ layout, className }: { layout: Layout; className: string }) {
+  const { opening, outer, panels, bolts } = build(layout);
+  return (
+    <svg
+      className={className}
+      viewBox={`0 0 ${layout.w} ${layout.h}`}
+      preserveAspectRatio="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {panels.map((pts, i) => (
+        <polygon key={i} points={str(pts)} fill={PANEL_TONES[i]} />
+      ))}
+      {/* Ribs: a dark seam with a lit edge beside it. */}
+      {opening.map(([x, y], i) => (
+        <g key={i} fill="none" strokeLinecap="round">
+          <line
+            x1={x}
+            y1={y}
+            x2={outer[i][0]}
+            y2={outer[i][1]}
+            stroke="#050a16"
+            strokeWidth="5"
+            vectorEffect="non-scaling-stroke"
+          />
+          <line
+            x1={x}
+            y1={y}
+            x2={outer[i][0]}
+            y2={outer[i][1]}
+            stroke="rgba(233,237,243,0.16)"
+            strokeWidth="1"
+            vectorEffect="non-scaling-stroke"
+            transform="translate(2.5 0)"
+          />
+        </g>
+      ))}
+      {bolts.map(([x, y], i) => (
+        <circle
+          key={i}
+          cx={x}
+          cy={y}
+          r="6"
+          fill="#0a1324"
+          stroke="rgba(233,237,243,0.28)"
+          strokeWidth="1.5"
+          vectorEffect="non-scaling-stroke"
+        />
+      ))}
+      {/* Window seal: a deep shadow band, then the lit rim of the glass. */}
+      <polygon
+        points={str(opening)}
+        fill="none"
+        stroke="#03060e"
+        strokeWidth="14"
+        strokeLinejoin="round"
+        vectorEffect="non-scaling-stroke"
+      />
+      <polygon
+        points={str(opening)}
+        fill="none"
+        stroke="rgba(233,237,243,0.55)"
+        strokeWidth="2"
+        strokeLinejoin="round"
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  );
+}
 
 export function CupolaFrame() {
   return (
-    <div className="pointer-events-none absolute inset-0 z-20 overflow-hidden select-none">
-      {/* 1. Marco Exterior Octogonal Biselado (Cupola Window en Blanco Aeroespacial) */}
-      <svg
-        className="w-full h-full absolute inset-0"
-        viewBox="0 0 1920 1080"
-        preserveAspectRatio="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          {/* Gradiente Blanco / Gris Titanio Limpio Estilo Cleanroom / Orion */}
-          <linearGradient id="whiteCupolaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="35%" stopColor="#f8fafc" />
-            <stop offset="65%" stopColor="#f1f5f9" />
-            <stop offset="100%" stopColor="#ffffff" />
-          </linearGradient>
-
-          {/* Sombra de Profundidad en el Bisel Interior hacia el Espacio */}
-          <linearGradient id="bevelShadowTop" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="rgba(15, 23, 42, 0.12)" />
-            <stop offset="100%" stopColor="transparent" />
-          </linearGradient>
-        </defs>
-
-        {/* Borde Biselado Perimetral Blanco con Chamfers Diagonales en Esquinas */}
-        <polygon
-          points="
-            0,0 1920,0 1920,1080 0,1080 0,0
-            50,130 130,50 1790,50 1870,130 1870,950 1790,1030 130,1030 50,950 50,130
-          "
-          fill="url(#whiteCupolaGrad)"
-          fillRule="evenodd"
-          opacity="1"
-        />
-
-        {/* Línea de Contorno Exterior de Precisión (Borde de panel estructural) */}
-        <polygon
-          points="
-            50,130 130,50 1790,50 1870,130 1870,950 1790,1030 130,1030 50,950
-          "
-          fill="none"
-          stroke="rgba(15, 23, 42, 0.16)"
-          strokeWidth="2.5"
-        />
-
-        {/* Línea de Sello Interior de Silicona Aeroespacial (Acento Cian Nítido) */}
-        <polygon
-          points="
-            56,134 134,56 1786,56 1864,134 1864,946 1786,1024 134,1024 56,946
-          "
-          fill="none"
-          stroke="rgba(2, 132, 199, 0.35)"
-          strokeWidth="1.2"
-        />
-
-        {/* Remaches / Pernos de Montura de Titanio (Mecanizado fino sobre panel blanco) */}
-        {[
-          { x: 130, y: 32 }, { x: 380, y: 32 }, { x: 680, y: 32 }, { x: 960, y: 32 },
-          { x: 1240, y: 32 }, { x: 1540, y: 32 }, { x: 1790, y: 32 },
-          { x: 1888, y: 130 }, { x: 1888, y: 400 }, { x: 1888, y: 680 }, { x: 1888, y: 950 },
-          { x: 1790, y: 1048 }, { x: 1540, y: 1048 }, { x: 1240, y: 1048 }, { x: 960, y: 1048 },
-          { x: 680, y: 1048 }, { x: 380, y: 1048 }, { x: 130, y: 1048 },
-          { x: 32, y: 950 }, { x: 32, y: 680 }, { x: 32, y: 400 }, { x: 32, y: 130 }
-        ].map((rivet, i) => (
-          <g key={i}>
-            <circle
-              cx={rivet.x}
-              cy={rivet.y}
-              r="4"
-              fill="#f8fafc"
-              stroke="#94a3b8"
-              strokeWidth="1"
-            />
-            <circle
-              cx={rivet.x}
-              cy={rivet.y}
-              r="1.6"
-              fill="#64748b"
-            />
-          </g>
-        ))}
-
-        {/* Retículas y Marcadores de Calibración Óptica en Esquinas (Acentos Cian Nítidos) */}
-        {/* Esquina Superior Izquierda */}
-        <g stroke="#0284c7" strokeWidth="1.5">
-          <line x1="130" y1="68" x2="160" y2="68" />
-          <line x1="130" y1="68" x2="130" y2="98" />
-          <circle cx="130" cy="68" r="2" fill="#0284c7" />
-        </g>
-        {/* Esquina Superior Derecha */}
-        <g stroke="#0284c7" strokeWidth="1.5">
-          <line x1="1790" y1="68" x2="1760" y2="68" />
-          <line x1="1790" y1="68" x2="1790" y2="98" />
-          <circle cx="1790" cy="68" r="2" fill="#0284c7" />
-        </g>
-        {/* Esquina Inferior Izquierda */}
-        <g stroke="#0284c7" strokeWidth="1.5">
-          <line x1="130" y1="1012" x2="160" y2="1012" />
-          <line x1="130" y1="1012" x2="130" y2="982" />
-          <circle cx="130" cy="1012" r="2" fill="#0284c7" />
-        </g>
-        {/* Esquina Inferior Derecha */}
-        <g stroke="#0284c7" strokeWidth="1.5">
-          <line x1="1790" y1="1012" x2="1760" y2="1012" />
-          <line x1="1790" y1="1012" x2="1790" y2="982" />
-          <circle cx="1790" cy="1012" r="2" fill="#0284c7" />
-        </g>
-      </svg>
-
-      {/* 2. Reflejo Diagonal Suave de Cristal (Glass Glare) */}
-      <div
-        className="absolute inset-0 w-full h-full opacity-40 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 25%, transparent 55%, rgba(2,132,199,0.03) 100%)",
-        }}
+    <div className="cupola-frame" aria-hidden="true">
+      <Orientation
+        className="cupola-landscape"
+        layout={{ w: 1600, h: 900, ix: 150, iy: 100, c: 120 }}
+      />
+      <Orientation
+        className="cupola-portrait"
+        layout={{ w: 900, h: 1600, ix: 62, iy: 150, c: 110 }}
       />
     </div>
   );

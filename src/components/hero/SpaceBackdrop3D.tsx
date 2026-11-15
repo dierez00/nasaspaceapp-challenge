@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, type RefObject } from "react";
 import * as THREE from "three";
 import { emitHeroLoadProgress } from "@/components/common/hero-load-events";
 
@@ -96,7 +96,7 @@ function createSparklesPoints(
   size = 2.2,
   _speed = 0,
   opacity = 0.9,
-  hexColor = "#e0f2fe"
+  hexColor = "#e9edf3"
 ) {
   void _speed;
   const positions = new Float32Array(count * 3);
@@ -164,8 +164,27 @@ function createSparklesPoints(
   return { points, geometry, material };
 }
 
-export function SpaceBackdrop3D() {
+interface SpaceBackdrop3DProps {
+  /** Only the visible surface renders: false parks the loop (e.g. while the deck is up). */
+  active?: boolean;
+  /** Dive progress 0..1 written by the transition timeline; drives the camera dolly. */
+  dive?: RefObject<{ p: number }>;
+}
+
+export function SpaceBackdrop3D({ active = true, dive }: SpaceBackdrop3DProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const activeRef = useRef(active);
+  const syncRef = useRef<() => void>(() => {});
+  const diveRef = useRef(dive);
+
+  useEffect(() => {
+    diveRef.current = dive;
+  }, [dive]);
+
+  useEffect(() => {
+    activeRef.current = active;
+    syncRef.current();
+  }, [active]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -176,7 +195,7 @@ export function SpaceBackdrop3D() {
     const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#02040a");
+    scene.background = new THREE.Color("#0a1324");
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     camera.position.set(0, 0, 5);
@@ -215,7 +234,7 @@ export function SpaceBackdrop3D() {
     sunLight.position.set(15, 3.5, 4.5);
     scene.add(sunLight);
 
-    const flameGlowLight = new THREE.PointLight(0x38bdf8, 1.1, 8);
+    const flameGlowLight = new THREE.PointLight(0x3b82f6, 1.1, 8);
     flameGlowLight.position.set(0, 0, 1.2);
     scene.add(flameGlowLight);
 
@@ -252,11 +271,11 @@ export function SpaceBackdrop3D() {
     scene.add(stars.points);
 
     // Capa de Sparkles 1: 350 destellos principales en primer/medio plano
-    const sparkles1 = createSparklesPoints(350, [40, 25, 25], 2.5, 0, 1.0, "#f0f9ff");
+    const sparkles1 = createSparklesPoints(350, [40, 25, 25], 2.5, 0, 1.0, "#e9edf3");
     scene.add(sparkles1.points);
 
     // Capa de Sparkles 2: 150 destellos secundarios de refuerzo
-    const sparkles2 = createSparklesPoints(150, [35, 20, 20], 4.0, 0, 0.8, "#dbeafe");
+    const sparkles2 = createSparklesPoints(150, [35, 20, 20], 4.0, 0, 0.8, "#c7d6ee");
     scene.add(sparkles2.points);
 
     // 5. La Tierra (Lejana) — Renderizado PBR Fotorrealista
@@ -288,7 +307,7 @@ export function SpaceBackdrop3D() {
     // Halo Atmosférico Exterior (Fresnel / Glow con mezcla aditiva)
     const atmosphereGeo = new THREE.SphereGeometry(0.75, 32, 32);
     const atmosphereMat = new THREE.MeshBasicMaterial({
-      color: new THREE.Color("#38bdf8"),
+      color: new THREE.Color("#3b82f6"),
       transparent: true,
       opacity: 0.14,
       blending: THREE.AdditiveBlending,
@@ -301,7 +320,7 @@ export function SpaceBackdrop3D() {
     // Halo tenue exterior adicional para suave difusión mesosférica
     const glowGeo = new THREE.SphereGeometry(0.75, 32, 32);
     const glowMat = new THREE.MeshBasicMaterial({
-      color: new THREE.Color("#0ea5e9"),
+      color: new THREE.Color("#60a5fa"),
       transparent: true,
       opacity: 0.08,
       blending: THREE.AdditiveBlending,
@@ -346,6 +365,34 @@ export function SpaceBackdrop3D() {
     let reducedMotion = false;
     const clock = new THREE.Clock();
 
+    // Pointer parallax in the cabin, and the dive dolly: the camera drifts toward the
+    // Moon's horizon, pitches down and widens its lens as `dive.p` goes 0 -> 1.
+    const pointer = { x: 0, y: 0, sx: 0, sy: 0 };
+    const handlePointer = (event: PointerEvent) => {
+      pointer.x = (event.clientX / window.innerWidth - 0.5) * 2;
+      pointer.y = (event.clientY / window.innerHeight - 0.5) * 2;
+    };
+    window.addEventListener("pointermove", handlePointer, { passive: true });
+    let lastFov = camera.fov;
+    const updateCamera = (delta: number) => {
+      const p = diveRef.current?.current.p ?? 0;
+      const follow = 1 - Math.exp(-delta * 4);
+      pointer.sx += (pointer.x - pointer.sx) * follow;
+      pointer.sy += (pointer.y - pointer.sy) * follow;
+      camera.position.set(
+        pointer.sx * 0.22 * (1 - p),
+        -pointer.sy * 0.12 * (1 - p) - 0.9 * p,
+        5 - 4.3 * p,
+      );
+      camera.rotation.x = -0.28 * p;
+      const fov = 45 + 22 * p;
+      if (fov !== lastFov) {
+        lastFov = fov;
+        camera.fov = fov;
+        camera.updateProjectionMatrix();
+      }
+    };
+
     const renderFrame = (elapsed: number) => {
       stars.material.uniforms.time.value = elapsed;
       sparkles1.material.uniforms.time.value = elapsed;
@@ -360,6 +407,7 @@ export function SpaceBackdrop3D() {
       // Rotación de los cuerpos celestes: la Luna gira sobre su eje X
       earth.rotation.y += delta * 0.05;
       moon.rotation.x += delta * 0.015;
+      updateCamera(delta);
 
       // Actualización de tiempos para parpadeo de estrellas y sparkles
       renderFrame(elapsed);
@@ -373,7 +421,8 @@ export function SpaceBackdrop3D() {
 
     // El bucle solo corre si el hero es visible, la pestaña está activa y hay contexto WebGL
     const syncLoop = () => {
-      const shouldRun = !reducedMotion && inView && tabVisible && !contextLost;
+      const shouldRun =
+        activeRef.current && !reducedMotion && inView && tabVisible && !contextLost;
       if (shouldRun && !running) {
         running = true;
         clock.getDelta(); // reset delta para evitar saltos bruscos
@@ -384,6 +433,7 @@ export function SpaceBackdrop3D() {
       }
     };
 
+    syncRef.current = syncLoop;
     const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const applyMotionPreference = () => {
       reducedMotion = reducedMotionQuery.matches;
@@ -438,6 +488,8 @@ export function SpaceBackdrop3D() {
     // 10. Limpieza estricta de memoria WebGL al desmontar
     return () => {
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("pointermove", handlePointer);
+      syncRef.current = () => {};
       reducedMotionQuery.removeEventListener("change", applyMotionPreference);
       document.removeEventListener("visibilitychange", handleVisibility);
       renderer.domElement.removeEventListener("webglcontextlost", handleContextLost);
@@ -480,7 +532,7 @@ export function SpaceBackdrop3D() {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 z-0 bg-[#02040a] overflow-hidden pointer-events-none select-none"
+      className="absolute inset-0 z-0 bg-[#0a1324] overflow-hidden pointer-events-none select-none"
     />
   );
 }

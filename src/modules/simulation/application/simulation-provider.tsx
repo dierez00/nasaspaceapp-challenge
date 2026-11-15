@@ -11,6 +11,7 @@ import {
 } from "react";
 import type { Experiment } from "@/modules/atlas/domain/experiment";
 import { useAtlas } from "@/modules/atlas/ui/atlas-provider";
+import { useExperience } from "@/shared/experience/experience-context";
 import {
   createSimulationState,
   simulationReducer,
@@ -81,9 +82,12 @@ export function SimulationProvider({
     observer.observe(target);
     return () => observer.disconnect();
   }, []);
+  // Outside the public shell there is no cabin, so the deck is always live.
+  const deckLive = useExperience()?.deckLive ?? true;
   const active =
     visible &&
     inView &&
+    deckLive &&
     atlas.view === "lab" && (!mobile || atlas.tab === "camera");
   const snapshot = useSyncExternalStore(
     clock.subscribe,

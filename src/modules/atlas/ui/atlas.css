@@ -125,8 +125,42 @@
     color: var(--ink);
   }
 }
-.demo-indicator {
+.topbar-end {
   justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.return-cabin {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 18px 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  background: var(--instrument-white);
+  color: var(--nasa-blue);
+  font-size: var(--text-base);
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s var(--ease-out),
+    transform 0.15s var(--ease-out);
+}
+.return-cabin svg {
+  width: 18px;
+  height: 18px;
+}
+.return-cabin:active {
+  transform: scale(0.97);
+}
+@media (hover: hover) {
+  .return-cabin:hover {
+    background: var(--nasa-blue-tint);
+  }
+}
+.demo-indicator {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -293,9 +327,16 @@
     flex: 1;
     padding: 0 8px;
   }
-  .demo-indicator {
+  .topbar-end {
     grid-column: 2;
     grid-row: 1;
+  }
+  .return-cabin {
+    min-height: 36px;
+    padding: 0 14px 0 10px;
+    font-size: var(--text-sm);
+  }
+  .demo-indicator {
     min-height: 32px;
     padding: 0 12px;
   }
@@ -342,5 +383,12 @@
     animation: none !important;
     transition: none !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Phones: the mark stands in for the wordmark so the top row fits the return control. */
+@media (max-width: 480px) {
+  .atlas-brand span {
+    display: none;
   }
 }

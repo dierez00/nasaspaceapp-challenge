@@ -10,10 +10,12 @@ import "./atlas.css";
 import { SimulationProvider } from "@/modules/simulation/application/simulation-provider";
 import { Laboratory } from "@/modules/simulation/ui/laboratory";
 import { motion, useReducedMotion } from "motion/react";
+import { useExperience } from "@/shared/experience/experience-context";
 
 function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
   const { state, dispatch } = useAtlas();
   const reduced = useReducedMotion();
+  const experience = useExperience();
   return (
     <main className="atlas-app" data-tab={state.tab}>
       <nav className="atlas-topbar" aria-label="Atlas">
@@ -21,6 +23,12 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
           className="atlas-brand"
           href="/"
           aria-label="Atlas del fuego lunar, inicio"
+          onClick={(event) => {
+            // Home is the cabin: reverse the immersion instead of reloading the route.
+            if (!experience) return;
+            event.preventDefault();
+            experience.returnToCabin();
+          }}
         >
           <svg className="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
             <rect width="32" height="32" rx="10" fill="#0b3d91" />
@@ -59,17 +67,38 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
             Mapa de evidencias
           </button>
         </div>
-        <span
-          className="demo-indicator"
-          title={
-            mode === "demo"
-              ? "Los ensayos y respuestas son datos de demostración"
-              : "Ensayos cargados desde el catálogo remoto"
-          }
-        >
-          <i />
-          {mode === "demo" ? "Modo demostración" : "Datos remotos"}
-        </span>
+        <div className="topbar-end">
+          {experience && (
+            <button
+              type="button"
+              className="return-cabin"
+              onClick={experience.returnToCabin}
+            >
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <path
+                  d="M16 10H5m4.5-5L4.5 10l5 5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              Volver a la cabina
+            </button>
+          )}
+          <span
+            className="demo-indicator"
+            title={
+              mode === "demo"
+                ? "Los ensayos y respuestas son datos de demostración"
+                : "Ensayos cargados desde el catálogo remoto"
+            }
+          >
+            <i />
+            {mode === "demo" ? "Modo demostración" : "Datos remotos"}
+          </span>
+        </div>
       </nav>
       <div className="mobile-tabs" role="group" aria-label="Panel visible">
         <button

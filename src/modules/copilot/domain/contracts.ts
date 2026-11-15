@@ -1,0 +1,90 @@
+import { z } from "zod";
+import { sourceSchema } from "@/modules/atlas/domain/experiment";
+
+export const querySchema = z
+  .object({
+    version: z.literal(1),
+    queryId: z.string().min(1).max(100),
+    text: z.string().trim().min(1).max(2000),
+    context: z
+      .object({
+        pressure: z.number().min(0).max(16),
+        oxygen: z.number().min(18).max(50),
+        gravity: z.literal("lunar"),
+      })
+      .strict()
+      .optional(),
+  })
+  .strict();
+export type Query = z.infer<typeof querySchema>;
+export const blockSchema = z.discriminatedUnion("type", [
+  z
+    .object({ type: z.literal("ExperimentCard"), experimentId: z.string() })
+    .strict(),
+  z
+    .object({
+      type: z.literal("CompareTable"),
+      experimentIds: z.array(z.string()).min(2).max(6),
+    })
+    .strict(),
+  z
+    .object({ type: z.literal("GravityBounds"), explanation: z.string() })
+    .strict(),
+  z
+    .object({ type: z.literal("SourceList"), sources: z.array(sourceSchema) })
+    .strict(),
+  z
+    .object({
+      type: z.literal("FallbackCard"),
+      markdown: z.string(),
+      sources: z.array(sourceSchema),
+    })
+    .strict(),
+]);
+export type UIBlock = z.infer<typeof blockSchema>;
+export const eventSchema = z.discriminatedUnion("type", [
+  z.object({
+    type: z.literal("agent-status"),
+    queryId: z.string(),
+    agent: z.enum(["analyst", "physics", "synthesizer"]),
+    status: z.enum(["working", "done"]),
+  }),
+  z.object({
+    type: z.literal("text-delta"),
+    queryId: z.string(),
+    text: z.string(),
+  }),
+  z.object({
+    type: z.literal("ui-block"),
+    queryId: z.string(),
+    block: z.unknown(),
+  }),
+  z.object({ type: z.literal("done"), queryId: z.string() }),
+  z.object({
+    type: z.literal("error"),
+    queryId: z.string(),
+    message: z.string(),
+  }),
+]);
+export type CopilotEvent = z.infer<typeof eventSchema>;
+export function validateBlock(value: unknown): UIBlock {
+  const result = blockSchema.safeParse(value);
+  const references =
+    typeof value === "object" &&
+    value !== null &&
+    "sources" in value &&
+    Array.isArray(value.sources)
+      ? value.sources.flatMap((source) => {
+          const parsed = sourceSchema.safeParse(source);
+          return parsed.success ? [parsed.data] : [];
+        })
+      : [];
+  return result.success
+    ? result.data
+    : {
+        type: "FallbackCard",
+        markdown:
+          "**Respuesta incompleta.** No se pudo validar este bloque. Puedes volver a intentarlo; las demás evidencias siguen disponibles.",
+        sources: references,
+      };
+}

@@ -11,6 +11,13 @@ function buildClient() {
   return new PrismaClient({ adapter });
 }
 
-export const prisma = globalForPrisma.prisma ?? buildClient();
+let prisma: PrismaClient | undefined;
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// Page discovery imports server modules during builds, before a database is needed.
+export function getPrisma() {
+  prisma ??= globalForPrisma.prisma ?? buildClient();
+
+  if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+
+  return prisma;
+}

@@ -6,6 +6,8 @@ export default defineConfig([
   ...nextVitals,
   ...nextTypescript,
   globalIgnores([
+    "test-results/**",
+    "playwright-report/**",
     ".next/**",
     "coverage/**",
     "src/generated/**",

@@ -3,6 +3,8 @@
 1. classify (short call, 4 s, default = run both agents)
 2. analyst and researcher in parallel (12 s each; a failure becomes {"error": ...})
 3. composer -> UIPayload validation; one retry with the error, then fixed rules
+4. grounding: tables, citations, gap_map ids and every figure in the text must come
+   from what the tools logged (or from the question)
 """
 
 import asyncio
@@ -24,8 +26,9 @@ from atlas.agents.domain.events import (
     Event,
     status,
 )
+from atlas.agents.domain.grounding import AgentResult, Evidence, ground_ui
 from atlas.agents.domain.ui import UIPayload
-from atlas.agents.domain.ui_rules import AgentResult, build_rules_ui
+from atlas.agents.domain.ui_rules import build_rules_ui, rules_summary
 
 log = logging.getLogger(__name__)
 
@@ -131,14 +134,22 @@ async def _compose(
                 log.warning("composer failed on attempt %s: %r", attempt, exc)
                 break
             try:
-                return UIPayload.model_validate(raw), "agent"
+                ui = UIPayload.model_validate(raw)
             except ValidationError as exc:
                 log.warning("composer output invalid on attempt %s", attempt)
                 prompt = (
                     f"{base_prompt}\n\n## Tu respuesta anterior no pasó la validación\n\n"
                     f"{str(exc)[:VALIDATION_ERROR_LIMIT]}\n\nCorrige esos campos y devuelve el objeto completo."
                 )
-    return build_rules_ui(classification, analyst, researcher), "rules"
+                continue
+            evidence = Evidence(question, analyst, researcher)
+            grounded, fixes = ground_ui(ui, evidence, rules_summary(classification))
+            if fixes:
+                log.warning("composer output not grounded in the tools' data: %s", ", ".join(fixes))
+            if grounded is None:
+                break
+            return grounded, "agent"
+    return build_rules_ui(classification, analyst, researcher, question), "rules"
 
 
 def build_composer_prompt(

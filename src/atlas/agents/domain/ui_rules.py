@@ -6,11 +6,15 @@ Agent results are plain dicts (they are also what the composer agent reads):
 - researcher: {"respuesta": str | None, "fuentes": [{"ref", "experiment_id", "source_file", "section", "content",
                                                       "score", "rerank_score"}]}  (best first)
 - either one: {"error": str} when it failed or timed out, or None when it was not run.
+
+The analyst's and researcher's free-text answers are written by an LLM, so they are
+only included when grounding.Evidence finds every figure, PSI id and [n] ref in the data.
 """
 
 from typing import Any
 
 from atlas.agents.domain.classification import Classification
+from atlas.agents.domain.grounding import AgentResult, Evidence
 from atlas.agents.domain.ui import (
     Citation,
     CitationsComponent,
@@ -20,8 +24,6 @@ from atlas.agents.domain.ui import (
     TextComponent,
     UIPayload,
 )
-
-AgentResult = dict[str, Any] | None
 
 MAX_CITATIONS = 5
 MAX_QUOTE = 600
@@ -35,7 +37,15 @@ _SUMMARIES = {
 _NO_DATA = "No encontré datos ni fuentes para responder; prueba a reformular la pregunta."
 
 
-def build_rules_ui(classification: Classification, analyst: AgentResult, researcher: AgentResult) -> UIPayload:
+def rules_summary(classification: Classification) -> str:
+    return _SUMMARIES[classification.tipo]
+
+
+def build_rules_ui(
+    classification: Classification, analyst: AgentResult, researcher: AgentResult, question: str = ""
+) -> UIPayload:
+    """The agents' own answers are shown only if their figures and ids appear in the data."""
+    evidence = Evidence(question, analyst, researcher)
     table = _last_table(analyst)
     citations = _citations(researcher)
     components: list[Any] = []
@@ -55,7 +65,7 @@ def build_rules_ui(classification: Classification, analyst: AgentResult, researc
         citations = None
 
     for answer in (_answer(analyst), _answer(researcher)):
-        if answer:
+        if answer and evidence.text_is_grounded(answer):
             components.append(TextComponent(type="text", body=answer))
     if table:
         components.append(table)

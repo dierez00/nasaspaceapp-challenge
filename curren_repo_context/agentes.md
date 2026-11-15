@@ -15,10 +15,10 @@ Los nombres se verificaron contra `claude_agent_sdk/types.py` de `claude-agent-s
 | --- | --- | --- | --- | --- | --- |
 | Clasificador | — | `CLASSIFIER_MODEL` (Haiku) | ninguna | 1 | `Classification` por `output_format` json_schema |
 | Analista | "el que consulta" | `AGENT_MODEL` | `mcp__analista__consultar_ensayos` | 6 | `{"respuesta", "consultas": [{filtros, columns, rows, total, truncated}]}` |
-| Investigador | "el que responde" | `AGENT_MODEL` | `mcp__investigador__buscar_documentos` | 4 | `{"respuesta", "fuentes": [{id, experiment_id, source_file, section, content, score}]}` |
+| Investigador | "el que responde" | `AGENT_MODEL` | `mcp__investigador__buscar_documentos` | 4 | `{"respuesta", "fuentes": [{ref, experiment_id, source_file, section, content, score, rerank_score}]}` |
 | Compositor | "el front" | `AGENT_MODEL` | ninguna | 3 | `UIPayload` por `output_format` json_schema |
 
-`consultas` y `fuentes` no las escribe el LLM: las registran las propias herramientas mientras el agente trabaja. Así, la tabla y las citas usan datos reales aunque el texto del agente resuma.
+`consultas` y `fuentes` no las escribe el LLM: las registran las propias herramientas mientras el agente trabaja. El compositor las reescribe en el `UIPayload`, y después `agents/domain/grounding.py` comprueba esa salida contra lo registrado (ver [`flujo.md`](flujo.md#4-anclaje-a-los-datos)). Así, las filas de las tablas, las citas y los experimentos del mapa siempre son datos reales. El texto libre lo redacta la IA, pero cualquier cifra, id `PSI-…` o `[n]` que contenga también tiene que estar en los datos.
 
 Los prompts están en `agents/application/prompts/*.md`.
 

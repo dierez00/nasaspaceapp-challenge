@@ -51,8 +51,8 @@ class Agents(Protocol):
 
 @dataclass(frozen=True)
 class Timeouts:
-    classifier: float = 4.0
-    agent: float = 12.0
+    classifier: float = 8.0
+    agent: float = 20.0
     composer: float = 20.0
 
 

@@ -9,13 +9,13 @@ pregunta
   │
   ▼
 status{clasificando}
-1. Clasificador (Haiku, max_turns=1, json_schema)        límite 4 s
+1. Clasificador (Haiku, max_turns=1, json_schema)        límite 8 s
    falla o tarda → {tipo: general, necesita_datos: true, necesita_fuentes: true}
   │
 status{consultando_datos} si necesita_datos · status{buscando_fuentes} si necesita_fuentes
 2. asyncio.gather(
-     analista     (filtros en Python)       wait_for 12 s
-     investigador (RAG con citas)           wait_for 12 s
+     analista     (filtros en Python)       wait_for 20 s
+     investigador (RAG con citas)           wait_for 20 s
    )  un fallo o tiempo agotado → {"error": "..."}; el otro sigue
   │
 status{componiendo}
@@ -62,4 +62,4 @@ El compositor es un LLM y Pydantic solo revisa la forma del JSON, así que `grou
 
 ## Tiempos
 
-Peor caso sin caché ≈ 4 s + 12 s + 2 × 20 s. El `ms` del evento `ui` mide el total del lado del servidor. Los límites están en `Timeouts` (`run_query.py`).
+Peor caso sin caché ≈ 8 s + 20 s + 2 × 20 s. El `ms` del evento `ui` mide el total del lado del servidor. Los límites están en `Timeouts` (`run_query.py`).

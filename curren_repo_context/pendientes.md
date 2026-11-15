@@ -3,7 +3,7 @@
 ## Supuestos de la implementación actual
 
 1. **Modelos.** El clasificador usa `claude-haiku-5-5`. El analista, el investigador y el compositor usan `claude-opus-5-5` con `effort=low`. Todos se pueden cambiar en `.env`.
-2. **Tiempo de los agentes.** Los 12 s incluyen el arranque del subproceso del CLI del SDK, que puede tardar 1-2 s, y las llamadas a herramientas. Si el analista se pasa seguido, prueba con `AGENT_MODEL=claude-sonnet-5-5` o sube el límite en `Timeouts`.
+2. **Tiempo de los agentes.** Los 20 s incluyen el arranque del subproceso del CLI del SDK, que puede tardar 1-2 s, y las llamadas a herramientas. Si el analista se pasa seguido, prueba con `AGENT_MODEL=claude-sonnet-5-5` o sube el límite en `Timeouts`.
 3. **Clasificador con `max_turns=1` y `output_format`.** Si el CLI necesita más de un turno para la salida estructurada, termina en error y se usa el valor por defecto (correr ambos agentes). Falta verificarlo con una llamada real.
 4. **Compositor:**
    - límite de 20 s por intento, que no venía en la especificación;

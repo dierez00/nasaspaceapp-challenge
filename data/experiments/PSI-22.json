@@ -7,7 +7,7 @@
   "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-22",
   "research_area": "Combustion Science",
   "sub_research_area": "Laminar Flames",
-  "platform": "International Space Station (Combustion Integrated Rack)",
+  "platform": "International Space Station (ISS), Combustion Integrated Rack (CIR), ACME",
   "start_date": "2016-11-18",
   "end_date": "2020-11-17",
   "principal_investigator": "Derek Dunn-Rankin",
@@ -23,7 +23,7 @@
       "thickness_mm": null,
       "o2_percent": 21.0,
       "o2_percent_range": null,
-      "o2_status": "assumed",
+      "o2_status": "derived",
       "pressure_kpa": 101.3,
       "pressure_status": "assumed",
       "gravity_environment": "microgravity",
@@ -34,16 +34,45 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "First round of tests with coflow burner. Test date: 2018-03-14 (GMT day 18073). Electrode mesh polarity: negative. Fuel bottle: 100% CH4, fuel concentrations tested: 100%. Flames ignited count: 10. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa). Source notes: Test day is formatted YYDDD where YY identifies year and DDD identifies day of year (GMT).",
+      "notes": "First round of tests with coflow burner. Test date 2018-03-14 (GMT day 18073). Electrode mesh polarity: negative. Fuel bottle 100% CH4, burned at 100% CH4. Flames ignited that day: 10 (count not split by fuel concentration). O2 21% (derived): the PSI-22 approach says the coflow burner surrounds the fuel jet with a weak synthetic air flow; 21% is the nominal O2 of air. Pressure is not given in the summary table or the investigation page; assumed nominal 101.3 kPa. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "row 1 (Test Day 18073)"
+        "locator": "row 1 (Test Day 18073), Fuel Conc 100%"
       },
       "confidence": "medium",
       "needs_review": true
     },
     {
-      "test_id": "18078",
+      "test_id": "18078-70",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
+      "material": "70% CH4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 21.0,
+      "o2_percent_range": null,
+      "o2_status": "derived",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": null,
+      "flow_direction": "concurrent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "First round of tests with coflow burner. Test date 2018-03-19 (GMT day 18078). Electrode mesh polarity: negative. Fuel bottle 100% CH4, burned at 70% CH4 in N2. Flames ignited that day: 10 (count not split by fuel concentration). O2 21% (derived): the PSI-22 approach says the coflow burner surrounds the fuel jet with a weak synthetic air flow; 21% is the nominal O2 of air. Pressure is not given in the summary table or the investigation page; assumed nominal 101.3 kPa. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
+      "source": {
+        "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
+        "locator": "rows 2-3 (Test Day 18078), Fuel Conc 70%"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "18078-100",
       "point_type": "test",
       "limit_type": null,
       "derived_from": [],
@@ -52,7 +81,7 @@
       "thickness_mm": null,
       "o2_percent": 21.0,
       "o2_percent_range": null,
-      "o2_status": "assumed",
+      "o2_status": "derived",
       "pressure_kpa": 101.3,
       "pressure_status": "assumed",
       "gravity_environment": "microgravity",
@@ -63,10 +92,10 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "First round of tests with coflow burner. Test date: 2018-03-19 (GMT day 18078). Electrode mesh polarity: negative. Fuel bottle: 100% CH4, fuel concentrations tested: 70%, 100%. Flames ignited count: 10. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa). Source notes: Mesh polarity refers to the polarity of the high-voltage power supply and the copper electrode relative to the burner. Fuel Conc. (diluted with nitrogen on a volume basis) was varied between tests, but typically matched the bottle. The list only accounts for flames ignited.",
+      "notes": "First round of tests with coflow burner. Test date 2018-03-19 (GMT day 18078). Electrode mesh polarity: negative. Fuel bottle 100% CH4, burned at 100% CH4. Flames ignited that day: 10 (count not split by fuel concentration). O2 21% (derived): the PSI-22 approach says the coflow burner surrounds the fuel jet with a weak synthetic air flow; 21% is the nominal O2 of air. Pressure is not given in the summary table or the investigation page; assumed nominal 101.3 kPa. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "rows 2-3 (Test Day 18078)"
+        "locator": "rows 2-3 (Test Day 18078), Fuel Conc 100%"
       },
       "confidence": "medium",
       "needs_review": true
@@ -81,7 +110,7 @@
       "thickness_mm": null,
       "o2_percent": 21.0,
       "o2_percent_range": null,
-      "o2_status": "assumed",
+      "o2_status": "derived",
       "pressure_kpa": 101.3,
       "pressure_status": "assumed",
       "gravity_environment": "microgravity",
@@ -92,16 +121,45 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "First round of tests with coflow burner. Test date: 2018-03-21 (GMT day 18080). Electrode mesh polarity: negative. Fuel bottle: 40% CH4, fuel concentrations tested: 40%. Flames ignited count: 8. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa). Source notes: Flames Ignited is the number ignited on that day (neglecting the day change on ISS).",
+      "notes": "First round of tests with coflow burner. Test date 2018-03-21 (GMT day 18080). Electrode mesh polarity: negative. Fuel bottle 40% CH4, burned at 40% CH4 in N2. Flames ignited that day: 8 (count not split by fuel concentration). O2 21% (derived): the PSI-22 approach says the coflow burner surrounds the fuel jet with a weak synthetic air flow; 21% is the nominal O2 of air. Pressure is not given in the summary table or the investigation page; assumed nominal 101.3 kPa. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "row 4 (Test Day 18080)"
+        "locator": "row 4 (Test Day 18080), Fuel Conc 40%"
       },
       "confidence": "medium",
       "needs_review": true
     },
     {
-      "test_id": "18087",
+      "test_id": "18087-80",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
+      "material": "80% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 21.0,
+      "o2_percent_range": null,
+      "o2_status": "derived",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": null,
+      "flow_direction": "concurrent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "First round of tests with coflow burner. Test date 2018-03-28 (GMT day 18087). Electrode mesh polarity: negative. Fuel bottle 100% C2H4, burned at 80% C2H4 in N2. Flames ignited that day: 10 (count not split by fuel concentration). O2 21% (derived): the PSI-22 approach says the coflow burner surrounds the fuel jet with a weak synthetic air flow; 21% is the nominal O2 of air. Pressure is not given in the summary table or the investigation page; assumed nominal 101.3 kPa. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
+      "source": {
+        "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
+        "locator": "rows 5-6 (Test Day 18087), Fuel Conc 80%"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "18087-100",
       "point_type": "test",
       "limit_type": null,
       "derived_from": [],
@@ -110,7 +168,7 @@
       "thickness_mm": null,
       "o2_percent": 21.0,
       "o2_percent_range": null,
-      "o2_status": "assumed",
+      "o2_status": "derived",
       "pressure_kpa": 101.3,
       "pressure_status": "assumed",
       "gravity_environment": "microgravity",
@@ -121,10 +179,10 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "First round of tests with coflow burner. Test date: 2018-03-28 (GMT day 18087). Electrode mesh polarity: negative. Fuel bottle: 100% C2H4, fuel concentrations tested: 80%, 100%. Flames ignited count: 10. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "First round of tests with coflow burner. Test date 2018-03-28 (GMT day 18087). Electrode mesh polarity: negative. Fuel bottle 100% C2H4, burned at 100% C2H4. Flames ignited that day: 10 (count not split by fuel concentration). O2 21% (derived): the PSI-22 approach says the coflow burner surrounds the fuel jet with a weak synthetic air flow; 21% is the nominal O2 of air. Pressure is not given in the summary table or the investigation page; assumed nominal 101.3 kPa. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "rows 5-6 (Test Day 18087)"
+        "locator": "rows 5-6 (Test Day 18087), Fuel Conc 100%"
       },
       "confidence": "medium",
       "needs_review": true
@@ -139,7 +197,7 @@
       "thickness_mm": null,
       "o2_percent": 21.0,
       "o2_percent_range": null,
-      "o2_status": "assumed",
+      "o2_status": "derived",
       "pressure_kpa": 101.3,
       "pressure_status": "assumed",
       "gravity_environment": "microgravity",
@@ -150,10 +208,10 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "First round of tests with coflow burner. Test date: 2018-04-02 (GMT day 18092). Electrode mesh polarity: negative. Fuel bottle: 30% C2H4, fuel concentrations tested: 30%. Flames ignited count: 11. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "First round of tests with coflow burner. Test date 2018-04-02 (GMT day 18092). Electrode mesh polarity: negative. Fuel bottle 30% C2H4, burned at 30% C2H4 in N2. Flames ignited that day: 11 (count not split by fuel concentration). O2 21% (derived): the PSI-22 approach says the coflow burner surrounds the fuel jet with a weak synthetic air flow; 21% is the nominal O2 of air. Pressure is not given in the summary table or the investigation page; assumed nominal 101.3 kPa. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "row 7 (Test Day 18092)"
+        "locator": "row 7 (Test Day 18092), Fuel Conc 30%"
       },
       "confidence": "medium",
       "needs_review": true
@@ -168,7 +226,7 @@
       "thickness_mm": null,
       "o2_percent": 21.0,
       "o2_percent_range": null,
-      "o2_status": "assumed",
+      "o2_status": "derived",
       "pressure_kpa": 101.3,
       "pressure_status": "assumed",
       "gravity_environment": "microgravity",
@@ -179,10 +237,10 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "First round of tests with coflow burner. Test date: 2018-04-05 (GMT day 18095). Electrode mesh polarity: positive. Fuel bottle: 30% C2H4, fuel concentrations tested: 30%. Flames ignited count: 10. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "First round of tests with coflow burner. Test date 2018-04-05 (GMT day 18095). Electrode mesh polarity: positive. Fuel bottle 30% C2H4, burned at 30% C2H4 in N2. Flames ignited that day: 10 (count not split by fuel concentration). O2 21% (derived): the PSI-22 approach says the coflow burner surrounds the fuel jet with a weak synthetic air flow; 21% is the nominal O2 of air. Pressure is not given in the summary table or the investigation page; assumed nominal 101.3 kPa. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "row 8 (Test Day 18095)"
+        "locator": "row 8 (Test Day 18095), Fuel Conc 30%"
       },
       "confidence": "medium",
       "needs_review": true
@@ -197,7 +255,7 @@
       "thickness_mm": null,
       "o2_percent": 21.0,
       "o2_percent_range": null,
-      "o2_status": "assumed",
+      "o2_status": "derived",
       "pressure_kpa": 101.3,
       "pressure_status": "assumed",
       "gravity_environment": "microgravity",
@@ -208,10 +266,10 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "First round of tests with coflow burner. Test date: 2018-04-12 (GMT day 18102). Electrode mesh polarity: positive. Fuel bottle: 40% CH4, fuel concentrations tested: 40%. Flames ignited count: 8. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "First round of tests with coflow burner. Test date 2018-04-12 (GMT day 18102). Electrode mesh polarity: positive. Fuel bottle 40% CH4, burned at 40% CH4 in N2. Flames ignited that day: 8 (count not split by fuel concentration). O2 21% (derived): the PSI-22 approach says the coflow burner surrounds the fuel jet with a weak synthetic air flow; 21% is the nominal O2 of air. Pressure is not given in the summary table or the investigation page; assumed nominal 101.3 kPa. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "row 9 (Test Day 18102)"
+        "locator": "row 9 (Test Day 18102), Fuel Conc 40%"
       },
       "confidence": "medium",
       "needs_review": true
@@ -226,7 +284,7 @@
       "thickness_mm": null,
       "o2_percent": 21.0,
       "o2_percent_range": null,
-      "o2_status": "assumed",
+      "o2_status": "derived",
       "pressure_kpa": 101.3,
       "pressure_status": "assumed",
       "gravity_environment": "microgravity",
@@ -237,10 +295,10 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "First round of tests with coflow burner. Test date: 2018-04-16 (GMT day 18106). Electrode mesh polarity: positive. Fuel bottle: 40% CH4, fuel concentrations tested: 40%. Flames ignited count: 13. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "First round of tests with coflow burner. Test date 2018-04-16 (GMT day 18106). Electrode mesh polarity: positive. Fuel bottle 40% CH4, burned at 40% CH4 in N2. Flames ignited that day: 13 (count not split by fuel concentration). O2 21% (derived): the PSI-22 approach says the coflow burner surrounds the fuel jet with a weak synthetic air flow; 21% is the nominal O2 of air. Pressure is not given in the summary table or the investigation page; assumed nominal 101.3 kPa. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "row 10 (Test Day 18106)"
+        "locator": "row 10 (Test Day 18106), Fuel Conc 40%"
       },
       "confidence": "medium",
       "needs_review": true
@@ -255,7 +313,7 @@
       "thickness_mm": null,
       "o2_percent": 21.0,
       "o2_percent_range": null,
-      "o2_status": "assumed",
+      "o2_status": "derived",
       "pressure_kpa": 101.3,
       "pressure_status": "assumed",
       "gravity_environment": "microgravity",
@@ -266,10 +324,10 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "First round of tests with coflow burner. Test date: 2018-04-23 (GMT day 18113). Electrode mesh polarity: positive. Fuel bottle: 100% CH4, fuel concentrations tested: 100%. Flames ignited count: 15. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "First round of tests with coflow burner. Test date 2018-04-23 (GMT day 18113). Electrode mesh polarity: positive. Fuel bottle 100% CH4, burned at 100% CH4. Flames ignited that day: 15 (count not split by fuel concentration). O2 21% (derived): the PSI-22 approach says the coflow burner surrounds the fuel jet with a weak synthetic air flow; 21% is the nominal O2 of air. Pressure is not given in the summary table or the investigation page; assumed nominal 101.3 kPa. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "row 11 (Test Day 18113)"
+        "locator": "row 11 (Test Day 18113), Fuel Conc 100%"
       },
       "confidence": "medium",
       "needs_review": true
@@ -279,12 +337,12 @@
       "point_type": "test",
       "limit_type": null,
       "derived_from": [],
-      "material": "100% CH4",
+      "material": "70% CH4",
       "material_class": "gas",
       "thickness_mm": null,
       "o2_percent": 21.0,
       "o2_percent_range": null,
-      "o2_status": "assumed",
+      "o2_status": "derived",
       "pressure_kpa": 101.3,
       "pressure_status": "assumed",
       "gravity_environment": "microgravity",
@@ -295,16 +353,45 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "First round of tests with coflow burner. Test date: 2018-05-10 (GMT day 18130). Electrode mesh polarity: positive. Fuel bottle: 100% CH4, fuel concentrations tested: 70%. Flames ignited count: 13. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "First round of tests with coflow burner. Test date 2018-05-10 (GMT day 18130). Electrode mesh polarity: positive. Fuel bottle 100% CH4, burned at 70% CH4 in N2. Flames ignited that day: 13 (count not split by fuel concentration). O2 21% (derived): the PSI-22 approach says the coflow burner surrounds the fuel jet with a weak synthetic air flow; 21% is the nominal O2 of air. Pressure is not given in the summary table or the investigation page; assumed nominal 101.3 kPa. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "row 12 (Test Day 18130)"
+        "locator": "row 12 (Test Day 18130), Fuel Conc 70%"
       },
       "confidence": "medium",
       "needs_review": true
     },
     {
-      "test_id": "18137",
+      "test_id": "18137-80",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
+      "material": "80% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 21.0,
+      "o2_percent_range": null,
+      "o2_status": "derived",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": null,
+      "flow_direction": "concurrent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "First round of tests with coflow burner. Test date 2018-05-17 (GMT day 18137). Electrode mesh polarity: positive. Fuel bottle 100% C2H4, burned at 80% C2H4 in N2. Flames ignited that day: 12 (count not split by fuel concentration). O2 21% (derived): the PSI-22 approach says the coflow burner surrounds the fuel jet with a weak synthetic air flow; 21% is the nominal O2 of air. Pressure is not given in the summary table or the investigation page; assumed nominal 101.3 kPa. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
+      "source": {
+        "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
+        "locator": "rows 13-14 (Test Day 18137), Fuel Conc 80%"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "18137-100",
       "point_type": "test",
       "limit_type": null,
       "derived_from": [],
@@ -313,7 +400,7 @@
       "thickness_mm": null,
       "o2_percent": 21.0,
       "o2_percent_range": null,
-      "o2_status": "assumed",
+      "o2_status": "derived",
       "pressure_kpa": 101.3,
       "pressure_status": "assumed",
       "gravity_environment": "microgravity",
@@ -324,10 +411,10 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "First round of tests with coflow burner. Test date: 2018-05-17 (GMT day 18137). Electrode mesh polarity: positive. Fuel bottle: 100% C2H4, fuel concentrations tested: 80%, 100%. Flames ignited count: 12. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "First round of tests with coflow burner. Test date 2018-05-17 (GMT day 18137). Electrode mesh polarity: positive. Fuel bottle 100% C2H4, burned at 100% C2H4. Flames ignited that day: 12 (count not split by fuel concentration). O2 21% (derived): the PSI-22 approach says the coflow burner surrounds the fuel jet with a weak synthetic air flow; 21% is the nominal O2 of air. Pressure is not given in the summary table or the investigation page; assumed nominal 101.3 kPa. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "rows 13-14 (Test Day 18137)"
+        "locator": "rows 13-14 (Test Day 18137), Fuel Conc 100%"
       },
       "confidence": "medium",
       "needs_review": true
@@ -353,10 +440,10 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Second round of tests with gas-jet burner. Test date: 2018-09-26 (GMT day 18269). Electrode mesh polarity: negative. Fuel bottle: 40% CH4, fuel concentrations tested: 40%. Flames ignited count: 11. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "Second round of tests with gas-jet burner. Test date 2018-09-26 (GMT day 18269). Electrode mesh polarity: negative. Fuel bottle 40% CH4, burned at 40% CH4 in N2. Flames ignited that day: 11 (count not split by fuel concentration). O2 21% and pressure 101.3 kPa are assumed: PSI-22 describes gas-jet tests without coflow and does not state the chamber atmosphere. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "row 15 (Test Day 18269)"
+        "locator": "row 15 (Test Day 18269), Fuel Conc 40%"
       },
       "confidence": "medium",
       "needs_review": true
@@ -382,16 +469,45 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Second round of tests with gas-jet burner. Test date: 2018-10-01 (GMT day 18274). Electrode mesh polarity: negative. Fuel bottle: 30% C2H4, fuel concentrations tested: 30%. Flames ignited count: 11. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "Second round of tests with gas-jet burner. Test date 2018-10-01 (GMT day 18274). Electrode mesh polarity: negative. Fuel bottle 30% C2H4, burned at 30% C2H4 in N2. Flames ignited that day: 11 (count not split by fuel concentration). O2 21% and pressure 101.3 kPa are assumed: PSI-22 describes gas-jet tests without coflow and does not state the chamber atmosphere. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "row 16 (Test Day 18274)"
+        "locator": "row 16 (Test Day 18274), Fuel Conc 30%"
       },
       "confidence": "medium",
       "needs_review": true
     },
     {
-      "test_id": "18282",
+      "test_id": "18282-70",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
+      "material": "70% CH4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 21.0,
+      "o2_percent_range": null,
+      "o2_status": "assumed",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Second round of tests with gas-jet burner. Test date 2018-10-09 (GMT day 18282). Electrode mesh polarity: negative. Fuel bottle 100% CH4, burned at 70% CH4 in N2. Flames ignited that day: 13 (count not split by fuel concentration). O2 21% and pressure 101.3 kPa are assumed: PSI-22 describes gas-jet tests without coflow and does not state the chamber atmosphere. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
+      "source": {
+        "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
+        "locator": "rows 17-18 (Test Day 18282), Fuel Conc 70%"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "18282-100",
       "point_type": "test",
       "limit_type": null,
       "derived_from": [],
@@ -411,10 +527,10 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Second round of tests with gas-jet burner. Test date: 2018-10-09 (GMT day 18282). Electrode mesh polarity: negative. Fuel bottle: 100% CH4, fuel concentrations tested: 70%, 100%. Flames ignited count: 13. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "Second round of tests with gas-jet burner. Test date 2018-10-09 (GMT day 18282). Electrode mesh polarity: negative. Fuel bottle 100% CH4, burned at 100% CH4. Flames ignited that day: 13 (count not split by fuel concentration). O2 21% and pressure 101.3 kPa are assumed: PSI-22 describes gas-jet tests without coflow and does not state the chamber atmosphere. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "rows 17-18 (Test Day 18282)"
+        "locator": "rows 17-18 (Test Day 18282), Fuel Conc 100%"
       },
       "confidence": "medium",
       "needs_review": true
@@ -440,10 +556,10 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Second round of tests with gas-jet burner. Test date: 2018-10-12 (GMT day 18285). Electrode mesh polarity: negative. Fuel bottle: 100% C2H4, fuel concentrations tested: 100%. Flames ignited count: 10. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "Second round of tests with gas-jet burner. Test date 2018-10-12 (GMT day 18285). Electrode mesh polarity: negative. Fuel bottle 100% C2H4, burned at 100% C2H4. Flames ignited that day: 10 (count not split by fuel concentration). O2 21% and pressure 101.3 kPa are assumed: PSI-22 describes gas-jet tests without coflow and does not state the chamber atmosphere. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "row 19 (Test Day 18285)"
+        "locator": "row 19 (Test Day 18285), Fuel Conc 100%"
       },
       "confidence": "medium",
       "needs_review": true
@@ -453,7 +569,7 @@
       "point_type": "test",
       "limit_type": null,
       "derived_from": [],
-      "material": "100% C2H4",
+      "material": "80% C2H4",
       "material_class": "gas",
       "thickness_mm": null,
       "o2_percent": 21.0,
@@ -469,10 +585,10 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Second round of tests with gas-jet burner. Test date: 2018-10-17 (GMT day 18290). Electrode mesh polarity: negative. Fuel bottle: 100% C2H4, fuel concentrations tested: 80%. Flames ignited count: 11. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "Second round of tests with gas-jet burner. Test date 2018-10-17 (GMT day 18290). Electrode mesh polarity: negative. Fuel bottle 100% C2H4, burned at 80% C2H4 in N2. Flames ignited that day: 11 (count not split by fuel concentration). O2 21% and pressure 101.3 kPa are assumed: PSI-22 describes gas-jet tests without coflow and does not state the chamber atmosphere. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "row 20 (Test Day 18290)"
+        "locator": "row 20 (Test Day 18290), Fuel Conc 80%"
       },
       "confidence": "medium",
       "needs_review": true
@@ -498,10 +614,10 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Second round of tests with gas-jet burner. Test date: 2018-10-25 (GMT day 18298). Electrode mesh polarity: positive. Fuel bottle: 40% CH4, fuel concentrations tested: 40%. Flames ignited count: 9. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "Second round of tests with gas-jet burner. Test date 2018-10-25 (GMT day 18298). Electrode mesh polarity: positive. Fuel bottle 40% CH4, burned at 40% CH4 in N2. Flames ignited that day: 9 (count not split by fuel concentration). O2 21% and pressure 101.3 kPa are assumed: PSI-22 describes gas-jet tests without coflow and does not state the chamber atmosphere. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "row 21 (Test Day 18298)"
+        "locator": "row 21 (Test Day 18298), Fuel Conc 40%"
       },
       "confidence": "medium",
       "needs_review": true
@@ -527,16 +643,45 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Second round of tests with gas-jet burner. Test date: 2018-10-29 (GMT day 18302). Electrode mesh polarity: positive. Fuel bottle: 30% C2H4, fuel concentrations tested: 30%. Flames ignited count: 10. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "Second round of tests with gas-jet burner. Test date 2018-10-29 (GMT day 18302). Electrode mesh polarity: positive. Fuel bottle 30% C2H4, burned at 30% C2H4 in N2. Flames ignited that day: 10 (count not split by fuel concentration). O2 21% and pressure 101.3 kPa are assumed: PSI-22 describes gas-jet tests without coflow and does not state the chamber atmosphere. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "row 22 (Test Day 18302)"
+        "locator": "row 22 (Test Day 18302), Fuel Conc 30%"
       },
       "confidence": "medium",
       "needs_review": true
     },
     {
-      "test_id": "18312",
+      "test_id": "18312-70",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
+      "material": "70% CH4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 21.0,
+      "o2_percent_range": null,
+      "o2_status": "assumed",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Second round of tests with gas-jet burner. Test date 2018-11-08 (GMT day 18312). Electrode mesh polarity: positive. Fuel bottle 100% CH4, burned at 70% CH4 in N2. Flames ignited that day: 13 (count not split by fuel concentration). O2 21% and pressure 101.3 kPa are assumed: PSI-22 describes gas-jet tests without coflow and does not state the chamber atmosphere. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
+      "source": {
+        "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
+        "locator": "rows 23-24 (Test Day 18312), Fuel Conc 70%"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "18312-100",
       "point_type": "test",
       "limit_type": null,
       "derived_from": [],
@@ -556,16 +701,103 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Second round of tests with gas-jet burner. Test date: 2018-11-08 (GMT day 18312). Electrode mesh polarity: positive. Fuel bottle: 100% CH4, fuel concentrations tested: 70%, 100%. Flames ignited count: 13. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "Second round of tests with gas-jet burner. Test date 2018-11-08 (GMT day 18312). Electrode mesh polarity: positive. Fuel bottle 100% CH4, burned at 100% CH4. Flames ignited that day: 13 (count not split by fuel concentration). O2 21% and pressure 101.3 kPa are assumed: PSI-22 describes gas-jet tests without coflow and does not state the chamber atmosphere. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "rows 23-24 (Test Day 18312)"
+        "locator": "rows 23-24 (Test Day 18312), Fuel Conc 100%"
       },
       "confidence": "medium",
       "needs_review": true
     },
     {
-      "test_id": "18319",
+      "test_id": "18319-25",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
+      "material": "25% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 21.0,
+      "o2_percent_range": null,
+      "o2_status": "assumed",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Second round of tests with gas-jet burner. Test date 2018-11-15 (GMT day 18319). Electrode mesh polarity: positive. Fuel bottle 100% C2H4, burned at 25% C2H4 in N2. Flames ignited that day: 11 (count not split by fuel concentration). O2 21% and pressure 101.3 kPa are assumed: PSI-22 describes gas-jet tests without coflow and does not state the chamber atmosphere. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited. CSV rows 29-32 repeat this day identically and are not counted twice.",
+      "source": {
+        "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
+        "locator": "rows 25-28 (Test Day 18319), Fuel Conc 25%"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "18319-50",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
+      "material": "50% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 21.0,
+      "o2_percent_range": null,
+      "o2_status": "assumed",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Second round of tests with gas-jet burner. Test date 2018-11-15 (GMT day 18319). Electrode mesh polarity: positive. Fuel bottle 100% C2H4, burned at 50% C2H4 in N2. Flames ignited that day: 11 (count not split by fuel concentration). O2 21% and pressure 101.3 kPa are assumed: PSI-22 describes gas-jet tests without coflow and does not state the chamber atmosphere. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited. CSV rows 29-32 repeat this day identically and are not counted twice.",
+      "source": {
+        "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
+        "locator": "rows 25-28 (Test Day 18319), Fuel Conc 50%"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "18319-80",
+      "point_type": "test",
+      "limit_type": null,
+      "derived_from": [],
+      "material": "80% C2H4",
+      "material_class": "gas",
+      "thickness_mm": null,
+      "o2_percent": 21.0,
+      "o2_percent_range": null,
+      "o2_status": "assumed",
+      "pressure_kpa": 101.3,
+      "pressure_status": "assumed",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-06,
+      "flow_velocity_cm_s": 0.0,
+      "flow_direction": "quiescent",
+      "outcome": "complete_burn",
+      "burn_length_cm": null,
+      "spread_rate_mm_s": null,
+      "normal_gravity_reference": null,
+      "notes": "Second round of tests with gas-jet burner. Test date 2018-11-15 (GMT day 18319). Electrode mesh polarity: positive. Fuel bottle 100% C2H4, burned at 80% C2H4 in N2. Flames ignited that day: 11 (count not split by fuel concentration). O2 21% and pressure 101.3 kPa are assumed: PSI-22 describes gas-jet tests without coflow and does not state the chamber atmosphere. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited. CSV rows 29-32 repeat this day identically and are not counted twice.",
+      "source": {
+        "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
+        "locator": "rows 25-28 (Test Day 18319), Fuel Conc 80%"
+      },
+      "confidence": "medium",
+      "needs_review": true
+    },
+    {
+      "test_id": "18319-100",
       "point_type": "test",
       "limit_type": null,
       "derived_from": [],
@@ -585,10 +817,10 @@
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Second round of tests with gas-jet burner. Test date: 2018-11-15 (GMT day 18319). Electrode mesh polarity: positive. Fuel bottle: 100% C2H4, fuel concentrations tested: 25%, 50%, 80%, 100%. Flames ignited count: 11. O2 and pressure not reported in summary table; assumed nominal air environment (21% O2, 101.3 kPa).",
+      "notes": "Second round of tests with gas-jet burner. Test date 2018-11-15 (GMT day 18319). Electrode mesh polarity: positive. Fuel bottle 100% C2H4, burned at 100% C2H4. Flames ignited that day: 11 (count not split by fuel concentration). O2 21% and pressure 101.3 kPa are assumed: PSI-22 describes gas-jet tests without coflow and does not state the chamber atmosphere. Table note: fuel concentration (diluted with N2 by volume) was varied between tests, typically matched the bottle, and the list only accounts for flames ignited. CSV rows 29-32 repeat this day identically and are not counted twice.",
       "source": {
         "file": "PSI-22_Experimental table_ACME E-FIELD Flames.csv",
-        "locator": "rows 25-32 (Test Day 18319)"
+        "locator": "rows 25-28 (Test Day 18319), Fuel Conc 100%"
       },
       "confidence": "medium",
       "needs_review": true
@@ -601,8 +833,8 @@
     }
   ],
   "review": {
-    "status": "draft",
+    "status": "reviewed",
     "extracted_by": "claude",
-    "reviewed_by": null
+    "reviewed_by": "claude"
   }
 }

@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import pytest
@@ -9,6 +10,7 @@ from atlas.experiments.application.load_experiments import load_experiment_files
 from atlas.main import create_app
 from atlas.shared.config import Settings
 
+DATABASE_URL = os.environ.get("ATLAS_TEST_DATABASE_URL")
 DATA_DIR = Path(__file__).resolve().parents[1] / "data" / "experiments"
 # NASA exploration atmosphere for lunar habitats (data/reference/conditions.json): 34% O2, 56.5 kPa.
 LUNAR_HABITAT = {"min_o2_percent": 30, "max_pressure_kpa": 70.3}
@@ -50,7 +52,11 @@ def test_lunar_envelope_keeps_only_matching_points(experiments):
     assert all(t.o2_percent >= 30 and t.pressure_kpa <= 70.3 for t in points)
     by_id = {e.id: len(e.tests) for e in result}
     assert by_id["PSI-159"] == 45  # ACME CFI-G high-O2, sub-atmospheric runs
+    assert by_id["PSI-20"] == 13  # ACME BRE 34% O2 days, pressure paired by its Objective 1 (assumed)
     assert "PSI-22" not in by_id  # E-FIELD runs are all at nominal air
+
+    measured = filter_experiments(experiments, PointFilter(**LUNAR_HABITAT, exclude_assumed=True))
+    assert [e.id for e in measured] == ["PSI-159"]
 
 
 def test_bounds_are_inclusive_and_pick_the_cfi_g_85_percent_peak(experiments):
@@ -99,3 +105,11 @@ def test_api_without_filters_is_unchanged(client, experiments):
 )
 def test_api_rejects_invalid_ranges(client, params):
     assert client.get("/experiments", params=params).status_code == 422
+
+
+@pytest.mark.skipif(not DATABASE_URL, reason="set ATLAS_TEST_DATABASE_URL and run atlas-load first")
+def test_lunar_filter_against_postgres():
+    with TestClient(create_app(Settings(database_url=DATABASE_URL))) as client:
+        body = client.get("/experiments", params=LUNAR_HABITAT).json()
+
+    assert {e["id"]: len(e["tests"]) for e in body} == {"PSI-159": 45, "PSI-20": 13}

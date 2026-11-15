@@ -8781,16 +8781,16 @@
       "gravity_g": 1e-06,
       "flow_velocity_cm_s": null,
       "flow_direction": null,
-      "outcome": "partial_burn",
+      "outcome": "no_sustained_burn",
       "burn_length_cm": null,
       "spread_rate_mm_s": null,
       "normal_gravity_reference": null,
-      "notes": "Configuration: inverse; source Day = 10; date 2021-09-22 decoded from the YYDDD test prefix (session day, not necessarily the UTC date of every run). O2 mole fraction converted to percent. Inverse configuration: this is the oxygen fraction in the oxidizer/nitrogen stream FROM the burner, not chamber O2; the chamber contains fuel/nitrogen. Fuel = butane; chamber fuel mole fractions before/after = 0.057964402/0.057955197; HC burnrate = 0.75 mg/s; O2 flow rate = 2.684001204 mg/s. Approximate pressure converted from bar to kPa using 1 bar = 100 kPa. Gravity 1e-6 g is the repository convention for ISS orbital microgravity. Spherical radial diffusion flame: normal/inverse is not concurrent/opposed, so flow_direction is null. No flow velocity is inferred from mass flow. Thickness, burn length, spread rate and 1-g reference are not reported/applicable and remain null. Hot ignition = Yes; burn time = 5 s; termination = SE; TFP = No; Tad = 2493.010389 K; Zst = 0.681327868. Combustion occurred in a continuously supplied gas flame; partial_burn is a provisional mapping to the repository enum, not a measured burned fraction. Complete fuel consumption is not established. SE denotes self-extinction of the hot flame; it does not by itself establish absence of subsequent cool combustion. Peak burner T = 91.3 C / 364.45 K; color = Yellow-Blue. No separate cool-flame observation field is provided in the inverse table. Source comment: Flash",
+      "notes": "Configuration: inverse; source Day = 10; date 2021-09-22 decoded from the YYDDD test prefix (session day, not necessarily the UTC date of every run). O2 mole fraction converted to percent. Inverse configuration: this is the oxygen fraction in the oxidizer/nitrogen stream FROM the burner, not chamber O2; the chamber contains fuel/nitrogen. Fuel = butane; chamber fuel mole fractions before/after = 0.057964402/0.057955197; HC burnrate = 0.75 mg/s; O2 flow rate = 2.684001204 mg/s. Approximate pressure converted from bar to kPa using 1 bar = 100 kPa. Gravity 1e-6 g is the repository convention for ISS orbital microgravity. Spherical radial diffusion flame: normal/inverse is not concurrent/opposed, so flow_direction is null. No flow velocity is inferred from mass flow. Thickness, burn length, spread rate and 1-g reference are not reported/applicable and remain null. Hot ignition = Yes; burn time = 5 s; termination = SE; TFP = No; Tad = 2493.010389 K; Zst = 0.681327868. SE denotes self-extinction of the hot flame; it does not by itself establish absence of subsequent cool combustion. Peak burner T = 91.3 C / 364.45 K; color = Yellow-Blue. No separate cool-flame observation field is provided in the inverse table. Source comment: Flash. Review: outcome changed from partial_burn to no_sustained_burn because the source comment is Flash, which the extraction notes map to no_sustained_burn.",
       "source": {
         "file": "PSI-159_Experimental table_CFI-G_Inverse Flames.csv",
         "locator": "CSV row 118 (header = row 1), Test = 21265 A4"
       },
-      "confidence": "medium",
+      "confidence": "low",
       "needs_review": true
     },
     {
@@ -9886,8 +9886,8 @@
     }
   ],
   "review": {
-    "status": "draft",
+    "status": "reviewed",
     "extracted_by": "codex",
-    "reviewed_by": null
+    "reviewed_by": "claude"
   }
 }

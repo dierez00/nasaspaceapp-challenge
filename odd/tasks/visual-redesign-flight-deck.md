@@ -57,7 +57,7 @@ Story: you sit in the ISS cupola, press *Comenzar inmersión*, travel through th
 - ~400 changed lines per task is advisory only.
 
 ## Tasks
-- [ ] D1 Design foundation: rewrite `theme.md` to the flight-deck system; tokens in `globals.css`; fonts via `next/font` in `layout.tsx`; remove the global dark `color-scheme` leak.
+- [x] D1 Design foundation: rewrite `theme.md` to the flight-deck system; tokens in `globals.css`; fonts via `next/font` in `layout.tsx`; remove the global dark `color-scheme` leak.
 - [ ] D2 Dashboard restyle, part 1: header/top bar, layout grid, lab module and controls (`atlas-app.tsx`, `atlas.css`, `laboratory.tsx`, `laboratory.css`).
 - [ ] D3 Dashboard restyle, part 2: evidence map, copilot panel and generative blocks (`atlas-map.tsx`, `atlas.css`, `copilot-panel.tsx`, `blocks.tsx`).
 - [ ] D4 Cabin hero + immersion transition + "Volver a la cabina"; loading screen palette (`HeroSection.tsx`, `CupolaFrame.tsx`, `ScrollIndicator.tsx`, `page.tsx`, `SmoothScrollProvider.tsx`, `LoadingScreen.tsx`).
@@ -71,6 +71,7 @@ Story: you sit in the ISS cupola, press *Comenzar inmersión*, travel through th
 
 ## Progress / Evidence
 - Base: `frontend-skills-polish` complete (`19d84b7`).
+- D1 done in `6abddf2`: theme.md rewritten, tokens + `@theme inline` in globals.css, Unbounded/Instrument Sans/Plex Mono via next/font, light color-scheme (`.theme-cabin` utility available for D4). lint/typecheck/test: green.
 
 ## Next step
-D1.
+D2.

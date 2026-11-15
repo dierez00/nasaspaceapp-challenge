@@ -71,8 +71,8 @@ Presión en psi, O₂ en porcentaje, velocidad en mm/s. `spreadRate: null` signi
 `context` es opcional. `text` admite 1–2000 caracteres. Respuesta `text/event-stream`, con JSON en `data:` y una línea vacía al terminar cada evento:
 
 ```text
-event: agent-status
-data: {"type":"agent-status","queryId":"identificador-unico","agent":"analyst","status":"working"}
+event: progress
+data: {"type":"progress","queryId":"identificador-unico","step":"consultando_datos"}
 
 event: text-delta
 data: {"type":"text-delta","queryId":"identificador-unico","text":"Respuesta parcial"}
@@ -85,17 +85,24 @@ data: {"type":"done","queryId":"identificador-unico"}
 
 ```
 
-Agentes: `analyst | physics | synthesizer`. Estados: `working | done`. Los errores del stream usan `type: error`, `queryId` y `message`. La finalización requiere `done`; un cierre prematuro produce error recuperable. El cliente ignora otros `queryId`, cancela la consulta anterior al enviar otra y conserva bloques parciales al cancelar. No se reconecta automáticamente para evitar duplicar consultas.
+Pasos de `progress`: `cache | clasificando | consultando_datos | buscando_fuentes | componiendo`. La interfaz los muestra en términos de usuario ("Entendiendo la pregunta", "Consultando N ensayos", "Leyendo los informes de NASA PSI"), nunca como agentes, herramientas o reintentos. Los errores del stream usan `type: error`, `queryId` y `message`. La finalización requiere `done`; un cierre prematuro produce error recuperable. El cliente ignora otros `queryId`, cancela la consulta anterior al enviar otra y conserva bloques parciales al cancelar. No se reconecta automáticamente para evitar duplicar consultas.
 
 Bloques admitidos:
 
-| type           | Campos                               |
-| -------------- | ------------------------------------ |
-| ExperimentCard | experimentId                         |
-| CompareTable   | experimentIds (2–6 IDs del catálogo) |
-| GravityBounds  | explanation                          |
-| SourceList     | sources                              |
-| FallbackCard   | markdown, sources                    |
+| type           | Campos                                                                                                     |
+| -------------- | ---------------------------------------------------------------------------------------------------------- |
+| EvidenceBrief  | verdict, lead, evidence (tabla), gap, nextSteps (máx. 3), lenses (student/teacher/researcher), sourceFiles |
+| DataTable      | title, columns, rows (tabla ordenable real, sin volcado de claves)                                         |
+| Notice         | level (`info`/`warning`), message                                                                          |
+| Narrative      | markdown                                                                                                   |
+| MapFocus       | title, experimentIds, gravity, note                                                                        |
+| ExperimentCard | experimentId                                                                                               |
+| CompareTable   | experimentIds (2–6 IDs del catálogo)                                                                       |
+| GravityBounds  | explanation                                                                                                |
+| SourceList     | sources                                                                                                    |
+| FallbackCard   | markdown, sources                                                                                          |
+
+`EvidenceBrief` es la respuesta principal: veredicto de una frase, evidencia (tabla ordenable con exportación CSV y cita en la lectura de investigador), hueco (región dibujada en el mapa) y hasta tres siguientes pasos (`simulate` abre la vista de tres gravedades con esas condiciones, `explore_map` filtra el mapa, `propose_experiment` redacta una propuesta). Los `lenses` cambian el énfasis sin nueva consulta.
 
 Cada bloque se valida independientemente. Un bloque inválido se sustituye por un fallback, sin eliminar los válidos. Markdown deshabilita HTML crudo; enlaces documentales solo se presentan para HTTP(S). Un ID que no existe muestra un estado de evidencia no disponible.
 
@@ -108,14 +115,14 @@ ATLAS_DATA_MODE=remote
 ATLAS_API_URL=http://127.0.0.1:8000
 ```
 
-Reiniciar Next.js. El navegador sigue consultando la misma fachada; Next.js habla con FastAPI (rama `backend`). Tiempo límite: 15 segundos para catálogo y 60 segundos para consultas. La URL del backend no usa `NEXT_PUBLIC_`. Nunca enviar credenciales de agentes al navegador.
+Reiniciar Next.js. El navegador sigue consultando la misma fachada; Next.js habla con FastAPI (rama `backend`). Tiempo límite: 15 segundos para catálogo y 120 segundos para consultas (una ficha con fuentes tarda típicamente 27–55 s). La URL del backend no usa `NEXT_PUBLIC_`. Nunca enviar credenciales de agentes al navegador.
 
 **Catálogo** (`src/modules/atlas/infra/psi-api.ts`). `GET {ATLAS_API_URL}/experiments` devuelve investigaciones PSI (contrato 1.1) con sus `tests`. Cada prueba se vuelve un punto: id `PSI-n/<test_id>`, presión de kPa a psi (÷ 6.895, un decimal), `material` con su clase entre paréntesis (`Nomex (tela)`), gravedad `microgravity → micro`, `lunar`/`partial → lunar`, `normal → earth`, resultado `no_ignition`/`no_sustained_burn → extinction` y `partial_burn`/`complete_burn → ignition`, `provenance: verified` y la fuente con archivo, ubicación, notas y enlace a PSI. Los puntos fuera del dominio del mapa (0–16 psi, 18–50 % O₂) se omiten, nunca se recortan; el encabezado `X-Atlas-Omitted` dice cuántos (407 de 1,115 con los datos actuales).
 
 **Copiloto** (`ATLAS_QUERY_MODE`):
 
 - `guided` (predeterminado): los tres accesos rápidos y la sonda responden con cálculos sobre el catálogo PSI, sin agentes ni tokens (`DemoCopilotGateway` con catálogo `psi`).
-- `remote`: Next.js envía `{"q": texto + sonda}` a `POST {ATLAS_API_URL}/query` y traduce sus eventos (`src/modules/copilot/infra/backend-query.ts`): `status` → `agent-status` (`clasificando`/`consultando_datos` → analista, `buscando_fuentes` → física, `componiendo` → sintetizador); `ui` → `text-delta` con `summary` y los `text`, más bloques: `table` → `FallbackCard` en lista, `gap_map` → `GravityBounds` y hasta 3 `ExperimentCard`, `citations` → `SourceList`, `notice` → `FallbackCard`; `error` → `error`. Contrato del backend: `curren_repo_context/eventos-sse.md` y `contrato-ui.md` en la rama `backend`.
+- `remote`: Next.js envía `{"q": texto + sonda}` a `POST {ATLAS_API_URL}/query` y traduce sus eventos (`src/modules/copilot/infra/backend-query.ts`): `status` → `progress` (mismos nombres de paso); `ui` con un componente `brief` (campo `brief_version: 1`) → bloque `EvidenceBrief` y sus filas verbatim, sin aplanar a markdown; `table` → `DataTable`, `citations` → `SourceList`, `notice` → `Notice`, `gap_map` → `MapFocus`; `error` → `error`. El cliente valida cada bloque y nunca muestra texto interno del agente. Contrato del backend: `curren_repo_context/eventos-sse.md` y `contrato-ui.md`, y `docs/` de la rama `test/evidence-brief`.
 
 El modo predeterminado es `demo`. El modo remoto no cae silenciosamente en datos sintéticos: muestra carga, error y reintento. Implementar las mismas formas en Pydantic y comprobar los fixtures contra ambos esquemas antes de conectar datos reales. Autenticación de backend, cuotas y persistencia de conversaciones quedan para esa integración; esta entrega no modifica el modelo multiempresa.
 

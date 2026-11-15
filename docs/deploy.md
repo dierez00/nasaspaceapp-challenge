@@ -1,62 +1,62 @@
-# Despliegue
+# Deployment
 
-El frontend (rama `main`) se despliega en **Vercel** y la API (rama `backend`) en **Railway**. El navegador solo habla con Vercel; las rutas de servidor de Next.js llaman a la API.
+The frontend (`main` branch) deploys to **Vercel** and the API (`backend` branch) to **Railway**. The browser only talks to Vercel; the Next.js server routes call the API.
 
-## Orden recomendado
+## Recommended order
 
-1. Base de datos con pgvector (Supabase o Railway).
-2. API en Railway, con su dominio público.
-3. Frontend en Vercel, apuntando a ese dominio.
+1. Database with pgvector (Supabase or Railway).
+2. API on Railway, with its public domain.
+3. Frontend on Vercel, pointing to that domain.
 
-## 1. Base de datos
+## 1. Database
 
-Opción A: **Supabase**.
+Option A: **Supabase**.
 
-- Crea un proyecto. La extensión `vector` se activa sola en el primer despliegue (`db/schema.sql` ejecuta `create extension if not exists vector`); también puedes activarla en _Database → Extensions_.
-- Usa la cadena del **Session pooler** (host `*.pooler.supabase.com`, puerto `5432`) y añade `?sslmode=require`.
-- No uses la conexión directa (solo IPv6, salvo con el complemento IPv4) ni el _Transaction pooler_ (puerto `6543`): el driver de Postgres de la API reutiliza sentencias preparadas y ese modo no las admite.
+- Create a project. The `vector` extension is enabled on the first deploy (`db/schema.sql` runs `create extension if not exists vector`); you can also enable it under _Database → Extensions_.
+- Use the **Session pooler** connection string (host `*.pooler.supabase.com`, port `5432`) and append `?sslmode=require`.
+- Do not use the direct connection (IPv6 only, unless you buy the IPv4 add-on) or the _Transaction pooler_ (port `6543`): the API's Postgres driver reuses prepared statements, which that mode does not support.
 
-Opción B: **Railway**. Agrega al proyecto la plantilla _pgvector_; la plantilla estándar de Postgres no incluye la extensión. Referencia su URL con `${{pgvector.DATABASE_URL}}` (ajusta al nombre del servicio).
+Option B: **Railway**. Add the _pgvector_ template to the project; the standard Postgres template does not include the extension. Reference its URL with `${{pgvector.DATABASE_URL}}` (adjust to the service name).
 
-## 2. API en Railway
+## 2. API on Railway
 
-La rama `backend` trae `Dockerfile` y `railway.json`: Railway construye la imagen, ejecuta `atlas-load` antes de cada despliegue (aplica el esquema y carga los ensayos de forma idempotente) y verifica `/health`.
+The `backend` branch ships a `Dockerfile` and `railway.json`: Railway builds the image, runs `atlas-load` before every deploy (applies the schema and loads the trials idempotently) and checks `/health`.
 
-1. Crea un servicio desde el repositorio con la rama `backend` como origen.
-2. Variables del servicio:
+1. Create a service from the repository with `backend` as its source branch.
+2. Service variables:
 
-   | Variable                  | Valor                                      |
-   | ------------------------- | ------------------------------------------ |
-   | `DATABASE_URL`            | Cadena de la base del paso 1               |
-   | `VOYAGE_API_KEY`          | Clave de Voyage AI (búsqueda y reranking)  |
-   | `CLAUDE_CODE_OAUTH_TOKEN` | Token de Claude Code para los agentes      |
-   | `AGENTS_MOCK`             | `0`; con `1` responde sin Claude ni Voyage |
+   | Variable                  | Value                                     |
+   | ------------------------- | ----------------------------------------- |
+   | `DATABASE_URL`            | Connection string from step 1             |
+   | `VOYAGE_API_KEY`          | Voyage AI key (search and reranking)      |
+   | `CLAUDE_CODE_OAUTH_TOKEN` | Claude Code token for the agents          |
+   | `AGENTS_MOCK`             | `0`; `1` answers without Claude or Voyage |
 
-   `PORT` lo inyecta Railway. El resto de variables tiene valores por defecto (ver `.env.example` de la rama `backend`).
+   Railway injects `PORT`. All other variables have defaults (see `.env.example` on the `backend` branch).
 
-3. En _Settings → Networking_, genera un dominio público.
-4. Indexa los documentos una vez (y cada vez que cambie `data/`); consume cuota de Voyage:
+3. Under _Settings → Networking_, generate a public domain.
+4. Index the documents once (and again whenever `data/` changes); this uses Voyage quota:
 
    ```bash
    railway run atlas-index
    ```
 
-## 3. Frontend en Vercel
+## 3. Frontend on Vercel
 
-1. Importa el repositorio con `main` como _Production Branch_. Vercel detecta Next.js y pnpm; no hace falta `vercel.json`.
-2. Variables (Production y Preview):
+1. Import the repository with `main` as the _Production Branch_. Vercel detects Next.js and pnpm; no `vercel.json` is needed.
+2. Variables (Production and Preview):
 
-   | Variable           | Valor                                                            |
-   | ------------------ | ---------------------------------------------------------------- |
-   | `ATLAS_DATA_MODE`  | `remote`; `demo` despliega sin backend, con datos sintéticos     |
-   | `ATLAS_QUERY_MODE` | `remote` para los agentes; `guided` responde con cálculos sin IA |
-   | `ATLAS_API_URL`    | Dominio de Railway, sin `/` final                                |
+   | Variable           | Value                                                              |
+   | ------------------ | ------------------------------------------------------------------ |
+   | `ATLAS_DATA_MODE`  | `remote`; `demo` deploys without a backend, on synthetic data      |
+   | `ATLAS_QUERY_MODE` | `remote` for the agents; `guided` answers with non-AI calculations |
+   | `ATLAS_API_URL`    | Railway domain, without a trailing `/`                             |
 
-3. Despliega y comprueba `/api/health`.
+3. Deploy and check `/api/health`.
 
-## Notas
+## Notes
 
-- Una respuesta de los agentes puede tardar hasta 120 s. La ruta `/api/atlas/query` declara `maxDuration = 150`; el plan de Vercel debe permitir esa duración.
-- Como la API solo recibe llamadas del servidor de Next.js, CORS no interviene. `CORS_ORIGINS` solo hace falta si un navegador consulta la API directamente.
-- La caché de respuestas de la API vive en el disco efímero del contenedor y se reinicia en cada despliegue. Para conservarla, monta un volumen y apunta `QUERY_CACHE_FILE` a él.
-- Prueba local de la imagen de la API: `docker build -t atlas-api . && docker run --rm -e PORT=8000 -e AGENTS_MOCK=1 -p 8000:8000 atlas-api`.
+- An agent answer can take up to 120 s. The `/api/atlas/query` route declares `maxDuration = 150`; your Vercel plan must allow that duration.
+- Since the API only receives calls from the Next.js server, CORS is not involved. `CORS_ORIGINS` is only needed if a browser calls the API directly.
+- The API's answer cache lives on the container's ephemeral disk and resets on every deploy. To keep it, mount a volume and point `QUERY_CACHE_FILE` to it.
+- Local test of the API image: `docker build -t atlas-api . && docker run --rm -e PORT=8000 -e AGENTS_MOCK=1 -p 8000:8000 atlas-api`.

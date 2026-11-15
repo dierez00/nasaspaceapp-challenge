@@ -1,62 +1,62 @@
-# Atlas del Fuego Lunar · Backend
+# Lunar Fire Atlas · Backend
 
-API del **Atlas del Fuego Lunar** (NASA Space Apps Challenge 2026). Convierte los experimentos de combustión del repositorio **NASA Physical Sciences Informatics (PSI)** en datos consultables, los hace buscables con citas y responde preguntas en lenguaje natural con un sistema multiagente que no puede inventar cifras.
+API for the **Lunar Fire Atlas** (NASA Space Apps Challenge 2026). It turns the combustion experiments in the **NASA Physical Sciences Informatics (PSI)** repository into queryable data, makes them searchable with citations, and answers natural-language questions with a multi-agent system that cannot make up figures.
 
-La presentación completa del proyecto y la interfaz (laboratorio 3D, mapa de evidencias y copiloto) están en la rama [`main`](../../tree/main).
+The full project overview and the interface (3D laboratory, evidence map and copilot) live on the [`main`](../../tree/main) branch.
 
-## Qué hace
+## What it does
 
-| Capacidad | Endpoint | ¿Usa IA? |
+| Capability | Endpoint | Uses AI? |
 | --- | --- | --- |
-| Catálogo de ensayos con filtros de O₂ y presión | `GET /experiments` | No |
-| Cobertura de la evidencia y huecos frente a condiciones de misión | `GET /coverage` | No |
-| Búsqueda semántica con citas | `POST /search` | Embeddings y reranking |
-| Respuestas a preguntas, en streaming | `POST /query` | Agentes Claude |
-| Estado del servicio y de la base | `GET /health` | No |
+| Trial catalog with O₂ and pressure filters | `GET /experiments` | No |
+| Evidence coverage and gaps against mission conditions | `GET /coverage` | No |
+| Semantic search with citations | `POST /search` | Embeddings and reranking |
+| Streaming answers to questions | `POST /query` | Claude agents |
+| Service and database status | `GET /health` | No |
 
-Documentación interactiva en `/docs` (OpenAPI).
+Interactive documentation at `/docs` (OpenAPI).
 
-## De los documentos de NASA a una respuesta verificable
+## From NASA documents to a verifiable answer
 
-1. **Extracción.** Las tablas experimentales y reportes de 13 investigaciones de PSI (ACME, FLEX, CFI, SAME, BASS, SAFFIRE…) se pasaron con Claude a un contrato JSON común, validado con Pydantic y revisado por el equipo. Resultado: **1,115 observaciones**, cada una con material, O₂, presión, gravedad, resultado y la ubicación exacta en su fuente. Las tablas originales se guardan sin cambios en `data/raw/`.
-2. **Carga.** `atlas-load` valida el lote completo y lo guarda en PostgreSQL; si un archivo es inválido, no carga nada.
-3. **Indexación.** `atlas-index` trocea los reportes en **1,283 fragmentos**, los vectoriza con Voyage AI (`voyage-4`) y los guarda en pgvector. Es incremental: solo vectoriza lo nuevo.
-4. **Consulta.** Un orquestador en Python coordina cuatro agentes:
+1. **Extraction.** The experimental tables and reports of 13 PSI investigations (ACME, FLEX, CFI, SAME, BASS, SAFFIRE…) were converted with Claude into a common JSON contract, validated with Pydantic and reviewed by the team. Result: **1,115 observations**, each with material, O₂, pressure, gravity, outcome and its exact location in the source. The original tables are kept unchanged in `data/raw/`.
+2. **Loading.** `atlas-load` validates the whole batch and stores it in PostgreSQL; if any file is invalid, nothing is loaded.
+3. **Indexing.** `atlas-index` splits the reports into **1,283 chunks**, embeds them with Voyage AI (`voyage-4`) and stores them in pgvector. It is incremental: only new content is embedded.
+4. **Querying.** A Python orchestrator coordinates four agents:
 
-   | Agente | Rol |
+   | Agent | Role |
    | --- | --- |
-   | Clasificador (Claude Haiku) | Entiende el tipo de pregunta y decide si hacen falta datos, fuentes o ambos |
-   | Analista (Claude) | Elige filtros; el cálculo sobre los ensayos lo hace Python |
-   | Investigador (Claude + Voyage) | Busca fragmentos, los reordena con `rerank-2.5` y cita experimento, archivo y sección |
-   | Compositor (Claude) | Arma la respuesta que dibuja la interfaz |
+   | Classifier (Claude Haiku) | Reads the question type and decides whether data, sources or both are needed |
+   | Analyst (Claude) | Chooses filters; Python does the computation over the trials |
+   | Researcher (Claude + Voyage) | Retrieves chunks, reranks them with `rerank-2.5` and cites experiment, file and section |
+   | Composer (Claude) | Builds the answer the interface renders |
 
-   Analista e investigador trabajan en paralelo, y el progreso se transmite por SSE.
-5. **Verificación sin IA.** Antes de responder, cada tabla, cita, experimento y cifra se compara con lo que realmente devolvieron las herramientas. Lo que no coincide se descarta, y si los agentes fallan o tardan, la respuesta se arma con reglas fijas.
+   The analyst and researcher run in parallel, and progress streams over SSE.
+5. **Verification without AI.** Before answering, every table, citation, experiment and figure is checked against what the tools actually returned. Anything that does not match is dropped, and if the agents fail or time out, the answer is built from fixed rules.
 
-**En una frase:** la IA entiende la pregunta, decide qué consultar y lo explica; los números y las fuentes siempre salen de los datos de NASA PSI.
+**In one sentence:** the AI understands the question, decides what to look up and explains it; the numbers and sources always come from NASA PSI data.
 
-*Fuente de las cifras: los conteos salen de `data/experiments/` y de `build_chunks(data/)`; el detalle está en [`curren_repo_context/uso-ia.md`](curren_repo_context/uso-ia.md).*
+*Source of the figures: counts come from `data/experiments/` and `build_chunks(data/)`; details in [`curren_repo_context/uso-ia.md`](curren_repo_context/uso-ia.md) (Spanish).*
 
-## Hallazgo principal
+## Key finding
 
-Las 1,115 observaciones se hicieron en microgravedad (ISS y naves Cygnus); **ninguna en gravedad lunar**. `GET /coverage` compara la evidencia con condiciones de referencia de misión, cada una con su fuente en [`data/reference/conditions.json`](data/reference/conditions.json) (hábitat lunar y marciano, traje EVA lunar, cabina de la ISS), y marca como hueco las condiciones que solo tienen ensayos en otra gravedad.
+All 1,115 observations were made in microgravity (ISS and Cygnus spacecraft); **none in lunar gravity**. `GET /coverage` compares the evidence with mission reference conditions, each sourced in [`data/reference/conditions.json`](data/reference/conditions.json) (lunar and Martian habitats, lunar EVA suit, ISS cabin), and flags as a gap any condition that only has trials in a different gravity.
 
-## Arquitectura
+## Architecture
 
-Cada módulo de `src/atlas/` es un área del producto con capas `domain`, `application`, `infrastructure` y `api` (Clean Architecture):
+Each module in `src/atlas/` is a product area with `domain`, `application`, `infrastructure` and `api` layers (Clean Architecture):
 
-| Módulo | Responsabilidad |
+| Module | Responsibility |
 | --- | --- |
-| `experiments` | Contrato de datos, validación, carga y catálogo |
-| `coverage` | Cobertura de la evidencia y huecos frente a condiciones de misión |
-| `search` | Ingesta, embeddings, pgvector, reranking y citas |
-| `agents` | Orquestador, agentes y verificación de la respuesta |
-| `query` | Endpoint `/query` con streaming SSE y caché |
-| `shared` | Configuración y conexión a la base |
+| `experiments` | Data contract, validation, loading and catalog |
+| `coverage` | Evidence coverage and gaps against mission conditions |
+| `search` | Ingestion, embeddings, pgvector, reranking and citations |
+| `agents` | Orchestrator, agents and answer verification |
+| `query` | `/query` endpoint with SSE streaming and cache |
+| `shared` | Configuration and database connection |
 
-**Tecnologías:** Python 3.12, FastAPI, Pydantic, PostgreSQL 17 + pgvector, Claude Agent SDK, Voyage AI, Pytest y Docker.
+**Technologies:** Python 3.12, FastAPI, Pydantic, PostgreSQL 17 + pgvector, Claude Agent SDK, Voyage AI, Pytest and Docker.
 
-## Probarlo localmente
+## Run it locally
 
 ```bash
 python3 -m venv .venv
@@ -67,11 +67,11 @@ docker compose up -d db
 AGENTS_MOCK=1 .venv/bin/uvicorn atlas.main:app --reload
 ```
 
-Con `AGENTS_MOCK=1`, `/query` responde sin claves de IA. Abre <http://localhost:8000/docs>.
+With `AGENTS_MOCK=1`, `/query` answers without AI keys. Open <http://localhost:8000/docs>.
 
-## Documentación
+## Documentation
 
-- [Referencia técnica: endpoints, búsqueda, pruebas y operación](docs/referencia.md)
-- [Despliegue (Railway, base con pgvector y Vercel)](docs/deploy.md)
-- [Formato y reglas de extracción de datos PSI](docs/data-extraction.md)
-- [Flujo de los agentes, contrato de UI y eventos SSE](curren_repo_context/README.md)
+- [Deployment (Railway, pgvector database and Vercel)](docs/deploy.md)
+- [Technical reference: endpoints, search, tests and operations](docs/referencia.md) (Spanish)
+- [PSI data extraction format and rules](docs/data-extraction.md) (Spanish)
+- [Agent flow, UI contract and SSE events](curren_repo_context/README.md) (Spanish)

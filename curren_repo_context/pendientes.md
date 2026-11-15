@@ -6,7 +6,7 @@
 2. **Tiempo de los agentes.** Los 20 s incluyen el arranque del subproceso del CLI del SDK, que puede tardar 1-2 s, y las llamadas a herramientas. Si el analista se pasa seguido, prueba con `AGENT_MODEL=claude-sonnet-5-5` o sube el límite en `Timeouts`.
 3. **Clasificador con `max_turns=1` y `output_format`.** Si el CLI necesita más de un turno para la salida estructurada, termina en error y se usa el valor por defecto (correr ambos agentes). Falta verificarlo con una llamada real.
 4. **Compositor:**
-   - límite de 30 s por intento (la salida estructurada con `brief` tarda 12-17 s con el CLI real), que no venía en la especificación;
+   - límite de 40 s por intento (la salida estructurada con `brief` tardó entre 12 y 35 s con el CLI real), que no venía en la especificación;
    - un timeout o un error del SDK va directo a reglas, sin reintento; solo un JSON inválido se reintenta.
 5. **Datos del analista.** Se cargan en Python solo desde Postgres (`PostgresExperimentRepository.list_all()`, la columna `record`). Sin Postgres o sin `atlas-load`, el analista responde con error y el compositor lo muestra como aviso. Con 13 experimentos y unos 1100 puntos no hay problema de memoria.
 6. **Cálculos del analista.** Puede filtrar, agrupar, sacar promedio, mínimo y máximo, y calcular la correlación de Pearson entre dos campos. Otros cálculos, como regresiones o percentiles, habría que agregarlos a `FiltroEnsayos`.

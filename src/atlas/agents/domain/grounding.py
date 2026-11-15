@@ -70,7 +70,7 @@ class Evidence:
             numbers.update(_numbers_in(source["content"]))
         numbers.update(_numbers_in(question))
         self.question = question
-        self.gap = brief_rules.compute_gap(question, self.queries)
+        self.gap, self.gap_empty = brief_rules.compute_gap_ex(question, self.queries)
         numbers.update(brief_rules.gap_numbers(self.gap))
         self.numbers = numbers
         self.words = {question.casefold()} | {c.casefold() for q in self.queries for c in _cells(q) if isinstance(c, str)}
@@ -158,7 +158,9 @@ def _ground_brief(brief: BriefComponent, evidence: Evidence) -> BriefComponent:
     gap = _ground_brief_gap(brief.gap, evidence)
     verdict = brief.verdict
     if not evidence.text_is_grounded(verdict):
-        verdict = brief_rules.default_verdict(DEFAULT_CLASSIFICATION, queries, bool(evidence.sources))
+        verdict = brief_rules.default_verdict(
+            DEFAULT_CLASSIFICATION, queries, bool(evidence.sources), evidence.gap_empty
+        )
     defaults = brief_rules.default_lenses(gap, totals[-1] if totals else None)
     lenses = brief.lenses.model_copy(
         update={

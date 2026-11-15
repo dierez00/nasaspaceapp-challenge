@@ -296,3 +296,11 @@ def test_grouped_experiment_lists_count_as_evidence_ids():
     )
     assert ground(component, {"consultas": [grouped]}).evidence.experiment_ids == ["PSI-100"]
     assert Evidence("q", {"consultas": [grouped]}, None).ids == {"PSI-100", "PSI-101"}
+
+
+def test_verdict_says_there_are_no_tests_when_the_region_is_empty_even_if_later_queries_have_data():
+    later = {"filtros": {}, "columns": ["material_class", "ensayos"], "rows": [["polymer", 3]], "total": 1}
+    ui = build_rules_ui(DEFAULT_CLASSIFICATION, {"consultas": [EMPTY_QUERY, later]}, None, QUESTION)
+    assert ui.components[0].verdict == "El Atlas no tiene ensayos con esas condiciones."
+    single = build_rules_ui(DEFAULT_CLASSIFICATION, {"consultas": [later]}, None, "q")
+    assert "1 registro " in single.components[0].verdict

@@ -2,7 +2,7 @@
 
 1. classify (short call, 4 s, default = run both agents)
 2. analyst and researcher in parallel (12 s each; a failure becomes {"error": ...})
-3. composer (30 s) -> UIPayload validation; one retry with the error, then fixed rules
+3. composer (40 s) -> UIPayload validation; one retry with the error, then fixed rules
 4. grounding: tables, citations, gap_map ids and every figure in the text must come
    from what the tools logged (or from the question)
 """
@@ -55,7 +55,7 @@ class Agents(Protocol):
 class Timeouts:
     classifier: float = 8.0
     agent: float = 20.0
-    composer: float = 30.0
+    composer: float = 40.0
 
 
 async def run_query(

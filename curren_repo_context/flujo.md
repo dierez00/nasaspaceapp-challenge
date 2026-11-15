@@ -19,7 +19,7 @@ status{consultando_datos} si necesita_datos · status{buscando_fuentes} si neces
    )  un fallo o tiempo agotado → {"error": "..."}; el otro sigue
   │
 status{componiendo}
-3. Compositor (json_schema = UIPayload)                  límite 30 s por intento
+3. Compositor (json_schema = UIPayload)                  límite 40 s por intento
    salida → validación Pydantic directa (sin otro LLM)
    inválida → 1 reintento con el error en el prompt
    inválida otra vez, tiempo agotado o error → reglas fijas (tipo → componente)
@@ -62,4 +62,4 @@ El compositor es un LLM y Pydantic solo revisa la forma del JSON, así que `grou
 
 ## Tiempos
 
-Peor caso sin caché ≈ 8 s + 20 s + 2 × 30 s. El `ms` del evento `ui` mide el total del lado del servidor. Los límites están en `Timeouts` (`run_query.py`).
+Peor caso sin caché ≈ 8 s + 20 s + 2 × 40 s. El `ms` del evento `ui` mide el total del lado del servidor. Los límites están en `Timeouts` (`run_query.py`).

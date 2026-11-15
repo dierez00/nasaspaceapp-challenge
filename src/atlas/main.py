@@ -6,16 +6,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from atlas.coverage.api.router import router as coverage_router
 from atlas.experiments.api.router import router as experiments_router
 from atlas.search.api.router import router as search_router
-from atlas.search.domain.ports import Embedder
+from atlas.search.domain.ports import Embedder, Reranker
 from atlas.search.infrastructure.voyage_embedder import VoyageEmbedder
+from atlas.search.infrastructure.voyage_reranker import VoyageReranker
 from atlas.shared.config import Settings, get_settings
 from atlas.shared.database import create_pool
 
 
-def create_app(settings: Settings | None = None, embedder: Embedder | None = None) -> FastAPI:
+def create_app(
+    settings: Settings | None = None, embedder: Embedder | None = None, reranker: Reranker | None = None
+) -> FastAPI:
     settings = settings or get_settings()
     if embedder is None and settings.voyage_api_key is not None:
         embedder = VoyageEmbedder(settings.voyage_api_key, settings.embedding_model, settings.embedding_dimension)
+    if reranker is None and settings.voyage_api_key is not None:
+        reranker = VoyageReranker(settings.voyage_api_key, settings.rerank_model)
     pool = create_pool(settings.database_url)
 
     @asynccontextmanager
@@ -24,6 +29,8 @@ def create_app(settings: Settings | None = None, embedder: Embedder | None = Non
         await pool.open(wait=False)
         app.state.pool = pool
         app.state.embedder = embedder
+        app.state.reranker = reranker
+        app.state.rerank_candidates = settings.rerank_candidates
         app.state.data_dir = settings.data_dir
         yield
         await pool.close()

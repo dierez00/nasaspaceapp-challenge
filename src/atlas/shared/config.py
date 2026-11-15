@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     voyage_api_key: SecretStr | None = None
     embedding_model: str = "voyage-4"
     embedding_dimension: int = 1024
+    rerank_model: str = "rerank-2.5"
+    rerank_candidates: int = 30
     claude_code_oauth_token: SecretStr | None = None
 
 

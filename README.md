@@ -33,7 +33,8 @@ curl -X POST localhost:8000/search -H 'content-type: application/json' \
 ```
 
 - `atlas-index` es idempotente: cada chunk se identifica por el hash de su contenido, solo se embeben los nuevos y se borran los que ya no existen. Volver a ejecutarlo tras agregar archivos a `data/` es seguro; una segunda corrida seguida embebe 0.
-- `POST /search` devuelve `[{experiment_id, source_file, section, content, score}]` ordenado por similitud coseno (`k` entre 1 y 20, por defecto 5). Responde 503 si falta la clave.
+- `POST /search` devuelve `[{experiment_id, source_file, section, content, score, rerank_score}]` (`k` entre 1 y 20, por defecto 5). Responde 503 si falta la clave.
+- Reranking: se traen `RERANK_CANDIDATES` candidatos (30 por defecto) por similitud coseno y Voyage (`RERANK_MODEL`, `rerank-2.5` por defecto) los reordena; se devuelven los `k` mejores con su `rerank_score`. `"rerank": false` en el cuerpo lo desactiva (orden por coseno, `rerank_score` nulo). Si falta la clave o el reranker falla, se responde igual con el orden por coseno. `search_documents(..., reranker=None, candidates=30)` ofrece lo mismo en proceso.
 - Sin método de pago, Voyage limita a 3 RPM y 10K TPM: el indexado espera y reintenta solo, así que la primera corrida puede tardar unos minutos.
 
 ## Mapa de cobertura y brechas

@@ -30,3 +30,4 @@ class SearchHit:
     section: str | None
     content: str
     score: float
+    rerank_score: float | None = None

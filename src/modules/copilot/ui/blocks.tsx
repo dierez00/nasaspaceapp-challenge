@@ -1,10 +1,13 @@
 "use client";
-import Markdown from "react-markdown";
+import dynamic from "next/dynamic";
 import { useAtlas } from "@/modules/atlas/ui/atlas-provider";
 import { Flame } from "@/modules/atlas/ui/flame";
 import { gravityLabels, type Source } from "@/modules/atlas/domain/experiment";
 import { useSimulation } from "@/modules/simulation/application/simulation-provider";
 import type { UIBlock } from "../domain/contracts";
+
+// react-markdown is only needed for rare fallback answers, so keep it out of the initial bundle
+const Markdown = dynamic(() => import("react-markdown"));
 
 export function SourceList({ sources }: { sources: Source[] }) {
   return (

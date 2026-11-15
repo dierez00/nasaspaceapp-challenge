@@ -1,4 +1,4 @@
-﻿import { test, expect, type Locator } from "@playwright/test";
+﻿import { test, expect, type Locator, type Page } from "@playwright/test";
 async function slider(locator: Locator, value: number) {
   await locator.evaluate((element, value) => {
     const input = element as HTMLInputElement;
@@ -10,6 +10,15 @@ async function slider(locator: Locator, value: number) {
     input.dispatchEvent(new Event("change", { bubbles: true }));
   }, value);
 }
+// The page now opens on the hero; the lab only renders while #dashboard is in the viewport.
+async function openAtlas(page: Page) {
+  await page.goto("/");
+  await page.evaluate(() =>
+    document.getElementById("dashboard")?.scrollIntoView({ behavior: "instant" }),
+  );
+}
+// The hero backdrop is a second canvas, so scope lab assertions to the lab renderer.
+const labCanvas = (page: Page) => page.locator('canvas[data-renderer="webgl"]');
 for (const viewport of [
   { width: 1440, height: 900 },
   { width: 1366, height: 768 },
@@ -28,7 +37,7 @@ for (const viewport of [
       )
         errors.push(message.text());
     });
-    await page.goto("/");
+    await openAtlas(page);
     await expect(
       page.getByRole("heading", { name: "El fuego, en otra gravedad." }),
     ).toBeVisible();
@@ -37,7 +46,7 @@ for (const viewport of [
       timeout: 15000,
     });
     const singleFps = Number(
-      await page.locator("canvas").getAttribute("data-fps"),
+      await labCanvas(page).getAttribute("data-fps"),
     );
     await page.screenshot({
       path: `test-results/laboratory-${viewport.width}.png`,
@@ -71,7 +80,7 @@ for (const viewport of [
       .click();
     await page.waitForTimeout(2400);
     const comparisonFps = Number(
-      await page.locator("canvas").getAttribute("data-fps"),
+      await labCanvas(page).getAttribute("data-fps"),
     );
     console.log(JSON.stringify({ viewport, singleFps, comparisonFps }));
     expect(singleFps).toBeGreaterThanOrEqual(viewport.width < 1024 ? 30 : 45);
@@ -79,17 +88,19 @@ for (const viewport of [
       viewport.width < 1024 ? 30 : 45,
     );
     await page.getByRole("button", { name: "Pausar simulación" }).click();
-    await expect(page.locator("canvas")).not.toHaveAttribute(
+    await expect(labCanvas(page)).not.toHaveAttribute(
       "data-draw-calls",
       "0",
     );
     await page.screenshot({
       path: `test-results/comparison-${viewport.width}.png`,
     });
+    // The atlas fills one viewport; the hero above it makes the document taller by design.
     expect(
-      await page.evaluate(
-        () => document.documentElement.scrollHeight <= innerHeight,
-      ),
+      await page.evaluate(() => {
+        const atlas = document.querySelector(".atlas-app")!;
+        return atlas.scrollHeight <= atlas.clientHeight + 1;
+      }),
     ).toBe(true);
     expect(
       await page.evaluate(
@@ -130,7 +141,7 @@ test("explicit states, vacuum, keyboard and reduced motion", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
+  await openAtlas(page);
   await expect(
     page.getByRole("button", { name: "Reproducir simulación" }),
   ).toBeVisible();
@@ -154,7 +165,7 @@ test("explicit states, vacuum, keyboard and reduced motion", async ({
 test("map collision selection and lunar probe preserve chat integration", async ({
   page,
 }) => {
-  await page.goto("/");
+  await openAtlas(page);
   await page.getByRole("tab", { name: "Mapa de evidencias" }).click();
   await page.getByTestId("node-DEMO-002").focus();
   await page.keyboard.press("Enter");
@@ -182,7 +193,7 @@ test("map collision selection and lunar probe preserve chat integration", async 
   ).toHaveAttribute("aria-pressed", "true");
 });
 test("clock suspends on map and hidden document", async ({ page }) => {
-  await page.goto("/");
+  await openAtlas(page);
   await expect(page.locator('canvas[data-renderer="webgl"]')).toHaveCount(1);
   await page.getByRole("button", { name: "Reiniciar simulación" }).click();
   await page.getByRole("tab", { name: "Mapa de evidencias" }).click();
@@ -203,11 +214,9 @@ test("clock suspends on map and hidden document", async ({ page }) => {
   expect(await page.getByTestId("simulation-time").innerText()).toBe(paused);
 });
 test("WebGL loss falls back to SVG and can retry", async ({ page }) => {
-  await page.goto("/");
+  await openAtlas(page);
   await expect(page.locator('canvas[data-renderer="webgl"]')).toHaveCount(1);
-  await page
-    .locator("canvas")
-    .evaluate((canvas) =>
+  await labCanvas(page).evaluate((canvas) =>
       canvas.dispatchEvent(new Event("webglcontextlost", { cancelable: true })),
     );
   await expect(
@@ -232,7 +241,7 @@ test("no WebGL still exposes usable controls", async ({ page }) => {
       >);
     } as typeof original;
   });
-  await page.goto("/");
+  await openAtlas(page);
   await expect(page.getByTestId("svg-scene-A")).toBeVisible({ timeout: 15000 });
   await page.getByRole("button", { name: "1g A", exact: true }).click();
   await expect(
@@ -259,7 +268,7 @@ test("invalid block isolated, error retry and cancellation", async ({
         .join(""),
     });
   });
-  await page.goto("/");
+  await openAtlas(page);
   await page
     .getByRole("button", { name: "ϟSólidos > 30% O₂", exact: true })
     .click();
@@ -299,7 +308,7 @@ test("API remains compatible", async ({ request }) => {
 
 test("linked orbit and reset keep A and B aligned", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/");
+  await openAtlas(page);
   await page.getByRole("button", { name: "⊕ Comparar A/B" }).click();
   const a = page.getByTestId("scene-A"),
     b = page.getByTestId("scene-B");

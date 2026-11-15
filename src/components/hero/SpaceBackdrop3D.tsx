@@ -181,11 +181,18 @@ export function SpaceBackdrop3D() {
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     camera.position.set(0, 0, 5);
 
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: false,
-      powerPreference: "high-performance",
-    });
+    // Sin WebGL el fondo queda en el color base: no debe romper la página ni dejar la carga colgada
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: false,
+        powerPreference: "high-performance",
+      });
+    } catch {
+      emitHeroLoadProgress(100);
+      return;
+    }
     renderer.setSize(width, height);
     // Resolución HiDPI limitada a 1.5 para contener el coste de fragmentos
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));

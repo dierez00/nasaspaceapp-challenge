@@ -29,7 +29,7 @@ The audit demonstrated destructive empty-source synchronization, ambiguous atmos
 ## Acceptance and checks
 - Every task includes focused regression tests and a separate work-unit commit with its observed results.
 - Existing local tests remain green, including teammate `tests/test_query.py`.
-- Missing/invalid input never silently prunes an existing index.
+- Missing/invalid required experiment inputs never silently prune an existing index; optional-source removal keeps its existing synchronization policy.
 - Query retries cannot enter the 8-attempt ingestion backoff; embedding/reranking never holds a pooled SQL connection.
 - Atmospheric comparisons cannot count inverse-flame oxidizer O2 as ambient evidence; raw scientific observations and citations remain available.
 - Document an idempotent schema upgrade and JSON reload; do not run `atlas-load` or `atlas-index` on the user's database.
@@ -74,9 +74,13 @@ Focused checks use the same isolation and append the relevant test paths to `pyt
   - Runtime harness: offline loader `_run()` with mixed valid/invalid files asserts no connection; repository spy confirms no invalid upsert. No live loader execution.
   - Rollback boundary: uniqueness validator/schema description, loader preflight, duplicate regression tests and corresponding README guidance; no database schema rollback required.
   - Commit: `8b691f661be6b2c30e766a38134cb8fd05593112`; 91 authored additions + deletions (1 generated schema line excluded).
-- Native risk assessment / independent checks: pending.
-- Running authored line count: 843 additions + deletions in T1–T4, including tracking changes and excluding 11 generated schema lines; final tracking-only commit follows. Commit identities recorded per task.
-- Remote push: pending parent verification.
+- Native risk assessment: `gentle-ai review assess --cwd <repo> --base-ref 9f0365ded6c2e1a2bd812c437699a5c8563e3519 --committed-only --json` refused because preexisting untracked tooling files require an inventory declaration. Treated as high/unassessable; no RDD lifecycle started or enabled.
+- Independent functional verification: isolated suite 131 passed / 3 database skips; the same suite against a NEW disposable local PostgreSQL 17 + pgvector database passed all 134 tests, no skips. Fresh and legacy schema application twice, legacy backfill, loader, SQL readers and HTTP endpoints were exercised. Disposable database/container removed; existing database untouched.
+- Parent spot replay: exact isolated full-suite command above — 131 passed, 3 expected database skips; `git diff 9f0365d..HEAD --check` clean.
+- Independent cancellation probes and read-only generated-schema equality checks passed. The stale README lunar example (45) was corrected to the verified 18; no functional blocker remained.
+- Residual preexisting policy: `raw/` and `search/sources.json` are optional. Their absence with valid experiment inputs still prunes their prior chunks (1283 to 1128 in the offline reproduction); required-source completeness is a separate follow-up, not a protection claimed by these fixes.
+- Running authored line count: 843 additions + deletions in T1–T4, including tracking changes and excluding 11 generated schema lines; tracking commit `29ee0cc7519ff27c000d7e746bd12538db5727de` records their identities. Final documentation readback/verification recorded separately.
+- Remote delivery: local verification complete; the parent owns the authorized normal push to `origin/backend` after this documentation commit. The confirmed remote outcome is recorded in the session handoff.
 
 ## Next step
-Parent checks the completed commits, performs native read-only risk assessment, independent verification and a spot replay; then performs the authorized normal push to `backend`. Live database load/index refresh remains an explicit operator action.
+Local implementation and functional verification are complete. Deliver the commits to `origin/backend`, then coordinate deployment: the user's existing database still requires an explicitly authorized `atlas-load` and `atlas-index`; neither was run on that database. Real provider behavior remains unverified.

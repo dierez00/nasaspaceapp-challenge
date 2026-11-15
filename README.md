@@ -18,7 +18,7 @@ docker compose up -d db          # Postgres 17 + pgvector en localhost:5433
 - `GET /health`: estado de la API y de la base de datos
 - `GET /experiments` y `GET /experiments/{id}`: experimentos validados para el mapa
   - Filtros opcionales de `GET /experiments`, con límites inclusivos: `min_o2_percent`, `max_o2_percent`, `min_pressure_kpa`, `max_pressure_kpa` y `exclude_assumed=true` (descarta puntos con O₂ o presión supuestos). Cada experimento conserva solo sus `tests` que cumplen y se omiten los que quedan sin ninguno; un rango invertido responde 422.
-  - Ejemplo, hábitat lunar (34 % O₂, 56.5 kPa en `data/reference/conditions.json`): `GET /experiments?min_o2_percent=30&max_pressure_kpa=70.3` devuelve PSI-159 (45 puntos) y PSI-20 (13 puntos a 34 % y 56.5 kPa, presión supuesta según su objetivo 1); con `exclude_assumed=true` queda solo PSI-159. En las llamas inversas de PSI-159, `o2_percent` es la corriente que sale del quemador, no el aire de la cámara.
+  - Ejemplo, hábitat lunar (34 % O₂, 56.5 kPa en `data/reference/conditions.json`): `GET /experiments?min_o2_percent=30&max_pressure_kpa=70.3` devuelve PSI-159 (18 puntos) y PSI-20 (13 puntos a 34 % y 56.5 kPa, presión supuesta según su objetivo 1); con `exclude_assumed=true` queda solo PSI-159. Los puntos con `o2_basis=oxidizer_stream` quedan fuera del filtro atmosférico: su O₂ corresponde al quemador, no al aire de la cámara.
 - `GET /coverage`: cobertura del mapa y brechas frente a condiciones de misión
 - `POST /query` (`{"q": "..."}`) y `GET /query?q=...` (EventSource): respuesta de los agentes en streaming SSE con eventos `status`, `ui` y `error`
 
@@ -61,7 +61,7 @@ El diseño de los agentes, el contrato de UI, los eventos SSE y las variables de
 ATLAS_TEST_DATABASE_URL=postgresql://atlas:atlas@localhost:5433/atlas .venv/bin/pytest
 ```
 
-La segunda corrida incluye las pruebas contra Postgres; requiere haber ejecutado `atlas-load`. Las pruebas de búsqueda usan un embedder falso (sin red) y vacían `document_chunks` al terminar.
+La segunda corrida incluye las pruebas contra Postgres; requiere haber ejecutado `atlas-load`. Las pruebas de búsqueda usan un embedder falso (sin red), crean un esquema temporal aislado y lo eliminan al terminar; no vacían el índice existente.
 
 ## Estructura
 

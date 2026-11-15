@@ -111,3 +111,14 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
+/* Failsafe: the loading screen hides itself even if client JS never runs. */
+@keyframes loadingScreenFailsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.loading-screen-failsafe {
+  animation: loadingScreenFailsafe 0.7s ease-out 12s forwards;
+}

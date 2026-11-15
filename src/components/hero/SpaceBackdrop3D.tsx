@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { emitHeroLoadProgress } from "@/components/common/hero-load-events";
 
 // ----------------------------------------------------------------------------
 // Capa Base de Estrellas Nítidas con Parpadeo Dinámico (Equivalente Drei Stars)
@@ -214,7 +215,13 @@ export function SpaceBackdrop3D() {
     // 3. Cargador de Texturas PBR
     // Cada textura solicita un render al terminar de cargar (necesario en el cuadro estático
     // de movimiento reducido, donde no hay bucle de animación).
-    const textureLoader = new THREE.TextureLoader();
+    // Un LoadingManager propio reporta el progreso real a la pantalla de carga.
+    const loadingManager = new THREE.LoadingManager();
+    loadingManager.onProgress = (_url, loaded, total) => {
+      if (total > 0) emitHeroLoadProgress(Math.round((loaded / total) * 100));
+    };
+    loadingManager.onLoad = () => emitHeroLoadProgress(100);
+    const textureLoader = new THREE.TextureLoader(loadingManager);
     const loadTexture = (url: string) =>
       textureLoader.load(url, () => requestStaticRender());
 

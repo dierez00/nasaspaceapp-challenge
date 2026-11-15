@@ -1,0 +1,293 @@
+{
+  "$defs": {
+    "Citation": {
+      "additionalProperties": false,
+      "properties": {
+        "experiment_id": {
+          "pattern": "^PSI-\\d+$",
+          "title": "Experiment Id",
+          "type": "string"
+        },
+        "source_file": {
+          "minLength": 1,
+          "title": "Source File",
+          "type": "string"
+        },
+        "section": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Section"
+        },
+        "quote": {
+          "description": "Verbatim text from the document",
+          "maxLength": 600,
+          "minLength": 1,
+          "title": "Quote",
+          "type": "string"
+        }
+      },
+      "required": [
+        "experiment_id",
+        "source_file",
+        "section",
+        "quote"
+      ],
+      "title": "Citation",
+      "type": "object"
+    },
+    "CitationsComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "citations",
+          "title": "Type",
+          "type": "string"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/$defs/Citation"
+          },
+          "minItems": 1,
+          "title": "Items",
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "items"
+      ],
+      "title": "CitationsComponent",
+      "type": "object"
+    },
+    "GapMapComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "gap_map",
+          "title": "Type",
+          "type": "string"
+        },
+        "title": {
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "experiment_ids": {
+          "description": "Experiments to highlight on the map; empty means show all",
+          "items": {
+            "pattern": "^PSI-\\d+$",
+            "type": "string"
+          },
+          "title": "Experiment Ids",
+          "type": "array"
+        },
+        "gravity_environment": {
+          "anyOf": [
+            {
+              "enum": [
+                "microgravity",
+                "lunar",
+                "martian",
+                "partial",
+                "normal"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Filter the map to one gravity level",
+          "title": "Gravity Environment"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "What the gap is, in one sentence",
+          "title": "Note"
+        }
+      },
+      "required": [
+        "type",
+        "title",
+        "experiment_ids",
+        "gravity_environment",
+        "note"
+      ],
+      "title": "GapMapComponent",
+      "type": "object"
+    },
+    "NoticeComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "notice",
+          "title": "Type",
+          "type": "string"
+        },
+        "level": {
+          "enum": [
+            "info",
+            "warning"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "message": {
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "level",
+        "message"
+      ],
+      "title": "NoticeComponent",
+      "type": "object"
+    },
+    "TableComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "table",
+          "title": "Type",
+          "type": "string"
+        },
+        "title": {
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "columns": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Columns",
+          "type": "array"
+        },
+        "rows": {
+          "description": "Each row has one cell per column",
+          "items": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "title": "Rows",
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "title",
+        "columns",
+        "rows"
+      ],
+      "title": "TableComponent",
+      "type": "object"
+    },
+    "TextComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "text",
+          "title": "Type",
+          "type": "string"
+        },
+        "body": {
+          "description": "Plain text answer in Spanish, a few sentences",
+          "minLength": 1,
+          "title": "Body",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "body"
+      ],
+      "title": "TextComponent",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "summary": {
+      "description": "One or two sentences in Spanish answering the question",
+      "minLength": 1,
+      "title": "Summary",
+      "type": "string"
+    },
+    "components": {
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "citations": "#/$defs/CitationsComponent",
+            "gap_map": "#/$defs/GapMapComponent",
+            "notice": "#/$defs/NoticeComponent",
+            "table": "#/$defs/TableComponent",
+            "text": "#/$defs/TextComponent"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/TextComponent"
+          },
+          {
+            "$ref": "#/$defs/TableComponent"
+          },
+          {
+            "$ref": "#/$defs/GapMapComponent"
+          },
+          {
+            "$ref": "#/$defs/CitationsComponent"
+          },
+          {
+            "$ref": "#/$defs/NoticeComponent"
+          }
+        ]
+      },
+      "maxItems": 6,
+      "minItems": 1,
+      "title": "Components",
+      "type": "array"
+    }
+  },
+  "required": [
+    "summary",
+    "components"
+  ],
+  "title": "UIPayload",
+  "type": "object"
+}

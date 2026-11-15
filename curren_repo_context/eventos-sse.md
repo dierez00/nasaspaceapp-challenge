@@ -14,7 +14,7 @@
 | Evento | `data` | Cuándo |
 | --- | --- | --- |
 | `status` | `{"step": "cache" \| "clasificando" \| "consultando_datos" \| "buscando_fuentes" \| "componiendo"}` | Al empezar cada paso. `consultando_datos` y `buscando_fuentes` solo aparecen si el clasificador los pidió y corren en paralelo. |
-| `ui` | `{"summary", "components", "ms"}` | Una vez, al final, si todo salió bien. Ver [`contrato-ui.md`](contrato-ui.md). |
+| `ui` | `{"summary", "components", "ms"}` y `brief_version` (`1`) si hay un componente `brief` | Una vez, al final, si todo salió bien. Ver [`contrato-ui.md`](contrato-ui.md). |
 | `error` | `{"message"}` | Una vez, en lugar de `ui`, si el flujo se rompe. Mensaje genérico; el detalle queda en el log. |
 
 El stream termina después de `ui` o de `error`. Con `EventSource`, cierra la conexión al recibir cualquiera de los dos para que el navegador no reconecte.

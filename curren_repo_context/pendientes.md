@@ -12,10 +12,11 @@
 6. **Cálculos del analista.** Puede filtrar, agrupar, sacar promedio, mínimo y máximo, y calcular la correlación de Pearson entre dos campos. Otros cálculos, como regresiones o percentiles, habría que agregarlos a `FiltroEnsayos`.
 7. **Búsqueda.** El investigador usa `search_documents` del rol 2 con reranker cuando hay `VOYAGE_API_KEY`. Como los resultados no traen id, la herramienta les asigna un `ref` para las citas.
 8. **Caché:**
-   - la clave es la pregunta normalizada (minúsculas, sin acentos ni puntuación);
+   - la clave es `v2|` más la pregunta normalizada (minúsculas, sin acentos ni puntuación); subir `CACHE_VERSION` en `file_cache.py` invalida todo lo anterior, y una entrada que no valida contra `UIPayload` cuenta como fallo de caché;
    - no expira;
    - solo guarda respuestas del compositor LLM sin errores de agentes.
-9. **Contrato de UI.** Los componentes `text`, `table`, `gap_map`, `citations` y `notice` son una propuesta, no el contrato congelado.
+9. **Contrato de UI.** Los componentes `text`, `table`, `gap_map`, `citations`, `notice` y `brief` (versión 1) son una propuesta, no el contrato congelado. El `brief` es aditivo y el front lo detecta con `brief_version` en el evento `ui`.
+   - Pendiente del `brief`: el hueco se calcula solo con los filtros de la última consulta, la pregunta y las filas agrupadas; no usa todavía el módulo `coverage` (necesitaría los puntos de Postgres). Falta verificar con el CLI real que el esquema estricto con `BriefComponent` se acepta.
 10. **Evento `error`.** Comparte nombre con el evento `error` nativo de `EventSource`. El front distingue los dos por la presencia de `data`.
 
 11. **Base del O2 (`o2_basis`).** El analista distingue la atmósfera (`ambient`) del O2 de la corriente de oxidante de un quemador (`oxidizer_stream`, solo PSI-159 llamas inversas). Los rangos de O2 o presión sin `o2_basis` solo cuentan `ambient`. Detalle en [`agentes.md`](agentes.md#o2_basis-atmósfera-frente-a-corriente-de-quemador). Las respuestas ya guardadas en `data/query_cache.json` son anteriores a este cambio: bórralas para regenerarlas.

@@ -5,6 +5,7 @@ import { HttpCopilotGateway } from "../infra/http-gateway";
 import { validateBlock, type Query, type UIBlock } from "../domain/contracts";
 import { describeCopilotError } from "../domain/errors";
 import { BlockRenderer, GravityBounds } from "./blocks";
+import "./copilot.css";
 
 type Message = {
   id: string;
@@ -17,8 +18,8 @@ type Message = {
 const chips = ["Sólidos > 30% O₂", "Comparar µg vs 1g", "Análogos E-FIELD"];
 const agents = [
   { id: "analyst", name: "Analista PSI" },
-  { id: "physics", name: "Física de Llama RAG" },
-  { id: "synthesizer", name: "Sintetizador" },
+  { id: "physics", name: "Física de llama" },
+  { id: "synthesizer", name: "Síntesis" },
 ];
 const gateway = new HttpCopilotGateway();
 export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
@@ -117,16 +118,17 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
   return (
     <aside className="copilot-panel" aria-label="Copiloto de investigación">
       <header className="copilot-heading">
-        <div className="copilot-icon">✳</div>
+        <div className="copilot-icon" aria-hidden="true">
+          ✳
+        </div>
         <div>
           <h2>Copiloto de investigación</h2>
           <span>
-            {mode === "demo" ? "" : "DATOS NASA PSI · CONEXIÓN SSE"}
+            {mode === "demo"
+              ? "Demo · respuestas simuladas"
+              : "Datos NASA PSI · en vivo"}
           </span>
         </div>
-        <span className="copilot-menu" aria-hidden="true">
-          ⌘
-        </span>
       </header>
       <div className="agent-telemetry" aria-label="Telemetría de agentes">
         {agents.map((agent) => (
@@ -154,11 +156,10 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
               80;
         }}
       >
-        <div className="conversation-date" />
         <section className="welcome-message">
           <div className="assistant-label">
-            <span>✳</span> ATLAS{" "}
-            <small>{mode === "demo" ? "DEMO" : "COPILOTO"}</small>
+            <span aria-hidden="true">✳</span> Atlas{" "}
+            <small>{mode === "demo" ? "Demo" : "Copiloto"}</small>
           </div>
           <h3>
             ¿Cómo arde el fuego
@@ -183,8 +184,8 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
           >
             <div className="user-message">{message.query.text}</div>
             <div className="assistant-label">
-              <span>✳</span> ATLAS{" "}
-              <small>{mode === "demo" ? "DEMO" : "COPILOTO"}</small>
+              <span aria-hidden="true">✳</span> Atlas{" "}
+              <small>{mode === "demo" ? "Demo" : "Copiloto"}</small>
             </div>
             {message.text && <p className="assistant-text">{message.text}</p>}
             <div className="generated-blocks">
@@ -252,7 +253,7 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
           <textarea
             id="atlas-question"
             placeholder="Pregunta sobre el fuego en la Luna…"
-            rows={2}
+            rows={1}
             maxLength={2000}
             value={input}
             onChange={(event) => setInput(event.target.value)}
@@ -268,8 +269,7 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
             }}
           />
           <div className="composer-bottom">
-            <span />
-            {busy ? (
+                        {busy ? (
               <button
                 type="button"
                 aria-label="Cancelar consulta"

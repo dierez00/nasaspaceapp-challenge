@@ -1,0 +1,450 @@
+/* Evidence map module */
+.camera-panel {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 22px 16px;
+}
+.camera-heading {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.camera-heading h2 {
+  font-size: var(--text-xl);
+  line-height: 1.2;
+}
+.camera-heading p {
+  margin-top: 6px;
+  max-width: 56ch;
+  font-size: var(--text-base);
+  color: var(--slate);
+}
+.map-count {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  color: var(--ink);
+  font: 500 var(--text-sm) var(--font-data);
+  white-space: nowrap;
+}
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--safe-emerald);
+  display: inline-block;
+}
+.map-stage {
+  position: relative;
+  flex: 1;
+  min-height: 260px;
+}
+.atlas-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  touch-action: manipulation;
+}
+.grid-line {
+  stroke: var(--ink);
+  stroke-opacity: 0.07;
+  stroke-width: 1;
+}
+.axis-tick {
+  font: 400 12.5px var(--font-data);
+  fill: var(--slate);
+}
+.axis-title {
+  font: 500 var(--text-sm) var(--font-body);
+  fill: var(--slate);
+}
+.lunar-fill {
+  fill: var(--flame-orange);
+  fill-opacity: 0.07;
+}
+.lunar-outline {
+  fill: none;
+  stroke: var(--flame-orange);
+  stroke-opacity: 0.75;
+  stroke-width: 1.5;
+  stroke-dasharray: 6 6;
+}
+.threshold-label {
+  font: 500 var(--text-sm) var(--font-data);
+  fill: var(--flame-orange-ink);
+}
+.zone-label {
+  font: 600 var(--text-sm) var(--font-body);
+  fill: var(--flame-orange-ink);
+}
+.zone-subtitle {
+  font: 400 var(--text-sm) var(--font-data);
+  fill: var(--flame-orange-ink);
+}
+.gap-symbol {
+  font: 300 30px var(--font-data);
+  fill: var(--flame-orange);
+  opacity: 0.5;
+}
+.gap-label {
+  font: 600 var(--text-sm) var(--font-body);
+  fill: var(--slate);
+}
+.gap-hint {
+  font: 400 var(--text-sm) var(--font-body);
+  fill: var(--slate);
+}
+.laser-scan {
+  animation: laserScan 4.5s linear infinite;
+}
+.zone-note {
+  font: 500 var(--text-sm) var(--font-body);
+  fill: var(--flame-orange-ink);
+}
+.experiment-node {
+  cursor: pointer;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    opacity 0.45s var(--ease-out),
+    transform 0.45s var(--ease-out);
+  outline: none;
+}
+.experiment-node:focus-visible > circle:first-of-type {
+  stroke: var(--nasa-blue);
+  stroke-width: 2;
+}
+.node-count {
+  font: 600 var(--text-sm) var(--font-data);
+  fill: var(--nasa-blue);
+}
+.node-pulse {
+  animation: nodePulse 2.4s infinite;
+}
+.probe-readout,
+.probe-notice {
+  position: absolute;
+  top: 8px;
+  pointer-events: none;
+  padding: 8px 14px;
+  background: var(--instrument-white);
+  border-radius: var(--radius-inner);
+  box-shadow: var(--shadow-raised);
+}
+.probe-readout {
+  right: 8px;
+  font: 500 var(--text-md) var(--font-data);
+  font-variant-numeric: tabular-nums;
+  color: var(--nasa-blue);
+}
+.probe-readout small {
+  font-size: var(--text-sm);
+  font-weight: 400;
+}
+.probe-readout b {
+  color: var(--slate);
+  font-weight: 400;
+}
+.probe-readout > span {
+  display: block;
+  margin-top: 2px;
+  font: 400 var(--text-sm) var(--font-body);
+  color: var(--slate);
+}
+.probe-readout.critical {
+  color: var(--flame-orange-ink);
+}
+.probe-readout.critical > span {
+  color: var(--flame-orange-ink);
+}
+.probe-notice {
+  left: 72px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--flame-orange-ink);
+  background: var(--flame-orange-tint);
+}
+.probe-warning {
+  animation: agentPulse 1.3s infinite;
+}
+.map-legend {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 22px;
+  margin: 10px 0 14px;
+  font-size: var(--text-sm);
+  color: var(--slate);
+}
+.map-legend > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.map-legend i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+.legend-ignition {
+  background: var(--flame-orange);
+}
+.legend-extinction {
+  border: 2px solid var(--safe-emerald);
+}
+.legend-micro {
+  background: var(--blue-flame);
+}
+.map-legend .legend-zone {
+  border-radius: 4px;
+  border: 1.5px dashed var(--flame-orange);
+  background: var(--flame-orange-tint);
+}
+.gravity-footer {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 14px;
+  background: var(--surface-sunken);
+  border-radius: var(--radius-inner);
+}
+.gravity-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.gravity-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--ink);
+}
+.gravity-title > span:last-child {
+  font-size: var(--text-sm);
+  color: var(--slate);
+}
+.gravity-control {
+  min-width: 340px;
+  background: rgba(14, 23, 38, 0.07);
+}
+.manual-probe {
+  position: relative;
+  flex-shrink: 0;
+  margin-top: 10px;
+  font-size: var(--text-base);
+  color: var(--slate);
+}
+.manual-probe summary {
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  color: var(--nasa-blue);
+  font-weight: 600;
+}
+.manual-probe summary::-webkit-details-marker {
+  display: none;
+}
+@media (hover: hover) {
+  .manual-probe summary:hover {
+    background: var(--nasa-blue-tint);
+  }
+}
+.manual-probe form {
+  position: absolute;
+  bottom: 48px;
+  left: 0;
+  z-index: 7;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  width: max-content;
+  max-width: calc(100vw - 48px);
+  padding: 16px;
+  background: var(--instrument-white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-inner);
+  box-shadow: var(--shadow-module);
+}
+.manual-probe label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--slate);
+}
+.manual-probe input {
+  width: 104px;
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  color: var(--ink);
+  font: 500 var(--text-md) var(--font-data);
+}
+.manual-probe input[aria-invalid="true"] {
+  border-color: var(--flame-orange-ink);
+}
+.manual-probe button {
+  min-height: 40px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--nasa-blue);
+  color: #fff;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.manual-probe .probe-error {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--flame-orange-ink);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+.overlap-menu {
+  position: absolute;
+  z-index: 8;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  max-height: min(420px, 60vh);
+  overflow-y: auto;
+  background: var(--instrument-white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-inner);
+  box-shadow: var(--shadow-module);
+  font-size: var(--text-base);
+}
+.overlap-menu button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  background: var(--instrument-white);
+  color: var(--nasa-blue);
+  font-weight: 500;
+  text-align: left;
+}
+.empty-map {
+  position: absolute;
+  left: 15%;
+  top: 70%;
+  max-width: 70%;
+  font-size: var(--text-base);
+  color: var(--slate);
+}
+
+@keyframes laserScan {
+  from {
+    transform: translateY(-70px);
+  }
+  to {
+    transform: translateY(500px);
+  }
+}
+@keyframes nodePulse {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 1279px) and (min-width: 1024px) {
+  .camera-panel {
+    padding: 16px;
+  }
+  .gravity-control {
+    min-width: 0;
+  }
+  .gravity-title > span:last-child {
+    display: none;
+  }
+}
+@media (min-width: 1024px) and (max-height: 820px) {
+  .camera-heading p {
+    display: none;
+  }
+  .map-legend {
+    margin: 6px 0 10px;
+  }
+}
+@media (max-width: 1023px) {
+  .camera-panel {
+    padding: 16px;
+  }
+  .camera-heading {
+    flex-wrap: wrap;
+  }
+  .map-stage {
+    flex: none;
+    height: 340px;
+  }
+  .gravity-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .gravity-title > span:last-child {
+    display: none;
+  }
+  .gravity-control {
+    min-width: 0;
+  }
+  .gravity-control button small {
+    display: none;
+  }
+  .probe-notice {
+    left: 8px;
+    top: 52px;
+  }
+  .manual-probe form {
+    bottom: auto;
+    top: 48px;
+  }
+}
+@media (max-width: 600px) {
+  .gap-label,
+  .gap-hint,
+  .zone-note {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .laser-scan {
+    display: none;
+  }
+  .node-pulse {
+    opacity: 0.25;
+  }
+}

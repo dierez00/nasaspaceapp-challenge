@@ -5,6 +5,7 @@ import { Flame } from "@/modules/atlas/ui/flame";
 import { gravityLabels, type Source } from "@/modules/atlas/domain/experiment";
 import { useSimulation } from "@/modules/simulation/application/simulation-provider";
 import type { UIBlock } from "../domain/contracts";
+import "./copilot.css";
 
 // react-markdown is only needed for rare fallback answers, so keep it out of the initial bundle
 const Markdown = dynamic(() => import("react-markdown"));
@@ -13,15 +14,15 @@ export function SourceList({ sources }: { sources: Source[] }) {
   return (
     <details className="source-list">
       <summary>
-        <span>⌕ Trazabilidad documental</span>
-        <span>{sources.length.toString().padStart(2, "0")} ↗</span>
+        <span>Fuentes y trazabilidad</span>
+        <span>{sources.length} ↗</span>
       </summary>
       {sources.length ? (
         sources.map((source, index) => (
           <article key={index}>
-            <span className="micro-label">
+            <span className="source-kind">
               {source.code} ·{" "}
-              {source.demo ? "REFERENCIA DEMOSTRATIVA" : "FUENTE"}
+              {source.demo ? "Referencia demostrativa" : "Fuente"}
             </span>
             <strong>{source.document}</strong>
             <small>{source.section}</small>
@@ -45,7 +46,7 @@ export function GravityBounds({ explanation }: { explanation: string }) {
   return (
     <article className="immersive-card">
       <div className="card-kicker">
-        <span>EXPLORACIÓN EN TRES GRAVEDADES</span>
+        <span>Tres gravedades</span>
         <span>↗</span>
       </div>
       <h3>Entra en la cámara.</h3>
@@ -84,7 +85,7 @@ export function BlockRenderer({ block }: { block: UIBlock }) {
   if (block.type === "FallbackCard")
     return (
       <article className="generative-card fallback-card">
-        <span className="micro-label">RESPUESTA DE RESPALDO</span>
+        <span className="source-kind">Respuesta de respaldo</span>
         <Markdown skipHtml>{block.markdown}</Markdown>
         {block.sources.length > 0 && <SourceList sources={block.sources} />}
       </article>
@@ -108,7 +109,7 @@ export function BlockRenderer({ block }: { block: UIBlock }) {
           <div className="card-kicker">
             <span>{experiment.id}</span>
             <span>
-              {experiment.provenance === "demo" ? "DEMO" : "VERIFICADO"}
+              {experiment.provenance === "demo" ? "Demo" : "Verificado"}
             </span>
           </div>
           <h3>{experiment.material}</h3>
@@ -138,7 +139,7 @@ export function BlockRenderer({ block }: { block: UIBlock }) {
   return (
     <article className="immersive-card">
       <div className="card-kicker">
-        <span>COMPARACIÓN INMERSIVA</span>
+        <span>Comparación</span>
         <span>A / B</span>
       </div>
       <h3>Dos llamas. Un mismo instante.</h3>

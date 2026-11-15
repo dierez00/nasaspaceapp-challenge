@@ -10,6 +10,7 @@ import {
   type Experiment,
 } from "../domain/experiment";
 import { useAtlas } from "./atlas-provider";
+import "./atlas-map.css";
 import { Flame } from "./flame";
 import { useSimulation } from "@/modules/simulation/application/simulation-provider";
 
@@ -45,7 +46,7 @@ export function AtlasMap() {
   }, []);
   const w = Math.max(size.width, 300),
     h = Math.max(size.height, 260);
-  const left = w < 500 ? 42 : 65,
+  const left = w < 500 ? 50 : 65,
     right = 25,
     top = 24,
     bottom = 56;
@@ -57,6 +58,8 @@ export function AtlasMap() {
     .domain([18, 50])
     .range([h - bottom, top])
     .clamp(true);
+  const crowded = experiments.length > 80;
+  const nodeScale = crowded ? 0.5 : 1;
   const lunar = probe && isLunarZone(probe.pressure, probe.oxygen);
   function queryPoint(point: { pressure: number; oxygen: number }) {
     dispatch({
@@ -85,29 +88,20 @@ export function AtlasMap() {
     <section className="camera-panel" aria-label="Cámara del Atlas">
       <header className="camera-heading">
         <div>
-          <p className="micro-label">
-            EXPLORADOR DE COMBUSTIÓN <span>/ 01</span>
+          <h2>Mapa de evidencias</h2>
+          <p>
+            Cada llama es un ensayo real o de demostración. Toca una zona vacía
+            para preguntar qué pasaría allí.
           </p>
-          <h2>
-            Atlas del fuego lunar<span>.</span>
-          </h2>
-          <p>La próxima frontera del fuego está en lo que aún no sabemos.</p>
         </div>
-        <span className="coordinate-mark" aria-hidden="true">
-          ⊕
-        </span>
-      </header>
-      <div className="map-meta">
-        <span>
-          <i className="status-dot" />{" "}
-          {String(experiments.length).padStart(2, "0")} ENSAYOS{" "}
+        <span className="map-count">
+          <i className="status-dot" />
+          {experiments.length} ensayos ·{" "}
           {experiments.some((e) => e.provenance === "verified")
             ? "NASA PSI"
-            : "DEMO"}
+            : "demo"}
         </span>
-        <span className="map-coordinate">PRESIÓN × CONCENTRACIÓN O₂</span>
-        <span className="live-tag">EXPLORACIÓN EN VIVO</span>
-      </div>
+      </header>
       <div className="map-stage" ref={container}>
         <svg
           ref={svg}
@@ -128,18 +122,9 @@ export function AtlasMap() {
           }}
         >
           <defs>
-            <pattern
-              id="lunar-hatch"
-              width="9"
-              height="9"
-              patternUnits="userSpaceOnUse"
-              patternTransform="rotate(45)"
-            >
-              <line y2="9" stroke="#FC3D21" strokeOpacity=".055" />
-            </pattern>
             <linearGradient id="scan-gradient" x1="0" y1="0" x2="0" y2="1">
-              <stop stopColor="#FC3D21" stopOpacity="0" />
-              <stop offset="1" stopColor="#FC3D21" stopOpacity=".12" />
+              <stop stopColor="#FF5A1F" stopOpacity="0" />
+              <stop offset="1" stopColor="#FF5A1F" stopOpacity=".07" />
             </linearGradient>
             <clipPath id="lunar-clip">
               <rect
@@ -155,7 +140,7 @@ export function AtlasMap() {
             y={y(50)}
             width={x(10.2) - x(0)}
             height={y(30) - y(50)}
-            fill="url(#lunar-hatch)"
+            className="lunar-fill"
           />
           <g clipPath="url(#lunar-clip)" pointerEvents="none">
             <rect
@@ -207,10 +192,7 @@ export function AtlasMap() {
           ))}
           <path
             d={`M${x(0)} ${y(50)} H${x(10.2)} V${y(30)} H${x(0)} Z`}
-            fill="none"
-            stroke="#FC3D21"
-            strokeOpacity=".65"
-            strokeDasharray="5 5"
+            className="lunar-outline"
           />
           <text x={x(10.2) + 7} y={y(30) - 8} className="threshold-label">
             10.2 psi
@@ -221,21 +203,24 @@ export function AtlasMap() {
             textAnchor="middle"
             className="axis-title"
           >
-            PRESIÓN ABSOLUTA (psi)
+            Presión absoluta (psi)
           </text>
           <text
             transform={`translate(14 ${(top + h - bottom) / 2}) rotate(-90)`}
             textAnchor="middle"
             className="axis-title"
           >
-            CONCENTRACIÓN O₂ (%)
+            Concentración de O₂ (%)
           </text>
           <g pointerEvents="none">
             <text x={x(1)} y={y(46)} className="zone-label">
-              ZONA DE OPERACIÓN LUNAR
+              Zona de operación lunar
             </text>
             <text x={x(1)} y={y(46) + 19} className="zone-subtitle">
-              ≥ 30% O₂ / ≤ 10.2 psi
+              ≥ 30 % O₂ · ≤ 10.2 psi
+            </text>
+            <text x={x(1)} y={y(46) + 38} className="zone-note">
+              Riesgo de ignición · ilustrativo
             </text>
             <text
               x={x(4.7)}
@@ -251,7 +236,7 @@ export function AtlasMap() {
               className="gap-label"
               textAnchor="middle"
             >
-              UN TERRITORIO POR EXPLORAR
+              Un territorio por explorar
             </text>
             <text
               x={x(4.7)}
@@ -303,6 +288,7 @@ export function AtlasMap() {
                       experiment.id,
                     ].join(" / ")}
                   </title>
+                  <g transform={`scale(${nodeScale})`}>
                   <circle r="22" fill="transparent" />
                   {focused && (
                     <g fill="none" stroke="#0B3D91">
@@ -316,9 +302,9 @@ export function AtlasMap() {
                       r="17"
                       fill="none"
                       stroke={
-                        experiment.gravity === "micro" ? "#5B21B6" : "#FC3D21"
+                        experiment.gravity === "micro" ? "#3B82F6" : "#FF5A1F"
                       }
-                      strokeOpacity=".25"
+                      strokeOpacity=".35"
                     />
                   )}
                   <svg
@@ -334,7 +320,8 @@ export function AtlasMap() {
                       compact
                     />
                   </svg>
-                  {group.length > 1 && (
+                  </g>
+                  {group.length > 1 && !crowded && (
                     <text x="16" y="-15" className="node-count">
                       {group.length}
                     </text>
@@ -344,7 +331,7 @@ export function AtlasMap() {
             );
           })}
           {probe && (
-            <g pointerEvents="none" stroke={lunar ? "#FC3D21" : "#0B3D91"}>
+            <g pointerEvents="none" stroke={lunar ? "#B93A0E" : "#0B3D91"}>
               <line
                 x1={x(probe.pressure)}
                 x2={x(probe.pressure)}
@@ -375,10 +362,6 @@ export function AtlasMap() {
             </g>
           )}
         </svg>
-        <div className="zone-badge glass backdrop-blur-xl">
-          <span>△</span> RIESGO DE IGNICIÓN{" "}
-          <small>REGIÓN LUNAR · ILUSTRATIVO</small>
-        </div>
         {probe && (
           <output
             className={`probe-readout ${lunar ? "critical" : ""}`}
@@ -388,7 +371,7 @@ export function AtlasMap() {
             <b> / </b>
             {probe.oxygen.toFixed(2)} <small>% O₂</small>
             <span>
-              {lunar ? "REGIÓN CRÍTICA · ILUSTRATIVA" : "RIESGO NO ESTIMADO"}
+              {lunar ? "Región crítica · ilustrativa" : "Riesgo no estimado"}
             </span>
           </output>
         )}
@@ -398,7 +381,7 @@ export function AtlasMap() {
           </output>
         )}
         {overlap.length > 1 && (
-          <div className="overlap-menu glass">
+          <div className="overlap-menu">
             <strong>Ensayos en esta coordenada ({overlap.length})</strong>
             {overlap.map((e) => (
               <button
@@ -431,10 +414,13 @@ export function AtlasMap() {
         <span>
           <i className="legend-micro" /> Microgravedad
         </span>
+        <span>
+          <i className="legend-zone" /> Zona lunar
+        </span>
       </div>
       <footer className="gravity-footer">
         <div className="gravity-title">
-          <span className="micro-label" />
+          <span className="gravity-name">Régimen gravitacional</span>
           <span>
             {state.gravity === "lunar"
               ? "Sin ensayos lunares en el catálogo"
@@ -442,32 +428,33 @@ export function AtlasMap() {
           </span>
         </div>
         <div
-          className="gravity-control"
+          className="gravity-control segmented"
           role="group"
           aria-label="Régimen gravitacional"
         >
           {(
             [
-              { value: "all", title: "Todas", sub: "VISTA GLOBAL" },
+              { value: "all", title: "Todas", sub: "" },
               { value: "micro", title: "µg", sub: "ISS" },
-              { value: "lunar", title: "1/6g", sub: "LUNA" },
-              { value: "earth", title: "1g", sub: "TIERRA" },
+              { value: "lunar", title: "1/6g", sub: "Luna" },
+              { value: "earth", title: "1g", sub: "Tierra" },
             ] as const
           ).map((item) => (
             <button
               key={item.value}
+              data-gravity={item.value}
               aria-pressed={state.gravity === item.value}
               onClick={() => dispatch({ type: "gravity", gravity: item.value })}
             >
               <strong>{item.title}</strong>
-              <small>{item.sub}</small>
+              {item.sub && <small>{item.sub}</small>}
             </button>
           ))}
         </div>
       </footer>
       <details className="manual-probe">
         <summary>
-          Sonda por coordenadas <span>↗</span>
+          Sonda por coordenadas <span aria-hidden="true">↗</span>
         </summary>
         <form
           noValidate

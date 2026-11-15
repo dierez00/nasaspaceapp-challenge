@@ -16,8 +16,8 @@ export function Flame({
     outcome === "extinction"
       ? "#059669"
       : gravity === "micro"
-        ? "#5B21B6"
-        : "#FC3D21";
+        ? "#3B82F6"
+        : "#FF5A1F";
   return (
     <svg
       className={`flame-art ${compact ? "compact" : ""}`}
@@ -53,7 +53,7 @@ export function Flame({
           <circle cx="50" cy="63" r="3" fill="#d5ddd9" stroke="none" />
         </g>
       ) : outcome === "unknown" ? (
-        <text x="50" y="70" textAnchor="middle" fill="#4B5563" fontSize="30">
+        <text x="50" y="70" textAnchor="middle" fill="#4A5568" fontSize="30">
           ?
         </text>
       ) : (
@@ -77,7 +77,7 @@ export function Flame({
                   ? "M49 37 C42 47 23 61 33 76 C42 90 71 82 68 64 C65 49 53 48 49 37"
                   : "M50 42 C25 42 24 82 50 83 C77 82 76 42 50 42"
             }
-            fill={gravity === "micro" ? "#9172e0" : "#FC3D21"}
+            fill={gravity === "micro" ? "#7ba8f8" : "#FF5A1F"}
             opacity=".8"
           />
           <ellipse
@@ -87,7 +87,7 @@ export function Flame({
             ry={gravity === "earth" ? 13 : 7}
             fill="#fff0c6"
           />
-          <circle cx="50" cy="73" r="3" fill="#FC3D21" />
+          <circle cx="50" cy="73" r="3" fill={color} />
         </g>
       )}
     </svg>

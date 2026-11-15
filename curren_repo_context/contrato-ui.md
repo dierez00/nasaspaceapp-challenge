@@ -27,7 +27,7 @@ Todos los objetos tienen `additionalProperties: false`.
 
 ## Reglas fijas (`ui_rules.build_rules_ui`)
 
-Se usan con `COMPOSITOR_MODE=rules`, con `AGENTS_MOCK=1` y como respaldo cuando el compositor falla.
+Se usan con `COMPOSITOR_MODE=rules`, con `AGENTS_MOCK=1` y como respaldo cuando el compositor falla o cuando nada de su salida pasa el anclaje a los datos (`agents/domain/grounding.py`, ver [`flujo.md`](flujo.md#4-anclaje-a-los-datos)).
 
 | Tipo de consulta | Primer componente | Después |
 | --- | --- | --- |

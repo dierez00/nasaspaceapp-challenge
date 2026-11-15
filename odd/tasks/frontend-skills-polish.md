@@ -32,7 +32,7 @@ A read-only audit (impeccable critique/audit/harden, web-design-guidelines, verc
 ## Progress / Evidence
 - Skills vendored: `c2f6561`.
 - Baseline (before edits): lint, typecheck, test (31 passed) all green.
-- T1 reduced motion: COMMIT_T1. lint/typecheck/test green (31 passed). Hero: gsap.matchMedia (opacity-only under reduce), Lenis not created under reduce (reacts to live changes), flame drift off, 3D renders one static frame, loading spinner/pulse `motion-reduce:animate-none`. New hook `useReducedMotion`.
+- T1 reduced motion: `d1c632e`. lint/typecheck/test green (31 passed). Hero: gsap.matchMedia (opacity-only under reduce), Lenis not created under reduce (reacts to live changes), flame drift off, 3D renders one static frame, loading spinner/pulse `motion-reduce:animate-none`. New hook `useReducedMotion`.
 
 ## Next step
 T2.

@@ -107,7 +107,7 @@ export function ScrollIndicator() {
         isInteractive ? "cursor-pointer pointer-events-auto" : "pointer-events-none"
       }`}
     >
-      {/* 1. Rayo / Destello Láser Vertical Ascendente (Interpolado proporcionalmente) */}
+      {/* 1. Rayo / Destello Láser Vertical Ascendente (Cian / Pizarra Tecnológico) */}
       <div
         style={{
           transform:
@@ -117,7 +117,7 @@ export function ScrollIndicator() {
           opacity: beamOpacity,
           filter: `blur(${1 + progressLaunch * 3}px)`,
         }}
-        className="absolute -top-6 w-1.5 h-28 rounded-full bg-gradient-to-t from-transparent via-cyan-300 to-white pointer-events-none shadow-[0_0_16px_#38bdf8] transition-all duration-200 ease-out"
+        className="absolute -top-6 w-1.5 h-28 rounded-full bg-gradient-to-t from-transparent via-cyan-500 to-slate-900 pointer-events-none shadow-[0_0_16px_#0284c7] transition-all duration-200 ease-out"
       />
       <div
         style={{
@@ -127,10 +127,10 @@ export function ScrollIndicator() {
               : `translateY(0) scale(${0.5 + beamPrimeScale * 0.5})`,
           opacity: auraOpacity,
         }}
-        className="absolute -top-10 w-24 h-32 rounded-full bg-cyan-400/40 pointer-events-none blur-xl transition-all duration-200 ease-out"
+        className="absolute -top-10 w-24 h-32 rounded-full bg-cyan-500/25 pointer-events-none blur-xl transition-all duration-200 ease-out"
       />
 
-      {/* 2. Pared Lateral Izquierda de Energía (Colisiona proporcionalmente hacia el centro) */}
+      {/* 2. Pared Lateral Izquierda de Energía (Colisiona hacia el centro sobre fondo blanco) */}
       <div
         style={{
           transform:
@@ -142,10 +142,10 @@ export function ScrollIndicator() {
               ? Math.max(0, 1 - progressLaunch * 1.5)
               : progressCrush,
         }}
-        className="absolute right-1/2 top-1/2 -translate-y-1/2 h-[2px] w-40 bg-gradient-to-r from-transparent via-cyan-400 to-white shadow-[0_0_12px_#38bdf8] pointer-events-none origin-right transition-all duration-200 ease-out"
+        className="absolute right-1/2 top-1/2 -translate-y-1/2 h-[2px] w-40 bg-gradient-to-r from-transparent via-cyan-500 to-slate-800 shadow-[0_0_10px_#0284c7] pointer-events-none origin-right transition-all duration-200 ease-out"
       />
 
-      {/* 3. Pared Lateral Derecha de Energía (Colisiona proporcionalmente hacia el centro) */}
+      {/* 3. Pared Lateral Derecha de Energía (Colisiona hacia el centro sobre fondo blanco) */}
       <div
         style={{
           transform:
@@ -157,10 +157,10 @@ export function ScrollIndicator() {
               ? Math.max(0, 1 - progressLaunch * 1.5)
               : progressCrush,
         }}
-        className="absolute left-1/2 top-1/2 -translate-y-1/2 h-[2px] w-40 bg-gradient-to-l from-transparent via-cyan-400 to-white shadow-[0_0_12px_#38bdf8] pointer-events-none origin-left transition-all duration-200 ease-out"
+        className="absolute left-1/2 top-1/2 -translate-y-1/2 h-[2px] w-40 bg-gradient-to-l from-transparent via-cyan-500 to-slate-800 shadow-[0_0_10px_#0284c7] pointer-events-none origin-left transition-all duration-200 ease-out"
       />
 
-      {/* 4. Línea de Plasma Central Aplastada (Núcleo horizontal de compresión reactivo) */}
+      {/* 4. Línea de Plasma Central Aplastada (Núcleo de impacto cian/pizarra) */}
       <div
         style={{
           transform:
@@ -174,10 +174,10 @@ export function ScrollIndicator() {
               ? (progressCrush - 0.2) / 0.8
               : 0,
         }}
-        className="absolute top-1/2 -translate-y-1/2 h-[2px] w-20 rounded-full bg-gradient-to-r from-cyan-400 via-white to-cyan-400 shadow-[0_0_14px_#38bdf8,0_0_8px_#ffffff] pointer-events-none origin-center transition-all duration-200 ease-out"
+        className="absolute top-1/2 -translate-y-1/2 h-[2px] w-20 rounded-full bg-gradient-to-r from-cyan-500 via-slate-900 to-cyan-500 shadow-[0_0_12px_#0284c7] pointer-events-none origin-center transition-all duration-200 ease-out"
       />
 
-      {/* 5. Texto Plano con Compresión Proporcional al Desplazamiento */}
+      {/* 5. Texto Plano en Cápsula HUD Aeroespacial Clara */}
       <div
         style={{
           transform:
@@ -190,12 +190,12 @@ export function ScrollIndicator() {
               : Math.max(0, 1 - progressCrush * 1.15),
           filter: `blur(${progressCrush * 4}px)`,
         }}
-        className={`relative z-10 flex items-center gap-2 font-mono text-xs sm:text-sm tracking-widest text-slate-100 group-hover:text-cyan-300 drop-shadow-[0_0_12px_rgba(255,255,255,0.45)] origin-center transition-all duration-200 ease-out ${
+        className={`relative z-10 flex items-center gap-2 font-mono text-xs sm:text-sm tracking-wider text-slate-800 group-hover:text-cyan-600 bg-white/90 backdrop-blur-md px-5 py-2 rounded-full border border-slate-200/90 shadow-[0_2px_10px_rgba(0,0,0,0.06)] origin-center transition-all duration-200 ease-out ${
           effectiveScroll <= 15 ? "animate-bounce" : ""
         }`}
       >
-        <span>Desliza para explorar el Atlas</span>
-        <span className="text-cyan-400 text-sm font-sans drop-shadow-[0_0_8px_#38bdf8] inline-block transition-transform group-hover:translate-y-0.5">
+        <span className="font-medium">Desliza para explorar el Atlas</span>
+        <span className="text-cyan-600 text-sm font-sans drop-shadow-[0_0_6px_#38bdf8] inline-block transition-transform group-hover:translate-y-0.5">
           ↓
         </span>
       </div>

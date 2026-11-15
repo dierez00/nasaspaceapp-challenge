@@ -5,7 +5,7 @@ import React from "react";
 export function CupolaFrame() {
   return (
     <div className="pointer-events-none absolute inset-0 z-20 overflow-hidden select-none">
-      {/* 1. Marco Exterior Octogonal Biselado (Cupola Window Geometry en SVG) */}
+      {/* 1. Marco Exterior Octogonal Biselado (Cupola Window en Blanco Aeroespacial) */}
       <svg
         className="w-full h-full absolute inset-0"
         viewBox="0 0 1920 1080"
@@ -13,96 +13,116 @@ export function CupolaFrame() {
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
-          {/* Gradiente Metálico Biselado Estilo ISS / Orion */}
-          <linearGradient id="bevelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#0f172a" />
-            <stop offset="50%" stopColor="#020617" />
-            <stop offset="100%" stopColor="#0f172a" />
+          {/* Gradiente Blanco / Gris Titanio Limpio Estilo Cleanroom / Orion */}
+          <linearGradient id="whiteCupolaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="35%" stopColor="#f8fafc" />
+            <stop offset="65%" stopColor="#f1f5f9" />
+            <stop offset="100%" stopColor="#ffffff" />
           </linearGradient>
 
-          {/* Sombra de Borde de Ventana */}
-          <radialGradient id="innerGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="85%" stopColor="transparent" />
-            <stop offset="98%" stopColor="rgba(15, 23, 42, 0.45)" />
-            <stop offset="100%" stopColor="rgba(2, 6, 23, 0.95)" />
-          </radialGradient>
+          {/* Sombra de Profundidad en el Bisel Interior hacia el Espacio */}
+          <linearGradient id="bevelShadowTop" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="rgba(15, 23, 42, 0.12)" />
+            <stop offset="100%" stopColor="transparent" />
+          </linearGradient>
         </defs>
 
-        {/* Borde Biselado Perimetral con Chamfers Diagonales en Esquinas */}
+        {/* Borde Biselado Perimetral Blanco con Chamfers Diagonales en Esquinas */}
         <polygon
           points="
             0,0 1920,0 1920,1080 0,1080 0,0
-            40,110 110,40 1810,40 1880,110 1880,970 1810,1040 110,1040 40,970 40,110
+            50,130 130,50 1790,50 1870,130 1870,950 1790,1030 130,1030 50,950 50,130
           "
-          fill="url(#bevelGrad)"
+          fill="url(#whiteCupolaGrad)"
           fillRule="evenodd"
-          opacity="0.94"
+          opacity="1"
         />
 
-        {/* Línea de contorno interior de alta precisión (Hairline aeroespacial) */}
+        {/* Línea de Contorno Exterior de Precisión (Borde de panel estructural) */}
         <polygon
           points="
-            40,110 110,40 1810,40 1880,110 1880,970 1810,1040 110,1040 40,970
+            50,130 130,50 1790,50 1870,130 1870,950 1790,1030 130,1030 50,950
           "
           fill="none"
-          stroke="rgba(148, 163, 184, 0.25)"
-          strokeWidth="1.5"
+          stroke="rgba(15, 23, 42, 0.16)"
+          strokeWidth="2.5"
         />
 
-        {/* Remaches de Montura de la Escotilla (Rivets aeroespaciales) */}
+        {/* Línea de Sello Interior de Silicona Aeroespacial (Acento Cian Nítido) */}
+        <polygon
+          points="
+            56,134 134,56 1786,56 1864,134 1864,946 1786,1024 134,1024 56,946
+          "
+          fill="none"
+          stroke="rgba(2, 132, 199, 0.35)"
+          strokeWidth="1.2"
+        />
+
+        {/* Remaches / Pernos de Montura de Titanio (Mecanizado fino sobre panel blanco) */}
         {[
-          { x: 110, y: 35 }, { x: 350, y: 35 }, { x: 650, y: 35 }, { x: 960, y: 35 },
-          { x: 1270, y: 35 }, { x: 1570, y: 35 }, { x: 1810, y: 35 },
-          { x: 1885, y: 110 }, { x: 1885, y: 380 }, { x: 1885, y: 690 }, { x: 1885, y: 970 },
-          { x: 1810, y: 1045 }, { x: 1570, y: 1045 }, { x: 1270, y: 1045 }, { x: 960, y: 1045 },
-          { x: 650, y: 1045 }, { x: 350, y: 1045 }, { x: 110, y: 1045 },
-          { x: 35, y: 970 }, { x: 35, y: 690 }, { x: 35, y: 380 }, { x: 35, y: 110 }
+          { x: 130, y: 32 }, { x: 380, y: 32 }, { x: 680, y: 32 }, { x: 960, y: 32 },
+          { x: 1240, y: 32 }, { x: 1540, y: 32 }, { x: 1790, y: 32 },
+          { x: 1888, y: 130 }, { x: 1888, y: 400 }, { x: 1888, y: 680 }, { x: 1888, y: 950 },
+          { x: 1790, y: 1048 }, { x: 1540, y: 1048 }, { x: 1240, y: 1048 }, { x: 960, y: 1048 },
+          { x: 680, y: 1048 }, { x: 380, y: 1048 }, { x: 130, y: 1048 },
+          { x: 32, y: 950 }, { x: 32, y: 680 }, { x: 32, y: 400 }, { x: 32, y: 130 }
         ].map((rivet, i) => (
-          <circle
-            key={i}
-            cx={rivet.x}
-            cy={rivet.y}
-            r="3.5"
-            fill="#1e293b"
-            stroke="#475569"
-            strokeWidth="0.8"
-            opacity="0.85"
-          />
+          <g key={i}>
+            <circle
+              cx={rivet.x}
+              cy={rivet.y}
+              r="4"
+              fill="#f8fafc"
+              stroke="#94a3b8"
+              strokeWidth="1"
+            />
+            <circle
+              cx={rivet.x}
+              cy={rivet.y}
+              r="1.6"
+              fill="#64748b"
+            />
+          </g>
         ))}
 
-        {/* Retículas y Marcadores de Calibración Óptica en Esquinas */}
+        {/* Retículas y Marcadores de Calibración Óptica en Esquinas (Acentos Cian Nítidos) */}
         {/* Esquina Superior Izquierda */}
-        <g stroke="rgba(56, 189, 248, 0.5)" strokeWidth="1.2">
-          <line x1="110" y1="52" x2="135" y2="52" />
-          <line x1="110" y1="52" x2="110" y2="77" />
+        <g stroke="#0284c7" strokeWidth="1.5">
+          <line x1="130" y1="68" x2="160" y2="68" />
+          <line x1="130" y1="68" x2="130" y2="98" />
+          <circle cx="130" cy="68" r="2" fill="#0284c7" />
         </g>
         {/* Esquina Superior Derecha */}
-        <g stroke="rgba(56, 189, 248, 0.5)" strokeWidth="1.2">
-          <line x1="1810" y1="52" x2="1785" y2="52" />
-          <line x1="1810" y1="52" x2="1810" y2="77" />
+        <g stroke="#0284c7" strokeWidth="1.5">
+          <line x1="1790" y1="68" x2="1760" y2="68" />
+          <line x1="1790" y1="68" x2="1790" y2="98" />
+          <circle cx="1790" cy="68" r="2" fill="#0284c7" />
         </g>
         {/* Esquina Inferior Izquierda */}
-        <g stroke="rgba(56, 189, 248, 0.5)" strokeWidth="1.2">
-          <line x1="110" y1="1028" x2="135" y2="1028" />
-          <line x1="110" y1="1028" x2="110" y2="1003" />
+        <g stroke="#0284c7" strokeWidth="1.5">
+          <line x1="130" y1="1012" x2="160" y2="1012" />
+          <line x1="130" y1="1012" x2="130" y2="982" />
+          <circle cx="130" cy="1012" r="2" fill="#0284c7" />
         </g>
         {/* Esquina Inferior Derecha */}
-        <g stroke="rgba(56, 189, 248, 0.5)" strokeWidth="1.2">
-          <line x1="1810" y1="1028" x2="1785" y2="1028" />
-          <line x1="1810" y1="1028" x2="1810" y2="1003" />
+        <g stroke="#0284c7" strokeWidth="1.5">
+          <line x1="1790" y1="1012" x2="1760" y2="1012" />
+          <line x1="1790" y1="1012" x2="1790" y2="982" />
+          <circle cx="1790" cy="1012" r="2" fill="#0284c7" />
         </g>
       </svg>
 
       {/* 2. Reflejo Diagonal Suave de Cristal (Glass Glare) */}
       <div
-        className="absolute inset-0 w-full h-full opacity-60"
+        className="absolute inset-0 w-full h-full opacity-40 pointer-events-none"
         style={{
           background:
-            "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.015) 25%, transparent 55%, rgba(56,189,248,0.03) 100%)",
+            "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 25%, transparent 55%, rgba(2,132,199,0.03) 100%)",
         }}
       />
-
     </div>
   );
 }
+
 export default CupolaFrame;

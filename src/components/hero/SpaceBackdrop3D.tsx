@@ -93,10 +93,11 @@ function createSparklesPoints(
   count = 180,
   scale = [28, 16, 15],
   size = 2.2,
-  speed = 0,
+  _speed = 0,
   opacity = 0.9,
   hexColor = "#e0f2fe"
 ) {
+  void _speed;
   const positions = new Float32Array(count * 3);
   const opacities = new Float32Array(count);
   const noises = new Float32Array(count * 3);

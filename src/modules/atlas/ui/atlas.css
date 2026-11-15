@@ -176,14 +176,14 @@
   color: #a2a9b3;
   margin-left: 12px;
 }
-.camera-heading h1 {
+.camera-heading h2 {
   font-size: clamp(27px, 2.7vw, 43px);
   font-weight: 500;
   letter-spacing: -1.8px;
   line-height: 1.15;
   margin: 12px 0 10px;
 }
-.camera-heading h1 span {
+.camera-heading h2 span {
   color: #fc3d21;
 }
 .camera-heading p:last-child {
@@ -305,6 +305,8 @@
 }
 .experiment-node {
   cursor: pointer;
+  transform-box: fill-box;
+  transform-origin: center;
   transition:
     opacity 0.45s var(--atlas-ease),
     transform 0.45s var(--atlas-ease);
@@ -367,6 +369,20 @@
   font: 7px var(--atlas-mono);
   letter-spacing: 0.4px;
   margin-top: 6px;
+}
+.probe-notice {
+  position: absolute;
+  left: 76px;
+  top: 31px;
+  pointer-events: none;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid #fc3d2155;
+  box-shadow: 0 3px 15px #fc3d2108;
+  font: 10px var(--atlas-mono);
+  letter-spacing: 0.3px;
+  border-radius: 4px;
+  color: #c42e18;
 }
 .probe-readout.critical {
   color: #c42e18;
@@ -441,7 +457,11 @@
   min-height: 49px;
   padding: 8px 12px;
   color: #697281;
-  transition: all 0.45s var(--atlas-ease);
+  transition:
+    color 0.45s var(--atlas-ease),
+    background-color 0.45s var(--atlas-ease),
+    border-color 0.45s var(--atlas-ease),
+    box-shadow 0.45s var(--atlas-ease);
 }
 .gravity-control button strong {
   font-size: 15px;
@@ -471,6 +491,7 @@
   width: max-content;
 }
 .manual-probe form {
+  flex-wrap: wrap;
   position: absolute;
   bottom: 23px;
   left: 0;
@@ -483,6 +504,14 @@
   padding: 16px;
   box-shadow: 0 12px 36px #0a0e1714;
   border-radius: 6px;
+}
+.manual-probe .probe-error {
+  flex-basis: 100%;
+  width: 0;
+  min-width: 100%;
+  margin: 0;
+  color: #c42e18;
+  font-size: 9px;
 }
 .manual-probe label {
   display: flex;
@@ -1285,7 +1314,7 @@
   .camera-panel {
     padding-top: 24px;
   }
-  .camera-heading h1 {
+  .camera-heading h2 {
     font-size: 32px;
   }
   .map-meta {
@@ -1414,7 +1443,7 @@
   .camera-panel {
     padding: 20px 18px 11px;
   }
-  .camera-heading h1 {
+  .camera-heading h2 {
     font-size: 30px;
     letter-spacing: -1.3px;
     margin: 10px 0 8px;
@@ -1523,6 +1552,12 @@
   .sample-flame {
     height: 74px;
   }
+  .probe-notice {
+    left: 45px;
+    top: 8px;
+    font-size: 8px;
+    padding: 6px;
+  }
   .probe-readout {
     top: 8px;
     right: 5px;
@@ -1567,7 +1602,7 @@
   .camera-panel {
     padding-top: 12px;
   }
-  .camera-heading h1 {
+  .camera-heading h2 {
     font-size: 25px;
   }
   .map-meta {

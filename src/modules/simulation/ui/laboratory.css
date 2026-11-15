@@ -59,13 +59,13 @@
   color: #0b3d91;
   font-size: 8px;
 }
-.lab-heading h1 {
+.lab-heading h2 {
   font-size: clamp(24px, 2.4vw, 36px);
   font-weight: 500;
   letter-spacing: -1.3px;
   margin: 9px 0 7px;
 }
-.lab-heading h1 span {
+.lab-heading h2 span {
   color: #fc3d21;
 }
 .lab-heading p:last-child {
@@ -625,7 +625,7 @@
   .lab-heading {
     margin-bottom: 14px;
   }
-  .lab-heading h1 {
+  .lab-heading h2 {
     font-size: 29px;
   }
   .lab-heading p:last-child {
@@ -675,7 +675,7 @@
     margin-bottom: 14px;
     align-items: start;
   }
-  .lab-heading h1 {
+  .lab-heading h2 {
     font-size: 25px;
     max-width: 255px;
     line-height: 1.13;
@@ -831,7 +831,7 @@
   .lab-heading p:last-child {
     display: none;
   }
-  .lab-heading h1 {
+  .lab-heading h2 {
     font-size: 21px;
   }
   .laboratory {

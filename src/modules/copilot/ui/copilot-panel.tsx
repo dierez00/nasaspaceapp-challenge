@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useAtlas } from "@/modules/atlas/ui/atlas-provider";
 import { HttpCopilotGateway } from "../infra/http-gateway";
 import { validateBlock, type Query, type UIBlock } from "../domain/contracts";
+import { describeCopilotError } from "../domain/errors";
 import { BlockRenderer, GravityBounds } from "./blocks";
 
 type Message = {
@@ -77,8 +78,7 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
             ? {
                 ...message,
                 status: controller.signal.aborted ? "cancelled" : "error",
-                error:
-                  error instanceof Error ? error.message : "Error de conexión",
+                error: describeCopilotError(error),
               }
             : message,
         ),
@@ -142,6 +142,10 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
       <div
         className="chat-history"
         ref={history}
+        role="log"
+        aria-label="Historial de la conversación"
+        aria-live="polite"
+        aria-relevant="additions"
         onScroll={() => {
           const element = history.current;
           if (element)

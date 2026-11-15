@@ -21,9 +21,15 @@ export default async function HomePage() {
   return (
     <SmoothScrollProvider>
       <div className="relative min-h-screen bg-white text-[#0A0E17]">
+        <a
+          href="#dashboard"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-[#0B3D91] focus:shadow-[0_12px_36px_-8px_rgba(10,14,23,0.08)] focus:outline-2 focus:outline-offset-2 focus:outline-[#0B3D91]"
+        >
+          Saltar al Atlas
+        </a>
         <LoadingScreen />
         <Hero />
-        <div id="dashboard" className="relative min-h-screen bg-white">
+        <div id="dashboard" tabIndex={-1} className="relative min-h-screen bg-white outline-none">
           <AtlasApp initialExperiments={experiments} mode={mode} />
         </div>
       </div>

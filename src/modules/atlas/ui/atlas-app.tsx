@@ -121,7 +121,14 @@ export function AtlasApp({
       .list(controller.signal)
       .then(setExperiments)
       .catch((error) => {
-        if (!controller.signal.aborted) setError(error.message);
+        if (controller.signal.aborted) return;
+        setError(
+          error instanceof TypeError
+            ? "Sin conexión con el catálogo remoto. Revisa tu red."
+            : error instanceof Error
+              ? error.message
+              : "No fue posible cargar los experimentos.",
+        );
       })
       .finally(() => {
         if (!controller.signal.aborted) setLoading(false);

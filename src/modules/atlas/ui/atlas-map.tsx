@@ -5,6 +5,7 @@ import { ticks } from "d3-array";
 import {
   groupCoordinates,
   isLunarZone,
+  resolveProbe,
   gravityLabels,
   type Experiment,
 } from "../domain/experiment";
@@ -23,7 +24,14 @@ export function AtlasMap() {
     oxygen: number;
   } | null>(null);
   const [overlap, setOverlap] = useState<Experiment[]>([]);
-  const [manual, setManual] = useState({ pressure: 8.2, oxygen: 34 });
+  const [manual, setManual] = useState({ pressure: "8.2", oxygen: "34" });
+  const [manualError, setManualError] = useState("");
+  const [mapNotice, setMapNotice] = useState("");
+  useEffect(() => {
+    if (!mapNotice) return;
+    const timer = setTimeout(() => setMapNotice(""), 3200);
+    return () => clearTimeout(timer);
+  }, [mapNotice]);
   useEffect(() => {
     if (!container.current) return;
     const observer = new ResizeObserver(([entry]) =>
@@ -51,7 +59,6 @@ export function AtlasMap() {
     .clamp(true);
   const lunar = probe && isLunarZone(probe.pressure, probe.oxygen);
   function queryPoint(point: { pressure: number; oxygen: number }) {
-    if (!isLunarZone(point.pressure, point.oxygen)) return;
     dispatch({
       type: "query",
       query: {
@@ -78,10 +85,12 @@ export function AtlasMap() {
     <section className="camera-panel" aria-label="Cámara del Atlas">
       <header className="camera-heading">
         <div>
-          <p className="micro-label">EXPLORADOR DE COMBUSTIÓN</p>
-          <h1>
+          <p className="micro-label">
+            EXPLORADOR DE COMBUSTIÓN <span>/ 01</span>
+          </p>
+          <h2>
             Atlas del fuego lunar<span>.</span>
-          </h1>
+          </h2>
           <p>La próxima frontera del fuego está en lo que aún no sabemos.</p>
         </div>
         <span className="coordinate-mark" aria-hidden="true">
@@ -110,7 +119,12 @@ export function AtlasMap() {
           onPointerLeave={() => setProbe(null)}
           onClick={(event) => {
             const point = pointAt(event);
-            if (point) queryPoint(point);
+            if (!point) return;
+            const result = resolveProbe(point.pressure, point.oxygen);
+            if (result.ok) {
+              setMapNotice("");
+              queryPoint(result.point);
+            } else setMapNotice("Fuera de la zona lunar · 0–10.2 psi, 30–50 % O₂");
           }}
         >
           <defs>
@@ -378,6 +392,11 @@ export function AtlasMap() {
             </span>
           </output>
         )}
+        {mapNotice && (
+          <output className="probe-notice" role="status">
+            {mapNotice}
+          </output>
+        )}
         {overlap.length > 1 && (
           <div className="overlap-menu glass">
             <strong>Ensayos en esta coordenada ({overlap.length})</strong>
@@ -451,9 +470,25 @@ export function AtlasMap() {
           Sonda por coordenadas <span>↗</span>
         </summary>
         <form
+          noValidate
           onSubmit={(event) => {
             event.preventDefault();
-            queryPoint(manual);
+            const parse = (value: string) =>
+              value.trim() === "" ? Number.NaN : Number(value);
+            const result = resolveProbe(
+              parse(manual.pressure),
+              parse(manual.oxygen),
+            );
+            if (!result.ok) {
+              setManualError(
+                result.reason === "invalid"
+                  ? "Ingresa valores numéricos de presión y oxígeno."
+                  : "Fuera de la zona lunar: usa 0–10.2 psi y 30–50 % O₂.",
+              );
+              return;
+            }
+            setManualError("");
+            queryPoint(result.point);
           }}
         >
           <label>
@@ -465,9 +500,12 @@ export function AtlasMap() {
               min="0"
               max="10.2"
               value={manual.pressure}
-              onChange={(e) =>
-                setManual({ ...manual, pressure: Number(e.target.value) })
-              }
+              aria-invalid={manualError ? true : undefined}
+              aria-describedby={manualError ? "probe-error" : undefined}
+              onChange={(e) => {
+                setManualError("");
+                setManual({ ...manual, pressure: e.target.value });
+              }}
             />
           </label>
           <label>
@@ -479,12 +517,20 @@ export function AtlasMap() {
               min="30"
               max="50"
               value={manual.oxygen}
-              onChange={(e) =>
-                setManual({ ...manual, oxygen: Number(e.target.value) })
-              }
+              aria-invalid={manualError ? true : undefined}
+              aria-describedby={manualError ? "probe-error" : undefined}
+              onChange={(e) => {
+                setManualError("");
+                setManual({ ...manual, oxygen: e.target.value });
+              }}
             />
           </label>
           <button type="submit">Consultar punto →</button>
+          {manualError && (
+            <p id="probe-error" className="probe-error" role="alert">
+              {manualError}
+            </p>
+          )}
         </form>
       </details>
     </section>

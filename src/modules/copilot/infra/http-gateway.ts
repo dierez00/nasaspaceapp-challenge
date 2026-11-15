@@ -4,6 +4,7 @@ import {
   type CopilotEvent,
   type Query,
 } from "../domain/contracts";
+import { CopilotError, messageForStatus } from "../domain/errors";
 
 export async function* parseSSE(
   stream: ReadableStream<Uint8Array>,
@@ -36,7 +37,7 @@ export async function* parseSSE(
         if (data) yield eventSchema.parse(JSON.parse(data));
       }
       if (done) {
-        if (buffer.trim()) throw new Error("Stream incompleto.");
+        if (buffer.trim()) throw new CopilotError("Stream incompleto.");
         break;
       }
     }
@@ -56,11 +57,11 @@ export class HttpCopilotGateway implements CopilotGateway {
       signal,
     });
     if (!response.ok || !response.body)
-      throw new Error("El copiloto no está disponible. Inténtalo de nuevo.");
+      throw new CopilotError(messageForStatus(response.status));
     let completed = false;
     for await (const event of parseSSE(response.body, signal)) {
       if (event.queryId !== query.queryId) continue;
-      if (event.type === "error") throw new Error(event.message);
+      if (event.type === "error") throw new CopilotError(event.message);
       yield event;
       if (event.type === "done") {
         completed = true;
@@ -68,6 +69,8 @@ export class HttpCopilotGateway implements CopilotGateway {
       }
     }
     if (!completed)
-      throw new Error("La conexión terminó antes de completar la respuesta.");
+      throw new CopilotError(
+        "La conexión terminó antes de completar la respuesta.",
+      );
   }
 }

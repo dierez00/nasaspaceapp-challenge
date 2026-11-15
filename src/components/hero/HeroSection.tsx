@@ -202,7 +202,7 @@ export function HeroSection() {
 
         {/* 2.1 Logotipo ATLAS (Esquina Superior Izquierda, z-30) */}
         <div className="absolute top-4 sm:top-6 left-6 sm:left-10 z-30 pointer-events-auto">
-          <div className="flex items-center gap-2.5 select-none">
+          <div className="flex items-center gap-2.5 select-none" aria-hidden="true">
             <div className="relative grid place-items-center w-8 h-8 sm:w-9 sm:h-9 border border-[#0b3d91] rounded-full shrink-0 bg-white/70 backdrop-blur-sm shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
               <span className="font-serif italic text-xl sm:text-2xl text-[#0b3d91] leading-none select-none">
                 a

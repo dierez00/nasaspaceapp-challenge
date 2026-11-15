@@ -21,7 +21,7 @@ A read-only audit (impeccable critique/audit/harden, web-design-guidelines, verc
 - [x] T1 Reduced motion in hero + loading (F1): `HeroSection.tsx`, `SmoothScrollProvider.tsx`, `MicrogravityFlame.tsx`, `SpaceBackdrop3D.tsx`, `LoadingScreen.tsx`.
 - [x] T2 WebGL/lab performance (F5, F6, F18): pause hero on `visibilitychange`, lower sphere segments and dpr cap, handle `webglcontextlost`, pause lab clock/render when dashboard is off-screen, fix invalid/permanent `will-change`.
 - [x] T3 LoadingScreen robustness (F4 safe parts): no `three` import, progress via ref not state, timer cleanup, safety timeout so it always hides, `h1`→non-heading, `aria-busy`. Keep current duration.
-- [ ] T4 Structural a11y + UX feedback (F7, F8, F9, F11, F12, F13, F16): `<button>` scroll indicator, single `h1`, skip link, `aria-live` chat log, friendly error messages, node `transform-box`, no `transition: all`, probe input validation + out-of-zone feedback, ScrollIndicator without per-scroll re-render.
+- [x] T4 Structural a11y + UX feedback (F7, F8, F9, F11, F12, F13, F16): `<button>` scroll indicator, single `h1`, skip link, `aria-live` chat log, friendly error messages, node `transform-box`, no `transition: all`, probe input validation + out-of-zone feedback, ScrollIndicator without per-scroll re-render.
 - [ ] T5 Tests + cleanup (F19, F15, dead code): fix e2e selectors for two canvases and new headings, lazy-load markdown fallback, delete `SpaceBackdrop.tsx`.
 
 ## Acceptance criteria
@@ -35,6 +35,7 @@ A read-only audit (impeccable critique/audit/harden, web-design-guidelines, verc
 - T1 reduced motion: `d1c632e`. lint/typecheck/test green (31 passed). Hero: gsap.matchMedia (opacity-only under reduce), Lenis not created under reduce (reacts to live changes), flame drift off, 3D renders one static frame, loading spinner/pulse `motion-reduce:animate-none`. New hook `useReducedMotion`.
 - T2 WebGL/lab performance: `671cc6a`. lint/typecheck/test green (31 passed). Hero loop pauses on visibilitychange/off-screen/context loss, segments 64->32 (Earth) and 128->64 (Moon), dpr cap 1.5; lab `active` also requires dashboard in viewport (IntersectionObserver); invalid `will-change-opacity` removed, `will-change: transform` only during active hero scroll.
 - T3 LoadingScreen robustness: `f8c7ae9`. lint/typecheck/test green (31 passed). No `three` import (progress via `atlas:hero-load-progress` window event from SpaceBackdrop3D's own LoadingManager), progress written through refs, all timers cleaned, 8 s JS safety timeout + 12 s CSS-only failsafe, `h1`->`p`, `aria-busy`/`aria-hidden`. Duration unchanged.
+- T4 structural a11y + UX: COMMIT_T4. lint/typecheck/test green (38 passed, +7 new in `tests/copilot-errors.test.ts`). ScrollIndicator is a real `<button>` driven by refs (no per-scroll setState), reduced-motion goes straight to the dashboard; single h1 (hero; atlas/lab headings now h2, CSS selectors updated); skip link `Saltar al Atlas`; hero logo aria-hidden; chat `role=log`; friendly Copilot errors (`CopilotError`, `describeCopilotError`, status mapping); `resolveProbe` clamps/validates and shows Spanish feedback (map click and manual form, form now `noValidate`); `transition: all` replaced; `.experiment-node` `transform-box: fill-box`.
 
 ## Next step
-T4.
+T5.

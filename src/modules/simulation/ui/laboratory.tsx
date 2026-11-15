@@ -246,10 +246,10 @@ export function Laboratory() {
     <section className="laboratory" aria-label="Laboratorio de combustión">
       <header className="lab-heading">
         <div>
-          <p className="micro-label">CÁMARA DE COMBUSTIÓN</p>
-          <h1>
+          <p className="micro-label">CÁMARA DE COMBUSTIÓN / LAB 01</p>
+          <h2>
             El fuego, en otra gravedad<span>.</span>
-          </h1>
+          </h2>
           <p>Enciende una pregunta. Explora lo que cambia.</p>
         </div>
         <button

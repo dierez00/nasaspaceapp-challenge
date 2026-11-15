@@ -13,14 +13,23 @@ CSV_ROWS_PER_CHUNK = 8
 
 
 def build_chunks(data_dir: Path) -> list[Chunk]:
+    if not data_dir.is_dir() or not (data_dir / "experiments").is_dir():
+        raise ValueError("Data directory and its experiments directory must exist; index unchanged")
+    results = load_experiment_files(data_dir / "experiments")
+    if not results:
+        raise ValueError("No experiment JSON files found; index unchanged")
+    invalid = [result.file for result in results if not result.ok]
+    if invalid:
+        raise ValueError(f"Invalid experiment files: {', '.join(invalid)}; index unchanged")
     chunks: list[Chunk] = []
-    for result in load_experiment_files(data_dir / "experiments"):
-        if result.experiment:
-            chunks.extend(experiment_chunks(result.experiment))
+    for result in results:
+        chunks.extend(experiment_chunks(result.experiment))
     sources_file = data_dir / "search" / "sources.json"
     if sources_file.exists():
         chunks.extend(search_source_chunks(json.loads(sources_file.read_text(encoding="utf-8"))))
     chunks.extend(csv_chunks(data_dir / "raw"))
+    if not chunks:
+        raise ValueError("Refusing to synchronize an empty corpus; index unchanged")
     return _dedupe(chunks)
 
 

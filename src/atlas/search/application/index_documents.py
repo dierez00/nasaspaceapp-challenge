@@ -28,6 +28,8 @@ class IndexReport:
 
 
 async def index_chunks(chunks: list[Chunk], repository: ChunkRepository, embedder: Embedder) -> IndexReport:
+    if not chunks:
+        raise ValueError("Refusing to synchronize an empty corpus; index unchanged")
     existing = await repository.list_keys()
     current = {c.key for c in chunks}
     to_embed = [c for c in chunks if c.key not in existing]
@@ -49,7 +51,11 @@ async def _run() -> int:
     if settings.voyage_api_key is None or not settings.voyage_api_key.get_secret_value():
         print("ERROR: VOYAGE_API_KEY is not set (put it in .env or the environment).")
         return 1
-    chunks = build_chunks(settings.data_dir)
+    try:
+        chunks = build_chunks(settings.data_dir)
+    except (ValueError, OSError, KeyError, TypeError) as exc:
+        print(f"ERROR: Invalid index inputs ({type(exc).__name__}); index unchanged.")
+        return 1
     embedder = VoyageEmbedder(settings.voyage_api_key, settings.embedding_model, settings.embedding_dimension)
 
     async with await AsyncConnection.connect(settings.database_url, row_factory=dict_row) as conn:

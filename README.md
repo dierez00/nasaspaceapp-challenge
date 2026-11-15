@@ -87,3 +87,11 @@ Otros directorios:
 - `curren_repo_context/`: contexto vigente del repo (flujo de agentes, contrato de UI, eventos SSE, variables de entorno).
 
 Las credenciales (`VOYAGE_API_KEY`, `CLAUDE_CODE_OAUTH_TOKEN`) van solo en `.env`, que nunca se sube a Git.
+
+### Protección del índice
+
+`atlas-index` aborta antes de abrir la base de datos si faltan `DATA_DIR` o
+`experiments/`, no hay registros JSON o algún registro es inválido. Una colección
+vacía nunca autoriza borrar el índice. Para retirar una investigación, elimínala
+de una colección válida y no vacía; la sincronización incremental sigue retirando
+los fragmentos obsoletos. No uses una carpeta vacía para reiniciar el índice.

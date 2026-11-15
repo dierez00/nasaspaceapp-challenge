@@ -44,7 +44,7 @@ User feedback (2026-11-15):
 - [x] X0 Map the backend: agents, prompts, `/query` SSE contract, ui components, tests, runner.
 - [x] F1 Cabin console shell: dark chrome with lit screens, octagonal lab window, view-switch move, theme.md update.
 - [x] B1 Backend evidence-brief contract and professor tone: brief component (verdict, evidence table, gap, next steps, audience sections), audience parameter, no internals leakage, tests.
-- [ ] F2 Front evidence brief: render the brief and real tables, highlight evidence and gap on the main map, next-step actions, audience selector, CSV export and citation; remove the "Respuesta de respaldo" flattening.
+- [x] F2 Front evidence brief: render the brief and real tables, highlight evidence and gap on the main map, next-step actions, audience selector, CSV export and citation; remove the "Respuesta de respaldo" flattening.
 - [ ] F3 Comparative simulator: three gravities side by side, qualitative indicators, physics annotations, nearest real trials.
 - [ ] Q1 End-to-end QA: restart the backend on the test branch, live queries, screenshots, e2e, docs.
 
@@ -66,5 +66,9 @@ User feedback (2026-11-15):
   - Contract: `brief` component (`verdict`, `evidence`, `gap`, `next_steps` max 3, `lenses` student/teacher/researcher) as first component; `brief_version: 1` in the `ui` event. Cache key now `v2|...`; untracked `data/query_cache.json` deleted.
   - Open: gap does not use the `coverage` module yet; `o2_percent_min` mirrors the analyst's filter (30.01 for "> 30"); the :8000 uvicorn must be restarted from this branch.
 
+- F2 done (`3ccfc57`, `47d3c88`, `b67137e`): `EvidenceBrief`/`DataTable`/`Notice`/`Narrative`/`MapFocus` blocks, faithful translator (no markdown flattening, "Respuesta de respaldo" removed), `progress` event replaces agent telemetry (user-term steps), 120 s timeout, sortable table, audience lens (localStorage), CSV and APA-like citation, map highlight and gap overlay (`highlightExperiments`, `showGap`, `clearOverlays`), next steps (simulate/explore_map/proposal), demo briefs, starters per audience.
+  - Checks: lint, typecheck, 71 tests, build green. Live (backend :8001 + front copy :3100): Q1 29 s, Q2 37-55 s; shots scratchpad `f2*-q1/q2-*.png` at 1440 and 390.
+  - Open: the chip "Sólidos > 30% O₂" no longer exists (e2e in `tests/e2e/atlas.spec.ts:277` needs the new starters, Q1). Backend: rules-fallback verdicts can be weak ("1 registro"), and one Q2 gap said "gravedad normal" with `gravity: lunar`.
+
 ## Next step
-F1 and F2 (front writer: consume `brief`, `brief_version`); restart the backend on `test/evidence-brief` before Q1.
+F3 comparative simulator, then Q1 (fix e2e starters); restart the backend on `test/evidence-brief` before Q1.

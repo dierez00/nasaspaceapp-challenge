@@ -1,11 +1,19 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { useReducedMotion } from "@/components/common/useReducedMotion";
 
 export function MicrogravityFlame() {
   const flameRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
+    // Sin deriva con movimiento reducido: la llama queda estática en su posición base
+    if (reducedMotion) {
+      flameRef.current?.style.removeProperty("transform");
+      return;
+    }
+
     let animationFrameId: number;
     const startTime = performance.now();
 
@@ -29,7 +37,7 @@ export function MicrogravityFlame() {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [reducedMotion]);
 
   return (
     <div

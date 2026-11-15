@@ -29,42 +29,66 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // Configuración cinematográfica de Lenis para un scroll fluido de agencia
-    const lenis = new Lenis({
-      duration: 1.25,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
-      gestureOrientation: "vertical",
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 1.5,
-    });
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let teardown: (() => void) | null = null;
 
-    lenisRef.current = lenis;
+    const start = () => {
+      // Configuración cinematográfica de Lenis para un scroll fluido de agencia
+      const lenis = new Lenis({
+        duration: 1.25,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: "vertical",
+        gestureOrientation: "vertical",
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        touchMultiplier: 1.5,
+      });
 
-    // Sincronización bidireccional entre Lenis y ScrollTrigger
-    const handleScroll = () => {
-      ScrollTrigger.update();
+      lenisRef.current = lenis;
+
+      // Sincronización bidireccional entre Lenis y ScrollTrigger
+      const handleScroll = () => {
+        ScrollTrigger.update();
+      };
+      lenis.on("scroll", handleScroll);
+
+      // Refresh inicial seguro tras montar Lenis
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+
+      const updateTicker = (time: number) => {
+        lenis.raf(time * 1000);
+      };
+
+      gsap.ticker.add(updateTicker);
+      gsap.ticker.lagSmoothing(0);
+
+      teardown = () => {
+        gsap.ticker.remove(updateTicker);
+        lenis.off("scroll", handleScroll);
+        lenis.destroy();
+        lenisRef.current = null;
+      };
     };
-    lenis.on("scroll", handleScroll);
 
-    // Refresh inicial seguro tras montar Lenis
-    requestAnimationFrame(() => {
-      ScrollTrigger.refresh();
-    });
-
-    const updateTicker = (time: number) => {
-      lenis.raf(time * 1000);
+    const stop = () => {
+      teardown?.();
+      teardown = null;
     };
 
-    gsap.ticker.add(updateTicker);
-    gsap.ticker.lagSmoothing(0);
+    // Con movimiento reducido se usa el scroll nativo del navegador (sin Lenis)
+    const sync = () => {
+      stop();
+      if (!mql.matches) start();
+    };
+
+    sync();
+    mql.addEventListener("change", sync);
 
     return () => {
-      gsap.ticker.remove(updateTicker);
-      lenis.off("scroll", handleScroll);
-      lenis.destroy();
-      lenisRef.current = null;
+      mql.removeEventListener("change", sync);
+      stop();
     };
   }, []);
 
@@ -82,13 +106,18 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
           immediate: options?.immediate ?? false,
         });
       } else if (typeof window !== "undefined") {
+        const behavior: ScrollBehavior = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches
+          ? "auto"
+          : "smooth";
         if (typeof target === "string") {
           const el = document.querySelector(target);
-          el?.scrollIntoView({ behavior: "smooth" });
+          el?.scrollIntoView({ behavior });
         } else if (typeof target === "number") {
-          window.scrollTo({ top: target, behavior: "smooth" });
+          window.scrollTo({ top: target, behavior });
         } else if (target instanceof HTMLElement) {
-          target.scrollIntoView({ behavior: "smooth" });
+          target.scrollIntoView({ behavior });
         }
       }
     },

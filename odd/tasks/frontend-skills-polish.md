@@ -18,7 +18,7 @@ A read-only audit (impeccable critique/audit/harden, web-design-guidelines, verc
 - Branch: `test/frontend-skills` (base `origin/main` + copilot timeout fix). Never push.
 
 ## Tasks
-- [ ] T1 Reduced motion in hero + loading (F1): `HeroSection.tsx`, `SmoothScrollProvider.tsx`, `MicrogravityFlame.tsx`, `SpaceBackdrop3D.tsx`, `LoadingScreen.tsx`.
+- [x] T1 Reduced motion in hero + loading (F1): `HeroSection.tsx`, `SmoothScrollProvider.tsx`, `MicrogravityFlame.tsx`, `SpaceBackdrop3D.tsx`, `LoadingScreen.tsx`.
 - [ ] T2 WebGL/lab performance (F5, F6, F18): pause hero on `visibilitychange`, lower sphere segments and dpr cap, handle `webglcontextlost`, pause lab clock/render when dashboard is off-screen, fix invalid/permanent `will-change`.
 - [ ] T3 LoadingScreen robustness (F4 safe parts): no `three` import, progress via ref not state, timer cleanup, safety timeout so it always hides, `h1`→non-heading, `aria-busy`. Keep current duration.
 - [ ] T4 Structural a11y + UX feedback (F7, F8, F9, F11, F12, F13, F16): `<button>` scroll indicator, single `h1`, skip link, `aria-live` chat log, friendly error messages, node `transform-box`, no `transition: all`, probe input validation + out-of-zone feedback, ScrollIndicator without per-scroll re-render.
@@ -31,6 +31,8 @@ A read-only audit (impeccable critique/audit/harden, web-design-guidelines, verc
 
 ## Progress / Evidence
 - Skills vendored: `c2f6561`.
+- Baseline (before edits): lint, typecheck, test (31 passed) all green.
+- T1 reduced motion: COMMIT_T1. lint/typecheck/test green (31 passed). Hero: gsap.matchMedia (opacity-only under reduce), Lenis not created under reduce (reacts to live changes), flame drift off, 3D renders one static frame, loading spinner/pulse `motion-reduce:animate-none`. New hook `useReducedMotion`.
 
 ## Next step
-T1.
+T2.

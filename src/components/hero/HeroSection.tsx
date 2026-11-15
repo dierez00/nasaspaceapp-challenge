@@ -32,119 +32,134 @@ export function HeroSection() {
 
   useGSAP(
     () => {
-      // -------------------------------------------------------------
-      // 1. ANIMACIÓN DE ENTRADA SUAVE (Siempre visible desde el inicio)
-      // -------------------------------------------------------------
-      gsap.from(".hero-title-text", {
-        opacity: 0.4,
-        y: 20,
-        duration: 1.1,
-        ease: "power3.out",
-        stagger: 0.15,
-        clearProps: "transform,opacity",
-      });
+      // Movimiento completo solo si el usuario no pidió reducirlo; en modo reducido
+      // se conservan los fundidos de opacidad y se eliminan desplazamientos y escalas.
+      const mm = gsap.matchMedia();
 
-      // Llama de microgravedad en el fondo central
-      if (flameRef.current) {
-        gsap.from(flameRef.current, {
-          scale: 0.8,
-          opacity: 0.5,
-          duration: 1.4,
-          ease: "expo.out",
-          clearProps: "transform,opacity",
-        });
-      }
-
-      // -------------------------------------------------------------
-      // 2. TIMELINE DE SCROLL: UN SOLO DESLIZAMIENTO SENCILLO (SIN PIN)
-      //    Paralaje cinemático fluido + degradado continuo al Laboratorio
-      // -------------------------------------------------------------
-      const scrollTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: heroWrapperRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 0.75,
-          invalidateOnRefresh: true,
+      mm.add(
+        {
+          full: "(prefers-reduced-motion: no-preference)",
+          reduced: "(prefers-reduced-motion: reduce)",
         },
-      });
+        (context) => {
+          const full = Boolean(context.conditions?.full);
 
-      // A) El título asciende suavemente con paralaje elegante sin salirse del visor
-      if (titleContainerRef.current) {
-        scrollTl.to(
-          titleContainerRef.current,
-          {
-            yPercent: -28,
-            opacity: 0.1,
-            ease: "power1.out",
-          },
-          0
-        );
-      }
+          // -------------------------------------------------------------
+          // 1. ANIMACIÓN DE ENTRADA SUAVE (Siempre visible desde el inicio)
+          // -------------------------------------------------------------
+          gsap.from(".hero-title-text", {
+            opacity: 0.4,
+            ...(full ? { y: 20 } : {}),
+            duration: 1.1,
+            ease: "power3.out",
+            stagger: 0.15,
+            clearProps: "all",
+          });
 
-      // B) Cúpula: efecto de profundidad sutil hacia afuera
-      if (cupolaRef.current) {
-        scrollTl.to(
-          cupolaRef.current,
-          {
-            scale: 1.35,
-            opacity: 0.25,
-            ease: "power1.out",
-          },
-          0
-        );
-      }
+          // Llama de microgravedad en el fondo central
+          if (flameRef.current) {
+            gsap.from(flameRef.current, {
+              ...(full ? { scale: 0.8 } : {}),
+              opacity: 0.5,
+              duration: 1.4,
+              ease: "expo.out",
+              clearProps: "all",
+            });
+          }
 
-      // C) Fondo 3D: ligero paralaje de cámara
-      if (backdropRef.current) {
-        scrollTl.to(
-          backdropRef.current,
-          {
-            scale: 1.12,
-            ease: "none",
-          },
-          0
-        );
-      }
+          // -------------------------------------------------------------
+          // 2. TIMELINE DE SCROLL: UN SOLO DESLIZAMIENTO SENCILLO (SIN PIN)
+          //    Paralaje cinemático fluido + degradado continuo al Laboratorio
+          // -------------------------------------------------------------
+          const scrollTl = gsap.timeline({
+            scrollTrigger: {
+              trigger: heroWrapperRef.current,
+              start: "top top",
+              end: "bottom top",
+              scrub: full ? 0.75 : true,
+              invalidateOnRefresh: true,
+            },
+          });
 
-      // D) Llama central: asciende con suavidad
-      if (flameRef.current) {
-        scrollTl.to(
-          flameRef.current,
-          {
-            yPercent: -18,
-            scale: 0.88,
-            opacity: 0.2,
-            ease: "power1.out",
-          },
-          0
-        );
-      }
+          // A) El título asciende suavemente con paralaje elegante sin salirse del visor
+          if (titleContainerRef.current) {
+            scrollTl.to(
+              titleContainerRef.current,
+              {
+                ...(full ? { yPercent: -28 } : {}),
+                opacity: 0.1,
+                ease: "power1.out",
+              },
+              0
+            );
+          }
 
-      // E) Degradado continuo hacia el Laboratorio:
-      if (gradientOverlayRef.current) {
-        scrollTl.to(
-          gradientOverlayRef.current,
-          {
-            opacity: 1,
-            ease: "power1.inOut",
-          },
-          0
-        );
-      }
+          // B) Cúpula: efecto de profundidad sutil hacia afuera
+          if (cupolaRef.current) {
+            scrollTl.to(
+              cupolaRef.current,
+              {
+                ...(full ? { scale: 1.35 } : {}),
+                opacity: 0.25,
+                ease: "power1.out",
+              },
+              0
+            );
+          }
 
-      // F) Costura inferior que funde el fondo espacial con el blanco del #dashboard
-      if (bottomGradientSeamRef.current) {
-        scrollTl.to(
-          bottomGradientSeamRef.current,
-          {
-            opacity: 1,
-            scaleY: 1.3,
-            ease: "power1.out",
-          },
-          0
-        );
-      }
+          // C) Fondo 3D: ligero paralaje de cámara (solo con movimiento completo)
+          if (backdropRef.current && full) {
+            scrollTl.to(
+              backdropRef.current,
+              {
+                scale: 1.12,
+                ease: "none",
+              },
+              0
+            );
+          }
+
+          // D) Llama central: asciende con suavidad
+          if (flameRef.current) {
+            scrollTl.to(
+              flameRef.current,
+              {
+                ...(full ? { yPercent: -18, scale: 0.88 } : {}),
+                opacity: 0.2,
+                ease: "power1.out",
+              },
+              0
+            );
+          }
+
+          // E) Degradado continuo hacia el Laboratorio:
+          if (gradientOverlayRef.current) {
+            scrollTl.to(
+              gradientOverlayRef.current,
+              {
+                opacity: 1,
+                ease: "power1.inOut",
+              },
+              0
+            );
+          }
+
+          // F) Costura inferior que funde el fondo espacial con el blanco del #dashboard
+          if (bottomGradientSeamRef.current) {
+            scrollTl.to(
+              bottomGradientSeamRef.current,
+              {
+                opacity: 1,
+                ...(full ? { scaleY: 1.3 } : {}),
+                ease: "power1.out",
+              },
+              0
+            );
+          }
+        }
+      );
+
+      return () => mm.revert();
     },
     { scope: heroWrapperRef }
   );

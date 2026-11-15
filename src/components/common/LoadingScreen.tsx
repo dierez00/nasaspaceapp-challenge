@@ -104,7 +104,7 @@ export function LoadingScreen() {
         {/* Indicador de Carga Circular / Giroscopio HUD */}
         <div className="relative w-20 h-20 mb-6 flex items-center justify-center">
           {/* Anillo exterior giratorio */}
-          <div className="absolute inset-0 rounded-full border-2 border-dashed border-cyan-500/40 animate-spin [animation-duration:8s]" />
+          <div className="absolute inset-0 rounded-full border-2 border-dashed border-cyan-500/40 animate-spin [animation-duration:8s] motion-reduce:animate-none" />
           {/* Anillo de precisión con degradado */}
           <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
             <circle
@@ -156,7 +156,7 @@ export function LoadingScreen() {
         {/* Metadatos Técnicos Inferiores */}
         <div className="mt-8 pt-4 border-t border-slate-200/60 w-full flex items-center justify-between font-mono text-[10px] text-slate-400">
           <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse motion-reduce:animate-none" />
             TELEMETRY LINK OK
           </span>
           <span>EST. COMBUSTION µg/1g</span>

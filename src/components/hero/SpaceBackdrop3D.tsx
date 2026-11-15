@@ -212,10 +212,14 @@ export function SpaceBackdrop3D() {
     scene.add(flameGlowLight);
 
     // 3. Cargador de Texturas PBR
+    // Cada textura solicita un render al terminar de cargar (necesario en el cuadro estático
+    // de movimiento reducido, donde no hay bucle de animación).
     const textureLoader = new THREE.TextureLoader();
+    const loadTexture = (url: string) =>
+      textureLoader.load(url, () => requestStaticRender());
 
     // Textura Skybox (Estrellas / Vía Láctea): esfera gigante ampliada a r=180 para envolver detrás de las estrellas
-    const starsTexture = textureLoader.load("/textures/2k_stars_milky_way.jpg");
+    const starsTexture = loadTexture("/textures/2k_stars_milky_way.jpg");
     starsTexture.colorSpace = THREE.SRGBColorSpace;
     const skyboxGeo = new THREE.SphereGeometry(180, 32, 32);
     const skyboxMat = new THREE.MeshBasicMaterial({
@@ -242,15 +246,15 @@ export function SpaceBackdrop3D() {
     scene.add(sparkles2.points);
 
     // 5. La Tierra (Lejana) — Renderizado PBR Fotorrealista
-    const earthDayMap = textureLoader.load("/textures/2k_earth_daymap.jpg");
+    const earthDayMap = loadTexture("/textures/2k_earth_daymap.jpg");
     earthDayMap.colorSpace = THREE.SRGBColorSpace;
 
     // Los mapas de normales y especular deben ser lineales (NoColorSpace) para no distorsionar el relieve
-    const earthNormalMap = textureLoader.load("/textures/2k_earth_normal_map.png");
+    const earthNormalMap = loadTexture("/textures/2k_earth_normal_map.png");
     earthNormalMap.colorSpace = THREE.NoColorSpace;
     earthNormalMap.anisotropy = 8;
 
-    const earthSpecularMap = textureLoader.load("/textures/2k_earth_specular_map.png");
+    const earthSpecularMap = loadTexture("/textures/2k_earth_specular_map.png");
     earthSpecularMap.colorSpace = THREE.NoColorSpace;
     earthSpecularMap.anisotropy = 8;
 
@@ -296,7 +300,7 @@ export function SpaceBackdrop3D() {
     scene.add(earth);
 
     // 6. La Luna — Horizonte Planetario Ancho de Órbita Baja (Ecuador centrado, sin distorsión polar)
-    const moonTexture = textureLoader.load("/textures/2k_moon.jpg");
+    const moonTexture = loadTexture("/textures/2k_moon.jpg");
     moonTexture.colorSpace = THREE.SRGBColorSpace;
     moonTexture.anisotropy = 16;
     moonTexture.wrapS = THREE.RepeatWrapping;
@@ -320,9 +324,17 @@ export function SpaceBackdrop3D() {
     scene.add(moon);
 
     // 7. Bucle de Animación y Control de Framerate con Reloj Three.js
-    let animationFrameId: number;
+    let animationFrameId = 0;
     let isVisible = true;
+    let reducedMotion = false;
     const clock = new THREE.Clock();
+
+    const renderFrame = (elapsed: number) => {
+      stars.material.uniforms.time.value = elapsed;
+      sparkles1.material.uniforms.time.value = elapsed;
+      sparkles2.material.uniforms.time.value = elapsed;
+      renderer.render(scene, camera);
+    };
 
     const animate = () => {
       if (isVisible) {
@@ -334,15 +346,34 @@ export function SpaceBackdrop3D() {
         moon.rotation.x += delta * 0.015;
 
         // Actualización de tiempos para parpadeo de estrellas y sparkles
-        stars.material.uniforms.time.value = elapsed;
-        sparkles1.material.uniforms.time.value = elapsed;
-        sparkles2.material.uniforms.time.value = elapsed;
-
-        renderer.render(scene, camera);
+        renderFrame(elapsed);
       }
       animationFrameId = requestAnimationFrame(animate);
     };
-    animate();
+
+    // Movimiento reducido: un único cuadro estático, sin rotación ni parpadeo
+    function requestStaticRender() {
+      if (reducedMotion) renderFrame(0);
+    }
+
+    const startLoop = () => {
+      cancelAnimationFrame(animationFrameId);
+      clock.getDelta(); // reset delta para evitar saltos bruscos
+      animate();
+    };
+
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const applyMotionPreference = () => {
+      reducedMotion = reducedMotionQuery.matches;
+      if (reducedMotion) {
+        cancelAnimationFrame(animationFrameId);
+        requestStaticRender();
+      } else {
+        startLoop();
+      }
+    };
+    applyMotionPreference();
+    reducedMotionQuery.addEventListener("change", applyMotionPreference);
 
     // 8. Optimización GPU: IntersectionObserver para pausar render al scrollear
     const observer = new IntersectionObserver(
@@ -365,12 +396,14 @@ export function SpaceBackdrop3D() {
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
+      requestStaticRender();
     };
     window.addEventListener("resize", handleResize);
 
     // 10. Limpieza estricta de memoria WebGL al desmontar
     return () => {
       window.removeEventListener("resize", handleResize);
+      reducedMotionQuery.removeEventListener("change", applyMotionPreference);
       observer.disconnect();
       cancelAnimationFrame(animationFrameId);
 

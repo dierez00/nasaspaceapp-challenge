@@ -95,3 +95,9 @@ Las credenciales (`VOYAGE_API_KEY`, `CLAUDE_CODE_OAUTH_TOKEN`) van solo en `.env
 vacía nunca autoriza borrar el índice. Para retirar una investigación, elimínala
 de una colección válida y no vacía; la sincronización incremental sigue retirando
 los fragmentos obsoletos. No uses una carpeta vacía para reiniciar el índice.
+
+Las consultas de búsqueda limitan el embedding a 4 s y el reranking a 2 s
+(presupuesto de proveedores, sin incluir SQL). Un fallo del embedding devuelve
+503 sin detalles del proveedor; el reranker conserva el orden vectorial si falla
+o vence su plazo. La ingesta mantiene sus reintentos de cuota. `/search` y el
+investigador solo toman una conexión del pool durante la consulta SQL.

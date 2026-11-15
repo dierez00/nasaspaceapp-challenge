@@ -8,7 +8,7 @@ from psycopg_pool import AsyncConnectionPool
 
 from atlas.search.application.search_documents import DEFAULT_CANDIDATES, search_documents
 from atlas.search.domain.ports import Embedder, Reranker
-from atlas.search.infrastructure.postgres_chunk_repository import PostgresChunkRepository
+from atlas.search.infrastructure.postgres_chunk_repository import PooledChunkSearch
 
 
 class DocumentSearch:
@@ -29,13 +29,12 @@ class DocumentSearch:
         rerank_score is None when there is no reranker or it failed (vector order)."""
         if self._embedder is None:
             raise RuntimeError("VOYAGE_API_KEY no está configurada")
-        async with self._pool.connection() as conn:
-            hits = await search_documents(
-                query,
-                k,
-                self._embedder,
-                PostgresChunkRepository(conn),
-                reranker=self._reranker,
-                candidates=self._candidates,
-            )
+        hits = await search_documents(
+            query,
+            k,
+            self._embedder,
+            PooledChunkSearch(self._pool),
+            reranker=self._reranker,
+            candidates=self._candidates,
+        )
         return [asdict(hit) for hit in hits]

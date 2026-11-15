@@ -14,7 +14,11 @@ class Reranker(Protocol):
         """Return up to `top_k` (index into `documents`, relevance score) pairs, best first."""
 
 
-class ChunkRepository(Protocol):
+class ChunkSearch(Protocol):
+    async def search(self, embedding: list[float], k: int) -> list[SearchHit]: ...
+
+
+class ChunkRepository(ChunkSearch, Protocol):
     async def list_keys(self) -> set[ChunkKey]: ...
 
     async def replace(

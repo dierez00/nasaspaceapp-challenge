@@ -114,7 +114,7 @@ def _post(monkeypatch, body, reranker):
         return [SearchHit("PSI-1", "f.json", None, "text", 0.5, 0.9 if reranker else None)]
 
     monkeypatch.setattr(search_router, "search_documents", fake_search)
-    monkeypatch.setattr(search_router, "PostgresChunkRepository", lambda conn: None)
+    monkeypatch.setattr(search_router, "PooledChunkSearch", lambda conn: None)
     settings = Settings(database_url="postgresql://nobody:x@127.0.0.1:1/none", voyage_api_key=None, rerank_candidates=12)
     with TestClient(create_app(settings, FakeEmbedder(), reranker)) as client:
         client.app.state.pool = FakePool()

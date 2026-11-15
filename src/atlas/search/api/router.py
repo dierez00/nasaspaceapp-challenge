@@ -3,9 +3,9 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
 
-from atlas.search.application.search_documents import search_documents
+from atlas.search.application.search_documents import SearchUnavailable, search_documents
 from atlas.search.domain.ports import Embedder
-from atlas.search.infrastructure.postgres_chunk_repository import PostgresChunkRepository
+from atlas.search.infrastructure.postgres_chunk_repository import PooledChunkSearch
 
 router = APIRouter(prefix="/search", tags=["search"])
 
@@ -38,14 +38,15 @@ async def search(
     embedder: Annotated[Embedder, Depends(get_embedder)],
     request: Request,
 ) -> list[SearchResult]:
-    # Connection is taken here, after validation and the embedder check, so bad requests never touch the pool.
-    async with request.app.state.pool.connection() as conn:
+    try:
         hits = await search_documents(
             body.query,
             body.k,
             embedder,
-            PostgresChunkRepository(conn),
+            PooledChunkSearch(request.app.state.pool),
             reranker=request.app.state.reranker if body.rerank else None,
             candidates=request.app.state.rerank_candidates,
         )
+    except SearchUnavailable:
+        raise HTTPException(status_code=503, detail="Search is temporarily unavailable") from None
     return [SearchResult(**vars(h)) for h in hits]

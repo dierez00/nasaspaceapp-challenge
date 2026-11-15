@@ -1,4 +1,5 @@
 from psycopg import AsyncConnection
+from psycopg_pool import AsyncConnectionPool
 
 from atlas.search.domain.chunk import Chunk, ChunkKey, SearchHit
 
@@ -51,3 +52,14 @@ class PostgresChunkRepository:
             (_vector_literal(embedding), _vector_literal(embedding), k),
         )
         return [SearchHit(**row) for row in await cur.fetchall()]
+
+
+class PooledChunkSearch:
+    """Borrow a connection only for SQL, never for embedding or reranking."""
+
+    def __init__(self, pool: AsyncConnectionPool) -> None:
+        self._pool = pool
+
+    async def search(self, embedding: list[float], k: int) -> list[SearchHit]:
+        async with self._pool.connection() as conn:
+            return await PostgresChunkRepository(conn).search(embedding, k)

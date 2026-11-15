@@ -24,7 +24,11 @@ class VoyageEmbedder:
         return vectors
 
     async def embed_query(self, text: str) -> list[float]:
-        return (await self._embed([text], "query"))[0]
+        # Interactive queries never enter the ingestion rate-limit retry loop.
+        result = await self._client.embed(
+            [text], model=self._model, input_type="query", output_dimension=self._dimension
+        )
+        return result.embeddings[0]
 
     async def _embed(self, texts: list[str], input_type: str) -> list[list[float]]:
         for attempt in range(1, RATE_LIMIT_ATTEMPTS + 1):

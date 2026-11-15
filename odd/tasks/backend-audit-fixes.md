@@ -73,11 +73,10 @@ Focused checks use the same isolation and append the relevant test paths to `pyt
   - Focused: isolated pytest `tests/test_experiments.py tests/test_index_safety.py tests/test_oxygen_basis.py` — 26 passed. Full suite: 131 passed, 3 database skips. `atlas-validate`: 13/13 valid; generated schema equality test passes. `git diff --check`: clean.
   - Runtime harness: offline loader `_run()` with mixed valid/invalid files asserts no connection; repository spy confirms no invalid upsert. No live loader execution.
   - Rollback boundary: uniqueness validator/schema description, loader preflight, duplicate regression tests and corresponding README guidance; no database schema rollback required.
-  - Commit: pending creation in this work unit.
+  - Commit: `8b691f661be6b2c30e766a38134cb8fd05593112`; 91 authored additions + deletions (1 generated schema line excluded).
 - Native risk assessment / independent checks: pending.
-- Running authored line count and commit identities: pending.
+- Running authored line count: 843 additions + deletions in T1–T4, including tracking changes and excluding 11 generated schema lines; final tracking-only commit follows. Commit identities recorded per task.
 - Remote push: pending parent verification.
 
 ## Next step
 Parent checks the completed commits, performs native read-only risk assessment, independent verification and a spot replay; then performs the authorized normal push to `backend`. Live database load/index refresh remains an explicit operator action.
-

@@ -1,18 +1,71 @@
 @import "tailwindcss";
 @import "lenis/dist/lenis.css";
 
+/* Flight deck design system — see theme.md */
 :root {
-  /* Aerospace Dark Telemetry Palette */
-  --space-black: #02040a;
-  --panel-bg: rgba(15, 23, 42, 0.75);
-  --hairline: rgba(148, 163, 184, 0.12);
+  /* Color */
+  --cabin-night: #0a1324;
+  --moon-dust: #e9edf3;
+  --instrument-white: #ffffff;
+  --ink: #0e1726;
+  --slate: #4a5568;
   --nasa-blue: #0b3d91;
-  --nasa-blue-glow: #38bdf8;
-  --flame-amber: #f59e0b;
-  --flame-red: #ef4444;
-  --flame-cyan: #06b6d4;
-  --safe-emerald: #10b981;
-  --lunar-violet: #8b5cf6;
+  --flame-orange: #ff5a1f;
+  --blue-flame: #3b82f6;
+  --safe-emerald: #059669;
+  --line: rgba(14, 23, 38, 0.08);
+  --line-strong: rgba(14, 23, 38, 0.16);
+
+  /* Text-safe variants and tints */
+  --flame-orange-ink: #b93a0e;
+  --blue-flame-ink: #1d4ed8;
+  --safe-emerald-ink: #047857;
+  --nasa-blue-tint: #e8eef8;
+  --flame-orange-tint: #fff1eb;
+  --blue-flame-tint: #eaf2ff;
+  --safe-emerald-tint: #e6f6ef;
+  --surface-sunken: #f2f4f8;
+
+  /* Type */
+  --font-display: var(--font-unbounded), "Arial Black", system-ui, sans-serif;
+  --font-body: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-data: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 22px;
+  --text-2xl: 28px;
+  --text-3xl: 36px;
+
+  /* Shape and elevation */
+  --radius-module: 20px;
+  --radius-inner: 12px;
+  --radius-pill: 999px;
+  --shadow-module:
+    0 1px 2px rgba(14, 23, 38, 0.06), 0 12px 32px -12px rgba(14, 23, 38, 0.14);
+  --shadow-raised:
+    0 1px 2px rgba(14, 23, 38, 0.08), 0 6px 16px -6px rgba(14, 23, 38, 0.18);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@theme inline {
+  --color-cabin-night: var(--cabin-night);
+  --color-moon-dust: var(--moon-dust);
+  --color-instrument-white: var(--instrument-white);
+  --color-ink: var(--ink);
+  --color-slate: var(--slate);
+  --color-nasa-blue: var(--nasa-blue);
+  --color-flame-orange: var(--flame-orange);
+  --color-blue-flame: var(--blue-flame);
+  --color-safe-emerald: var(--safe-emerald);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-data);
+  --radius-module: 20px;
+  --radius-inner: 12px;
 }
 
 * {
@@ -20,97 +73,54 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
   margin: 0;
-  background-color: #02040a;
-  color: #f8fafc;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: var(--moon-dust);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--text-md);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Starfield animations */
-@keyframes starTwinkle {
-
-  0%,
-  100% {
-    opacity: 0.25;
-    transform: scale(0.85);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1.15);
-  }
+/* Dark surfaces (the cabin) opt in explicitly instead of darkening the whole page. */
+.theme-cabin {
+  color-scheme: dark;
+  background-color: var(--cabin-night);
+  color: #f4f7fb;
 }
 
-@keyframes flameBreathing {
-
-  0%,
-  100% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 35px rgba(56, 189, 248, 0.45));
-  }
-
-  50% {
-    transform: scale(1.035);
-    filter: drop-shadow(0 0 50px rgba(56, 189, 248, 0.65));
-  }
-}
-
-@keyframes floatGentle {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-.animate-star-slow {
-  animation: starTwinkle 4.5s ease-in-out infinite;
-}
-
-.animate-star-medium {
-  animation: starTwinkle 3s ease-in-out infinite;
-}
-
-.animate-star-fast {
-  animation: starTwinkle 1.8s ease-in-out infinite;
-}
-
-.animate-flame-breathing {
-  animation: flameBreathing 3.6s ease-in-out infinite;
-}
-
-.animate-float-gentle {
-  animation: floatGentle 4s ease-in-out infinite;
+/* The one allowed uppercase label style. */
+.label {
+  font-family: var(--font-data);
+  font-size: var(--text-sm);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--slate);
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #02040a;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 3px;
+  background: rgba(14, 23, 38, 0.22);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: rgba(14, 23, 38, 0.38);
 }
+
 /* Failsafe: the loading screen hides itself even if client JS never runs. */
 @keyframes loadingScreenFailsafe {
   to {

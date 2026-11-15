@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import dynamic from "next/dynamic";
 import {
   Component,
@@ -76,9 +76,7 @@ function ScenarioControls({ slot }: { slot: Slot }) {
           }}
           title="Restaurar condiciones originales"
           aria-label={`Restaurar ${slot}`}
-        >
-          ↶ Original
-        </button>
+        />
       </div>
       <div className="scenario-sliders">
         {(
@@ -196,7 +194,7 @@ function Playback() {
       <output data-testid="simulation-time">
         {time.toFixed(1)} <span>/ 8.0 s ↻</span>
       </output>
-      <span className="timeline-note">BUCLE DE 8 s</span>
+      <span className="timeline-note" />
     </div>
   );
 }
@@ -248,7 +246,7 @@ export function Laboratory() {
     <section className="laboratory" aria-label="Laboratorio de combustión">
       <header className="lab-heading">
         <div>
-          <p className="micro-label">CÁMARA DE COMBUSTIÓN / LAB 01</p>
+          <p className="micro-label">CÁMARA DE COMBUSTIÓN</p>
           <h1>
             El fuego, en otra gravedad<span>.</span>
           </h1>
@@ -338,11 +336,7 @@ export function Laboratory() {
                   </span>
                 </div>
                 <div className="scene-side-label">
-                  {scenario.gravity === "micro"
-                    ? "TRANSPORTE DIFUSIVO"
-                    : scenario.gravity === "lunar"
-                      ? "GRAVEDAD PARCIAL · ILUSTRACIÓN"
-                      : "CONVECCIÓN ASCENDENTE"}
+                  {scenario.gravity === "micro"}
                 </div>
                 {scenario.pressure === 0 && (
                   <div className="vacuum-notice">

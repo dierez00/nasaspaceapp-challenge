@@ -31,8 +31,7 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
           </span>
         </Link>
         <div className="mission-label">
-          <span className="mission-line" /> LUNAR COMBUSTION RESEARCH{" "}
-          <span className="mission-number">VOL. 001</span>
+          <span className="mission-line" /> LUNAR COMBUSTION RESEARCH
         </div>
         <span className="demo-indicator">
           <i />
@@ -74,7 +73,7 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
             >
               Mapa de evidencias
             </button>
-            <span>EXPLORAR / COMPRENDER</span>
+            <span />
           </div>
           {state.view === "lab" ? (
             <Laboratory />
@@ -95,9 +94,7 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
         <CopilotPanel mode={mode} />
       </div>
       <footer className="atlas-statusbar">
-        <span>
-          <i /> SISTEMA DE EXPLORACIÓN {mode === "demo" ? "DEMO" : "REMOTO"}
-        </span>
+        <span />
         <span>FÍSICA VISUAL · NO PREDICTIVA</span>
         <span>
           18–50% O₂ <b>/</b> 0–16 psi <span className="status-cross">⊕</span>

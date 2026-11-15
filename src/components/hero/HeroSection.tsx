@@ -41,7 +41,7 @@ export function HeroSection() {
         duration: 1.1,
         ease: "power3.out",
         stagger: 0.15,
-        clearProps: "all",
+        clearProps: "transform,opacity",
       });
 
       // Llama de microgravedad en el fondo central
@@ -51,7 +51,7 @@ export function HeroSection() {
           opacity: 0.5,
           duration: 1.4,
           ease: "expo.out",
-          clearProps: "all",
+          clearProps: "transform,opacity",
         });
       }
 
@@ -209,18 +209,16 @@ export function HeroSection() {
         {/* 4. TÍTULO MONUMENTAL (z-30): Letras Grandes siempre visibles y centradas */}
         <div
           ref={titleContainerRef}
-          className="relative z-30 text-center max-w-4xl lg:max-w-5xl mx-auto flex flex-col items-center justify-center pointer-events-none will-change-transform py-6"
+          className="relative z-30 text-center w-full max-w-6xl mx-auto flex flex-col items-center justify-center pointer-events-none will-change-transform py-6"
         >
           <h1 className="w-full flex flex-col items-center justify-center font-black uppercase tracking-[0.2em] leading-tight select-none drop-shadow-[0_4px_30px_rgba(0,0,0,0.95)] drop-shadow-[0_0_40px_rgba(56,189,248,0.4)]">
             <span
-              className="hero-title-text inline-block font-black text-center text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-cyan-100 opacity-100"
-              style={{ fontSize: "clamp(2.4rem, 6.2vw, 6.4rem)" }}
+              className="hero-title-text inline-block font-black text-center text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-cyan-100 opacity-100 text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl"
             >
               ATLAS DEL FUEGO
             </span>
             <span
-              className="hero-title-text inline-block font-black text-center text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-sky-300 tracking-[0.28em] mt-1 sm:mt-2 opacity-100"
-              style={{ fontSize: "clamp(2.4rem, 6.2vw, 6.4rem)" }}
+              className="hero-title-text inline-block font-black text-center text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-sky-300 tracking-[0.28em] mt-1 sm:mt-2 opacity-100 text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl"
             >
               LUNAR
             </span>

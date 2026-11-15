@@ -121,9 +121,7 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
         <div>
           <h2>Copiloto de investigación</h2>
           <span>
-            {mode === "demo"
-              ? "ENTORNO DEMO · RESPUESTAS SIMULADAS"
-              : "DATOS NASA PSI · CONEXIÓN SSE"}
+            {mode === "demo" ? "" : "DATOS NASA PSI · CONEXIÓN SSE"}
           </span>
         </div>
         <span className="copilot-menu" aria-hidden="true">
@@ -152,9 +150,7 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
               80;
         }}
       >
-        <div className="conversation-date">
-          <span /> CUADERNO DE EXPLORACIÓN <span />
-        </div>
+        <div className="conversation-date" />
         <section className="welcome-message">
           <div className="assistant-label">
             <span>✳</span> ATLAS{" "}
@@ -268,7 +264,7 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
             }}
           />
           <div className="composer-bottom">
-            <span>↳ Contexto conectado al Atlas</span>
+            <span />
             {busy ? (
               <button
                 type="button"
@@ -290,7 +286,7 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
         </form>
         <p>
           {mode === "demo"
-            ? "Datos sintéticos · Sin predicciones de seguridad"
+            ? ""
             : "Contrasta las respuestas con sus fuentes originales"}
         </p>
       </div>

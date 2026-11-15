@@ -78,9 +78,7 @@ export function AtlasMap() {
     <section className="camera-panel" aria-label="Cámara del Atlas">
       <header className="camera-heading">
         <div>
-          <p className="micro-label">
-            EXPLORADOR DE COMBUSTIÓN <span>/ 01</span>
-          </p>
+          <p className="micro-label">EXPLORADOR DE COMBUSTIÓN</p>
           <h1>
             Atlas del fuego lunar<span>.</span>
           </h1>
@@ -417,11 +415,11 @@ export function AtlasMap() {
       </div>
       <footer className="gravity-footer">
         <div className="gravity-title">
-          <span className="micro-label">RÉGIMEN GRAVITACIONAL</span>
+          <span className="micro-label" />
           <span>
             {state.gravity === "lunar"
               ? "Sin ensayos lunares en el catálogo"
-              : "Una misma materia. Otra física."}
+              : ""}
           </span>
         </div>
         <div

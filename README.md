@@ -118,6 +118,14 @@ Technical documentation:
 - [Frontend contracts and architecture](docs/atlas-frontend.md) (Spanish)
 - [Visual system](theme.md)
 
+## Team
+
+- Diego Daher Diaz
+- Karen Vazquez
+- Mario Lira
+- Emiliano Holguin
+- Diego Antunez
+
 ## License
 
 Private code; see [LICENSE](LICENSE).

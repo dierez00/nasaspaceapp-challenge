@@ -23,8 +23,19 @@
 | De | Qué | Bloquea |
 | --- | --- | --- |
 | Rol 2 (search) | ~~Búsqueda y reranker~~: ya integrados (`search_documents` con `rerank_score`). Falta correr `atlas-index` en la máquina del demo | Investigador real |
-| Rol 5 (front) | Revisar y congelar `UIPayload` en H2: nombres, componentes y campos de `gap_map` | Compositor y reglas |
-| Rol 5 (front) | Confirmar los nombres de `status.step` y el manejo del evento `error` con `EventSource` | — |
+| Rol 5 (front) | Congelar `UIPayload`. El front (rama `main`) ya lo consume con un traductor; cambiar un componente o campo rompe ese traductor | Compositor y reglas |
+| Equipo | Dar `CLAUDE_CODE_OAUTH_TOKEN` en la máquina del demo para usar `ATLAS_QUERY_MODE=remote`; sin token, el front responde con `guided` | Copiloto con agentes en vivo |
+
+## Cómo lo consume el front (rama `main`)
+
+El navegador nunca llama a FastAPI: habla con rutas de Next.js, que llaman al backend en el servidor (`ATLAS_API_URL`). Detalle en `docs/atlas-frontend.md` de `main`, sección "Conectar FastAPI".
+
+- **`GET /experiments`** (`ATLAS_DATA_MODE=remote`): cada `ExperimentTest` se vuelve un punto del mapa con id `PSI-n/<test_id>`, presión en psi y la fuente. Los puntos fuera del dominio del mapa (0–16 psi, 18–50 % O₂) se omiten: hoy 407 de 1,115.
+- **`POST /query`** (`ATLAS_QUERY_MODE=remote`): se envía `{"q": pregunta + punto del mapa}` (máximo 500 caracteres). No se usa `EventSource`; se lee el stream con `fetch` y se traduce:
+  - `status.step`: `clasificando` y `consultando_datos` → analista; `buscando_fuentes` → física; `componiendo` → sintetizador. `cache` no se muestra.
+  - `ui`: `summary` y cada `text` van al texto. `table` → tarjeta con lista (máximo 8 filas). `gap_map` → límites de gravedad y hasta 3 tarjetas de experimento. `citations` → lista de fuentes. `notice` → tarjeta de aviso. Un componente desconocido se ignora.
+  - `error` → error del copiloto. Si el stream termina sin `ui` ni `error`, el front muestra un error.
+- Si cambian los nombres de eventos, de pasos o de componentes, hay que actualizar `src/modules/copilot/infra/backend-query.ts` en `main`.
 | Equipo | Lista de preguntas del demo para precalentar `data/query_cache.json` | Demo sin depender de la latencia |
 | Equipo | `CLAUDE_CODE_OAUTH_TOKEN` y `VOYAGE_API_KEY` en el `.env` de quien haga la demo, y Postgres con `atlas-load` y `atlas-index` ya ejecutados | Modo real |
 | Rol 1 (experiments) | Avisar si cambian los campos de `ExperimentTest` (ya se incluyen `point_type` y `limit_type` del contrato 1.1): el prompt del analista los lista a mano | Calidad de las consultas |

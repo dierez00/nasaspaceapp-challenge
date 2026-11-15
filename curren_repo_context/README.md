@@ -9,7 +9,7 @@ Estado actual del backend del Atlas del Fuego Lunar. **Actualiza estos archivos 
 | [`contrato-ui.md`](contrato-ui.md) | JSON de UI que recibe el front (`UIPayload`) y reglas fijas por tipo |
 | [`eventos-sse.md`](eventos-sse.md) | Endpoints, eventos SSE y ejemplos para `fetch` y `EventSource` |
 | [`env.md`](env.md) | Variables de entorno |
-| [`pendientes.md`](pendientes.md) | Supuestos y lo que falta de otros roles |
+| [`pendientes.md`](pendientes.md) | Supuestos, lo que falta de otros roles y cómo consume el front `/experiments` y `/query` |
 
 ## Mapa del código
 

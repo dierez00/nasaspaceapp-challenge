@@ -42,7 +42,7 @@ User feedback (2026-11-15):
 
 ## Tasks
 - [ ] X0 Map the backend: agents, prompts, `/query` SSE contract, ui components, tests, runner.
-- [ ] F1 Cabin console shell: dark chrome with lit screens, octagonal lab window, view-switch move, theme.md update.
+- [x] F1 Cabin console shell: dark chrome with lit screens, octagonal lab window, view-switch move, theme.md update.
 - [x] B1 Backend evidence-brief contract and professor tone: brief component (verdict, evidence table, gap, next steps, audience sections), audience parameter, no internals leakage, tests.
 - [ ] F2 Front evidence brief: render the brief and real tables, highlight evidence and gap on the main map, next-step actions, audience selector, CSV export and citation; remove the "Respuesta de respaldo" flattening.
 - [ ] F3 Comparative simulator: three gravities side by side, qualitative indicators, physics annotations, nearest real trials.
@@ -60,6 +60,7 @@ User feedback (2026-11-15):
 
 ## Progress / Evidence
 - Base: `visual-redesign-flight-deck` complete (`1d5f757`).
+- F1 done (`5f0abad`): dark console chrome (`--console-*` tokens, mission strip, bezeled lit-screen modules), octagonal `.cupola-octagon` lab window with lit bevel, ~420 ms interruptible view slide (reduced motion: 120 ms fade), dive resolves into the dark console, theme.md updated. Checks: lint, typecheck, 44 tests, build green; orbit verified; no hscroll at 1440/1366/390. Shots: scratchpad `f1-*.png`.
 - B1 done on backend branch `test/evidence-brief` (never pushed): `12fe8e5` brief component and grounded gap, `58d1c18` professor tone without internals, `a8fd9a2` cache v2 key and validation, `bc2d611` docs, `a57f26c` and `6b053c0` fixes (gap from any empty query, grouped experiment ids, empty-region verdict, composer timeout 40 s).
   - Checks: backend pytest `208 passed, 3 skipped` (base 180/3); no ruff/mypy configured. Real CLI composer call (no `CLAUDE_CODE_OAUTH_TOKEN`, the CLI's own login): strict schema with `BriefComponent` accepted; total 27-54 s, composer 12-35 s (one run timed out at 30 s and fell back to rules, hence 40 s).
   - Contract: `brief` component (`verdict`, `evidence`, `gap`, `next_steps` max 3, `lenses` student/teacher/researcher) as first component; `brief_version: 1` in the `ui` event. Cache key now `v2|...`; untracked `data/query_cache.json` deleted.

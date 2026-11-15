@@ -49,9 +49,10 @@ export async function POST(request: Request) {
               "Content-Type": "application/json",
               Accept: "text/event-stream",
             },
+            // Backend worst case without cache is ~68 s (classifier 8 + agents 20 + composer 2 x 20).
             signal: AbortSignal.any([
               request.signal,
-              AbortSignal.timeout(60000),
+              AbortSignal.timeout(90000),
             ]),
             cache: "no-store",
           },

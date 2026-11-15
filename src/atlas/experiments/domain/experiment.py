@@ -3,10 +3,11 @@
 One record per investigation; each entry in `tests` is one point on the gap map.
 """
 
+from collections import Counter
 from datetime import date
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator, model_validator
 
 SCHEMA_VERSION = "1.1"
 
@@ -117,6 +118,15 @@ class Experiment(Contract):
     end_date: date | None
     principal_investigator: str | None
     summary: NonEmpty = Field(description="One or two sentences, plain language")
-    tests: Annotated[list[ExperimentTest], Field(min_length=1)]
+    tests: Annotated[list[ExperimentTest], Field(min_length=1, description="Test IDs must be unique within this investigation")]
     sources: Annotated[list[SourceFile], Field(min_length=1)]
     review: Review
+
+
+    @field_validator("tests")
+    @classmethod
+    def unique_test_ids(cls, tests: list[ExperimentTest]) -> list[ExperimentTest]:
+        duplicates = sorted(test_id for test_id, count in Counter(t.test_id for t in tests).items() if count > 1)
+        if duplicates:
+            raise ValueError(f"duplicate test_id within investigation: {', '.join(duplicates)}")
+        return tests

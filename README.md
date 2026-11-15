@@ -124,3 +124,8 @@ inverso citado. Las lecturas de JSON anteriores al reload reconocen esa misma
 fuente si falta `o2_basis`; nunca interpretan las notas libres. El backfill no
 reescribe el JSON: `atlas-load` completa esa actualización. El despliegue y estas
 operaciones **no** fueron ejecutados como parte de las pruebas locales.
+
+`test_id` debe ser único dentro de cada investigación; puede repetirse entre
+investigaciones. `atlas-load` informa el archivo y los IDs duplicados y aborta
+antes de conectar si el lote contiene cualquier archivo inválido o está vacío.
+Corrige los archivos y vuelve a validar; no se carga parcialmente un lote inválido.

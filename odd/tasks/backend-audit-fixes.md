@@ -24,7 +24,7 @@ The audit demonstrated destructive empty-source synchronization, ambiguous atmos
 - [x] T1 Protect the existing search index when input directories are missing, records are invalid, or the resulting corpus is unexpectedly empty. Fail before repository mutation; test preservation and CLI behavior.
 - [x] T2 Bound query-provider latency without removing ingestion retries, and acquire Postgres connections only for SQL in both `/search` and the existing researcher adapter. Test provider failures, timeout/fallback, and connection lifetime.
 - [x] T3 Distinguish ambient oxygen from oxidizer-stream oxygen with explicit backward-compatible point metadata. Annotate the 153 PSI-159 inverse-flame points using their cited inverse CSV, persist the metadata, exclude stream oxygen from atmospheric filters/coverage, preserve it in full records and RAG with an explicit label, and document the database upgrade.
-- [ ] T4 Reject duplicate `test_id` values within an investigation before database writes. Test validation and loader reporting.
+- [x] T4 Reject duplicate `test_id` values within an investigation before database writes. Test validation and loader reporting.
 
 ## Acceptance and checks
 - Every task includes focused regression tests and a separate work-unit commit with its observed results.
@@ -68,12 +68,16 @@ Focused checks use the same isolation and append the relevant test paths to `pyt
   - Runtime harness: existing TestClient experiment/coverage cases and SQL writer/reader spies; schema/backfill source-bound structural checks. Live migration/index refresh NOT executed. Exact-source legacy JSON compatibility prevents pre-reload atmospheric misclassification.
   - Rollback boundary: oxygen metadata in model, PSI-159, schema and export, atmospheric filter/coverage guards, labeled chunks and oxygen regression tests/docs; additive database column can remain when reverting application code.
   - Data totals: all 1115 observations retained, 962 atmospheric coverage points; lunar filter PSI-159 45 → 18 and PSI-20 remains 13. No blanket gas exclusion. Required operator `atlas-load` then `atlas-index` documented.
+  - Commit: `99986385da237bccbbc6bfd8cf433fba4004144b`; 375 authored additions + deletions (10 generated schema lines excluded).
+- T4: per-investigation test ID uniqueness rejected during model validation with the duplicate identifiers; IDs may repeat across investigations. Invalid/empty loader batches report file/issues and fail before database connection, not after a partial load.
+  - Focused: isolated pytest `tests/test_experiments.py tests/test_index_safety.py tests/test_oxygen_basis.py` — 26 passed. Full suite: 131 passed, 3 database skips. `atlas-validate`: 13/13 valid; generated schema equality test passes. `git diff --check`: clean.
+  - Runtime harness: offline loader `_run()` with mixed valid/invalid files asserts no connection; repository spy confirms no invalid upsert. No live loader execution.
+  - Rollback boundary: uniqueness validator/schema description, loader preflight, duplicate regression tests and corresponding README guidance; no database schema rollback required.
   - Commit: pending creation in this work unit.
-- T4: pending.
 - Native risk assessment / independent checks: pending.
 - Running authored line count and commit identities: pending.
 - Remote push: pending parent verification.
 
 ## Next step
-Run the isolated baseline, then implement T1–T4 sequentially. Update this document and its Engram recovery mirror after each task, recording exact commands/results, runtime harness or justified N/A, rollback boundary, and commit identities.
+Parent checks the completed commits, performs native read-only risk assessment, independent verification and a spot replay; then performs the authorized normal push to `backend`. Live database load/index refresh remains an explicit operator action.
 

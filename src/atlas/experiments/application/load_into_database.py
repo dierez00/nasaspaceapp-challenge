@@ -1,4 +1,4 @@
-"""CLI: validate data/experiments and upsert every valid file into Postgres."""
+"""CLI: validate the complete input batch before upserting experiments into Postgres."""
 
 import asyncio
 import sys
@@ -27,7 +27,10 @@ async def _run() -> int:
     results = load_experiment_files(settings.data_dir / "experiments")
     invalid = [r for r in results if not r.ok]
     for result in invalid:
-        print(f"SKIP  {result.file}: {len(result.issues)} issues (run atlas-validate)")
+        print(f"FAIL  {result.file}: {'; '.join(result.issues)}")
+    if invalid or not results:
+        print("ERROR: Invalid or empty experiment input; database unchanged (run atlas-validate).")
+        return 1
 
     async with await AsyncConnection.connect(settings.database_url, row_factory=dict_row) as conn:
         await apply_schema(conn)

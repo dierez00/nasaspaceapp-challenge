@@ -50,17 +50,10 @@ export function MicrogravityFlame({ paused = false }: { paused?: boolean }) {
         }}
       />
       <div
-        className="absolute h-[92px] w-[92px] rounded-full"
+        className="absolute h-[96px] w-[96px] rounded-full"
         style={{
           background:
-            "radial-gradient(circle at 50% 50%, rgba(219,234,254,0.95) 0%, rgba(147,197,253,0.85) 28%, rgba(59,130,246,0.9) 58%, rgba(29,78,216,0.85) 80%, rgba(29,78,216,0) 100%)",
-        }}
-      />
-      <div
-        className="absolute h-[64px] w-[64px] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(219,234,254,0.4) 55%, transparent 100%)",
+            "radial-gradient(circle, rgba(255,255,255,0.98) 0%, rgba(191,219,254,0.92) 24%, rgba(96,165,250,0.9) 50%, rgba(59,130,246,0.7) 72%, rgba(29,78,216,0) 100%)",
         }}
       />
     </div>

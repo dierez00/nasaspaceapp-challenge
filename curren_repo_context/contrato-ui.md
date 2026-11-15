@@ -59,6 +59,9 @@ Garantías del anclaje (`grounding._ground_brief`):
 - `gap`: las cotas y `gravity` se calculan en Python (`agents/domain/brief.py`, `compute_gap`) a partir de los filtros de la última consulta o de la pregunta ("más de 30 % de O₂"); nunca las pone el LLM. Hay hueco si la consulta no encontró ensayos o si las filas agrupadas no incluyen gravedad lunar o marciana. Sin base para calcularlo, `gap` es `null`. Las cotas entran como cifras permitidas en los textos.
 - `next_steps`: cifras (`pressure_kpa`, `o2_percent`) solo si están en los datos, la pregunta o el hueco; si no, `null`. `material` solo si aparece en los datos o la pregunta.
 - `verdict` y cada texto de `lenses` con cifras que no están en los datos se reemplazan por el texto de reglas; el resto del brief se conserva.
+- El `description` del hueco que nombra una gravedad distinta de la calculada se reemplaza por el texto de reglas; un `summary` casi igual al `verdict` se sustituye por el resumen genérico del tipo.
+- Los valores técnicos (`ambient`, `partial_burn`, `oxidizer_stream`, `microgravity`...) se cambian por términos en español en el texto (`agents/domain/labels.py`, `ENUM_LABELS`); nunca en tablas ni columnas.
+- El veredicto de reglas cita el hallazgo con cifras registradas, p. ej. "Para PMMA hay 12 ensayos en microgravedad y 5 en gravedad normal."
 - No hay objetos abiertos: el esquema del compositor (`UIPayload.model_json_schema()` sin `discriminator`) lo acepta en modo estricto.
 
 Tono: el texto habla de los datos ("No hay ensayos con esas condiciones"), nunca de agentes, búsquedas, herramientas ni reintentos.

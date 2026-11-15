@@ -27,6 +27,7 @@ from typing import Any
 
 from atlas.agents.domain import brief as brief_rules
 from atlas.agents.domain.classification import DEFAULT_CLASSIFICATION
+from atlas.agents.domain.labels import humanize_ui
 from atlas.agents.domain.ui import (
     BriefComponent,
     BriefEvidence,
@@ -124,6 +125,11 @@ def ground_ui(
         fixes.append("summary reemplazado")
 
     briefs = [c for c in components if isinstance(c, BriefComponent)]
+    if briefs and brief_rules.near_duplicate(summary, briefs[0].verdict) and not brief_rules.near_duplicate(
+        fallback_summary, briefs[0].verdict
+    ):
+        summary = fallback_summary
+        fixes.append("summary diferenciado del veredicto")
     if len(briefs) > 1:
         components = [c for c in components if not isinstance(c, BriefComponent)]
         components.insert(0, briefs[0])
@@ -134,7 +140,7 @@ def ground_ui(
 
     if not any(c.type != "notice" for c in components):
         return None, fixes
-    return UIPayload(summary=summary, components=components), fixes
+    return humanize_ui(UIPayload(summary=summary, components=components)), fixes
 
 
 def _ground_component(component: Any, evidence: Evidence) -> Any:
@@ -199,7 +205,9 @@ def _ground_brief_gap(gap: BriefGap | None, evidence: Evidence) -> BriefGap | No
     computed = evidence.gap
     if computed is None or gap is None:
         return computed
-    if evidence.text_is_grounded(gap.description):
+    if evidence.text_is_grounded(gap.description) and not brief_rules.conflicts_with_gravity(
+        gap.description, computed.gravity
+    ):
         return computed.model_copy(update={"description": gap.description})
     return computed
 

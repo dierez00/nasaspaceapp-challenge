@@ -15,6 +15,7 @@ from typing import Any
 
 from atlas.agents.domain.classification import Classification
 from atlas.agents.domain.brief import build_rules_brief
+from atlas.agents.domain.labels import humanize_ui
 from atlas.agents.domain.grounding import MAX_COMPONENTS, AgentResult, Evidence
 from atlas.agents.domain.ui import (
     Citation,
@@ -89,7 +90,8 @@ def build_rules_ui(
 
     if table is None and not has_sources and all(c.type in ("brief", "notice") for c in components):
         components.insert(1, TextComponent(type="text", body=_NO_DATA))
-    return UIPayload(summary=_SUMMARIES[classification.tipo], components=components[:MAX_COMPONENTS])
+    ui = UIPayload(summary=_SUMMARIES[classification.tipo], components=components[:MAX_COMPONENTS])
+    return humanize_ui(ui)
 
 
 def _o2_basis_notice(analyst: AgentResult, table: TableComponent | None) -> NoticeComponent | None:
@@ -107,7 +109,7 @@ def _o2_basis_notice(analyst: AgentResult, table: TableComponent | None) -> Noti
             "no de una atmósfera."
         )
     elif report.get("por_defecto"):
-        message = "Los rangos de O2 y presión solo incluyen ensayos con atmósfera ambiente (o2_basis = ambient)."
+        message = "Los rangos de O₂ y presión solo incluyen ensayos con atmósfera ambiental, no la corriente de oxidante de un quemador."
     else:
         return None
     return NoticeComponent(type="notice", level="info", message=message)

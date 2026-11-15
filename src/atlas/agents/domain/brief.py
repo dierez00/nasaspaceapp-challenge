@@ -99,15 +99,105 @@ def default_verdict(
         return "El Atlas no tiene ensayos con esas condiciones."
     with_rows = [q for q in queries if q.get("total") is not None]
     if with_rows:
-        total = with_rows[-1]["total"]
+        last = with_rows[-1]
+        total = last["total"]
         if total == 0:
             return "El Atlas no tiene ensayos con esas condiciones."
+        finding = _finding(last)
         if classification.tipo == "huecos":
-            return f"El Atlas cubre estas condiciones con {_records(total)}; lo que queda fuera es el hueco."
-        return f"Los datos del Atlas muestran {_records(total)} con esas condiciones."
+            return f"{finding}; lo que queda fuera de estas condiciones es el hueco."
+        return f"{finding}."
     if has_sources:
         return "Los informes de NASA PSI explican este tema y los fragmentos citados lo respaldan."
     return "El Atlas no tiene datos ni documentos que respondan a esta pregunta."
+
+
+def _finding(query: dict[str, Any]) -> str:
+    """Professor-style finding with figures that are recorded cells or the recorded total."""
+    filters = query.get("filtros") or {}
+    material = filters.get("material") if isinstance(filters.get("material"), str) else None
+    subject = f"Para {material} hay" if material else "En el Atlas hay"
+    columns = query.get("columns") or []
+    rows = query.get("rows") or []
+    total = query["total"]
+
+    if "ensayos" in columns and "gravity_environment" in columns and 0 < len(rows) <= 3:
+        gi, ci = columns.index("gravity_environment"), columns.index("ensayos")
+        parts = [
+            (f"{r[ci]} {'ensayo' if r[ci] == 1 else 'ensayos'} en " if i == 0 else f"{r[ci]} en ")
+            + _GRAVITY_LABEL.get(r[gi], str(r[gi]))
+            for i, r in enumerate(rows)
+            if isinstance(r[ci], int) and isinstance(r[gi], str)
+        ]
+        if parts:
+            return f"{subject} {_join(parts)}"
+
+    if "ensayos" in columns and rows:
+        count = rows[0][columns.index("ensayos")]
+        if len(rows) == 1 and isinstance(count, int):
+            return f"{subject} {count} {'ensayo' if count == 1 else 'ensayos'}"
+        return f"{subject} ensayos en {total} grupos de los datos"
+
+    complete = not query.get("truncated") and len(rows) == total and "ensayos" not in columns
+    noun = "ensayo" if total == 1 else "ensayos"
+    text = f"{subject} {total} {noun}"
+    if not complete or not rows:
+        return text
+    regimes = _column_values(columns, rows, "gravity_environment")
+    if regimes and all(isinstance(v, str) for v in regimes):
+        text += " en " + _join([_GRAVITY_LABEL.get(v, v) for v in regimes])
+    ranges = []
+    for column, name, unit in (("o2_percent", "O₂", " %"), ("pressure_kpa", "presión", " kPa")):
+        numbers = [v for v in _column_values(columns, rows, column, unique=False) if isinstance(v, (int, float))]
+        if numbers:
+            low, high = min(numbers), max(numbers)
+            ranges.append(
+                f"{name} de {_fmt(low)}{unit}" if low == high else f"{name} entre {_fmt(low)} y {_fmt(high)}{unit}"
+            )
+    if ranges:
+        text += ", con " + " y ".join(ranges)
+    return text
+
+
+def _column_values(columns: list[str], rows: list[list[Any]], name: str, unique: bool = True) -> list[Any]:
+    if name not in columns:
+        return []
+    index = columns.index(name)
+    values = [r[index] for r in rows if r[index] is not None]
+    if not unique:
+        return values
+    return list(dict.fromkeys(values))
+
+
+def _join(parts: list[str]) -> str:
+    return parts[0] if len(parts) == 1 else ", ".join(parts[:-1]) + " y " + parts[-1]
+
+
+_TOKEN = re.compile(r"\w+", re.UNICODE)
+
+
+def near_duplicate(first: str, second: str) -> bool:
+    """True when two sentences say practically the same (one contains the other or most words match)."""
+    a = {w for w in _TOKEN.findall(first.casefold()) if len(w) > 2}
+    b = {w for w in _TOKEN.findall(second.casefold()) if len(w) > 2}
+    if not a or not b:
+        return False
+    return len(a & b) / min(len(a), len(b)) >= 0.8 and len(a & b) / len(a | b) >= 0.6
+
+
+_GRAVITY_MENTIONS = (
+    ("microgravity", r"microgravedad|microgravity"),
+    ("lunar", r"gravedad lunar|lunar|luna"),
+    ("martian", r"gravedad marciana|marciana|marte|martian"),
+    ("normal", r"gravedad normal|gravedad terrestre|terrestre"),
+)
+
+
+def conflicts_with_gravity(text: str, gravity: str | None) -> bool:
+    """True when the text names a gravity regime other than the computed one."""
+    lowered = text.casefold()
+    mentioned = {g for g, words in _GRAVITY_MENTIONS if re.search(rf"\b(?:{words})\b", lowered)}
+    return bool(mentioned - {gravity})
 
 
 def default_evidence(queries: list[dict[str, Any]]) -> BriefEvidence | None:

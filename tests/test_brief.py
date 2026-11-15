@@ -303,4 +303,88 @@ def test_verdict_says_there_are_no_tests_when_the_region_is_empty_even_if_later_
     ui = build_rules_ui(DEFAULT_CLASSIFICATION, {"consultas": [EMPTY_QUERY, later]}, None, QUESTION)
     assert ui.components[0].verdict == "El Atlas no tiene ensayos con esas condiciones."
     single = build_rules_ui(DEFAULT_CLASSIFICATION, {"consultas": [later]}, None, "q")
-    assert "1 registro " in single.components[0].verdict
+    assert single.components[0].verdict == "En el Atlas hay 3 ensayos."
+
+
+PMMA_QUERY = {
+    "filtros": {"material": "PMMA"},
+    "columns": ["experiment_id", "material", "o2_percent", "pressure_kpa", "gravity_environment"],
+    "rows": [
+        ["PSI-1", "PMMA", 21, 101.3, "normal"],
+        ["PSI-2", "PMMA", 35, 70, "microgravity"],
+    ],
+    "total": 2,
+    "truncated": False,
+}
+PMMA_GROUPED = {
+    "filtros": {"material": "PMMA", "agrupar_por": ["gravity_environment"]},
+    "columns": ["gravity_environment", "ensayos", "experimentos"],
+    "rows": [["microgravity", 12, "PSI-2"], ["normal", 5, "PSI-1"]],
+    "total": 2,
+}
+
+
+def test_rules_verdict_is_professor_style_and_grounded():
+    for query, expected in (
+        (PMMA_GROUPED, "Para PMMA hay 12 ensayos en microgravedad y 5 en gravedad normal."),
+        (
+            PMMA_QUERY,
+            "Para PMMA hay 2 ensayos en gravedad normal y microgravedad, con O₂ entre 21 y 35 % "
+            "y presión entre 70 y 101.3 kPa.",
+        ),
+    ):
+        verdict = build_rules_ui(DEFAULT_CLASSIFICATION, {"consultas": [query]}, None, "q").components[0].verdict
+        assert verdict == expected
+        assert Evidence("q", {"consultas": [query]}, None).text_is_grounded(verdict)
+
+
+def test_gap_description_with_another_gravity_is_replaced():
+    query = {**EMPTY_QUERY, "filtros": {"o2_min": 30.0, "gravity_environment": ["lunar"]}}
+    gap = {
+        "description": "No hay ensayos con más de 30 % de O₂ en gravedad normal.",
+        "pressure_kpa_min": None, "pressure_kpa_max": None, "o2_percent_min": None, "o2_percent_max": None,
+        "gravity": None,
+    }
+    result = ground(brief(gap=gap), {"consultas": [query]}, "q")
+    assert result.gap.gravity == "lunar"
+    assert "normal" not in result.gap.description and "lunar" in result.gap.description
+
+
+def test_gap_description_with_the_same_gravity_is_kept():
+    query = {**EMPTY_QUERY, "filtros": {"o2_min": 30.0, "gravity_environment": ["lunar"]}}
+    gap = {
+        "description": "Nadie ha probado más de 30 % de O₂ en gravedad lunar.",
+        "pressure_kpa_min": None, "pressure_kpa_max": None, "o2_percent_min": None, "o2_percent_max": None,
+        "gravity": None,
+    }
+    assert ground(brief(gap=gap), {"consultas": [query]}, "q").gap.description == gap["description"]
+
+
+def test_raw_enum_tokens_are_humanized_in_prose_but_not_in_tables():
+    from atlas.agents.domain.labels import humanize
+
+    assert humanize("Ensayos ambient con partial_burn y oxidizer_stream en microgravity.") == (
+        "Ensayos ambiental con combustión parcial y corriente oxidante en microgravedad."
+    )
+    query = {
+        "filtros": {},
+        "columns": ["experiment_id", "outcome"],
+        "rows": [["PSI-5", "partial_burn"]],
+        "total": 1,
+    }
+    result = ground(
+        brief(
+            verdict="Hay 1 ensayo con partial_burn.",
+            evidence={"title": "T", "columns": query["columns"], "rows": query["rows"], "experiment_ids": ["PSI-5"]},
+        ),
+        {"consultas": [query]},
+    )
+    assert result.verdict == "Hay 1 ensayo con combustión parcial."
+    assert result.evidence.rows == [["PSI-5", "partial_burn"]]
+
+
+def test_summary_that_repeats_the_verdict_is_replaced_by_a_complement():
+    ui = UIPayload(summary="Los datos del Atlas muestran 2 registros.", components=[brief()])
+    grounded, fixes = ground_ui(ui, Evidence("q", {"consultas": [DATA_QUERY]}, None), "Un resumen distinto del hallazgo.")
+    assert grounded.summary == "Un resumen distinto del hallazgo."
+    assert "summary diferenciado del veredicto" in fixes

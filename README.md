@@ -1,162 +1,77 @@
 # Atlas del Fuego Lunar · Backend
 
-Backend en Python del Atlas: datos de investigaciones de NASA PSI, búsqueda y agentes. El front (Next.js, desplegado en Vercel) vive en la rama [`main`](../../tree/main); este servicio se despliega en Railway.
+API del **Atlas del Fuego Lunar** (NASA Space Apps Challenge 2026). Convierte los experimentos de combustión del repositorio **NASA Physical Sciences Informatics (PSI)** en datos consultables, los hace buscables con citas y responde preguntas en lenguaje natural con un sistema multiagente que no puede inventar cifras.
 
-## Arranque
+La presentación completa del proyecto y la interfaz (laboratorio 3D, mapa de evidencias y copiloto) están en la rama [`main`](../../tree/main).
+
+## Qué hace
+
+| Capacidad | Endpoint | ¿Usa IA? |
+| --- | --- | --- |
+| Catálogo de ensayos con filtros de O₂ y presión | `GET /experiments` | No |
+| Cobertura de la evidencia y huecos frente a condiciones de misión | `GET /coverage` | No |
+| Búsqueda semántica con citas | `POST /search` | Embeddings y reranking |
+| Respuestas a preguntas, en streaming | `POST /query` | Agentes Claude |
+| Estado del servicio y de la base | `GET /health` | No |
+
+Documentación interactiva en `/docs` (OpenAPI).
+
+## De los documentos de NASA a una respuesta verificable
+
+1. **Extracción.** Las tablas experimentales y reportes de 13 investigaciones de PSI (ACME, FLEX, CFI, SAME, BASS, SAFFIRE…) se pasaron con Claude a un contrato JSON común, validado con Pydantic y revisado por el equipo. Resultado: **1,115 observaciones**, cada una con material, O₂, presión, gravedad, resultado y la ubicación exacta en su fuente. Las tablas originales se guardan sin cambios en `data/raw/`.
+2. **Carga.** `atlas-load` valida el lote completo y lo guarda en PostgreSQL; si un archivo es inválido, no carga nada.
+3. **Indexación.** `atlas-index` trocea los reportes en **1,283 fragmentos**, los vectoriza con Voyage AI (`voyage-4`) y los guarda en pgvector. Es incremental: solo vectoriza lo nuevo.
+4. **Consulta.** Un orquestador en Python coordina cuatro agentes:
+
+   | Agente | Rol |
+   | --- | --- |
+   | Clasificador (Claude Haiku) | Entiende el tipo de pregunta y decide si hacen falta datos, fuentes o ambos |
+   | Analista (Claude) | Elige filtros; el cálculo sobre los ensayos lo hace Python |
+   | Investigador (Claude + Voyage) | Busca fragmentos, los reordena con `rerank-2.5` y cita experimento, archivo y sección |
+   | Compositor (Claude) | Arma la respuesta que dibuja la interfaz |
+
+   Analista e investigador trabajan en paralelo, y el progreso se transmite por SSE.
+5. **Verificación sin IA.** Antes de responder, cada tabla, cita, experimento y cifra se compara con lo que realmente devolvieron las herramientas. Lo que no coincide se descarta, y si los agentes fallan o tardan, la respuesta se arma con reglas fijas.
+
+**En una frase:** la IA entiende la pregunta, decide qué consultar y lo explica; los números y las fuentes siempre salen de los datos de NASA PSI.
+
+*Fuente de las cifras: los conteos salen de `data/experiments/` y de `build_chunks(data/)`; el detalle está en [`curren_repo_context/uso-ia.md`](curren_repo_context/uso-ia.md).*
+
+## Hallazgo principal
+
+Las 1,115 observaciones se hicieron en microgravedad (ISS y naves Cygnus); **ninguna en gravedad lunar**. `GET /coverage` compara la evidencia con condiciones de referencia de misión, cada una con su fuente en [`data/reference/conditions.json`](data/reference/conditions.json) (hábitat lunar y marciano, traje EVA lunar, cabina de la ISS), y marca como hueco las condiciones que solo tienen ensayos en otra gravedad.
+
+## Arquitectura
+
+Cada módulo de `src/atlas/` es un área del producto con capas `domain`, `application`, `infrastructure` y `api` (Clean Architecture):
+
+| Módulo | Responsabilidad |
+| --- | --- |
+| `experiments` | Contrato de datos, validación, carga y catálogo |
+| `coverage` | Cobertura de la evidencia y huecos frente a condiciones de misión |
+| `search` | Ingesta, embeddings, pgvector, reranking y citas |
+| `agents` | Orquestador, agentes y verificación de la respuesta |
+| `query` | Endpoint `/query` con streaming SSE y caché |
+| `shared` | Configuración y conexión a la base |
+
+**Tecnologías:** Python 3.12, FastAPI, Pydantic, PostgreSQL 17 + pgvector, Claude Agent SDK, Voyage AI, Pytest y Docker.
+
+## Probarlo localmente
 
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -e '.[dev]'
 cp .env.example .env
-docker compose up -d db          # Postgres 17 + pgvector en localhost:5433
-.venv/bin/atlas-validate         # valida data/experiments y regenera el JSON Schema
-.venv/bin/atlas-load             # aplica db/schema.sql y carga los experimentos
-.venv/bin/uvicorn atlas.main:app --reload
+docker compose up -d db
+.venv/bin/atlas-load
+AGENTS_MOCK=1 .venv/bin/uvicorn atlas.main:app --reload
 ```
 
-- API: <http://localhost:8000> · documentación interactiva en `/docs`
-- `GET /health`: estado de la API y de la base de datos
-- `GET /experiments` y `GET /experiments/{id}`: experimentos validados para el mapa
-  - Filtros opcionales de `GET /experiments`, con límites inclusivos: `min_o2_percent`, `max_o2_percent`, `min_pressure_kpa`, `max_pressure_kpa` y `exclude_assumed=true` (descarta puntos con O₂ o presión supuestos). Cada experimento conserva solo sus `tests` que cumplen y se omiten los que quedan sin ninguno; un rango invertido responde 422.
-  - Ejemplo, hábitat lunar (34 % O₂, 56.5 kPa en `data/reference/conditions.json`): `GET /experiments?min_o2_percent=30&max_pressure_kpa=70.3` devuelve PSI-159 (18 puntos) y PSI-20 (13 puntos a 34 % y 56.5 kPa, presión supuesta según su objetivo 1); con `exclude_assumed=true` queda solo PSI-159. Los puntos con `o2_basis=oxidizer_stream` quedan fuera del filtro atmosférico: su O₂ corresponde al quemador, no al aire de la cámara.
-- `GET /coverage`: cobertura del mapa y brechas frente a condiciones de misión
-- `POST /query` (`{"q": "..."}`) y `GET /query?q=...` (EventSource): respuesta de los agentes en streaming SSE con eventos `status`, `ui` y `error`
+Con `AGENTS_MOCK=1`, `/query` responde sin claves de IA. Abre <http://localhost:8000/docs>.
 
-## Búsqueda (RAG)
+## Documentación
 
-Requiere `VOYAGE_API_KEY` en `.env` (modelo `voyage-4`, 1024 dimensiones; configurable con `EMBEDDING_MODEL`).
-
-```bash
-.venv/bin/atlas-index            # trocea data/ (experimentos, search/sources.json, CSV crudos), embebe y guarda en pgvector
-# primera corrida: 89 new, 0 unchanged, 0 removed; la segunda: 0 new, 89 unchanged, 0 removed
-curl -X POST localhost:8000/search -H 'content-type: application/json' \
-  -d '{"query": "smoke point in microgravity", "k": 5}'
-```
-
-- `atlas-index` es idempotente: cada chunk se identifica por el hash de su contenido, solo se embeben los nuevos y se borran los que ya no existen. Volver a ejecutarlo tras agregar archivos a `data/` es seguro; una segunda corrida seguida embebe 0.
-- `POST /search` devuelve `[{experiment_id, source_file, section, content, score, rerank_score}]` (`k` entre 1 y 20, por defecto 5). Responde 503 si falta la clave.
-- Reranking: se traen `RERANK_CANDIDATES` candidatos (30 por defecto) por similitud coseno y Voyage (`RERANK_MODEL`, `rerank-2.5` por defecto) los reordena; se devuelven los `k` mejores con su `rerank_score`. `"rerank": false` en el cuerpo lo desactiva (orden por coseno, `rerank_score` nulo). Si falta la clave o el reranker falla, se responde igual con el orden por coseno. `search_documents(..., reranker=None, candidates=30)` ofrece lo mismo en proceso.
-- Sin método de pago, Voyage limita a 3 RPM y 10K TPM: el indexado espera y reintenta solo, así que la primera corrida puede tardar unos minutos.
-
-## Mapa de cobertura y brechas
-
-`GET /coverage` resume cómo cubren los puntos de PSI el espacio O₂ × presión × gravedad y qué condiciones de misión no tienen evidencia. Filtro opcional: `?material_class=polymer`.
-
-- `regimes`: una entrada por régimen de gravedad (`microgravity` < 0.01 g, `lunar` < 0.25 g, `martian` < 0.6 g, `normal`), siempre las cuatro aunque estén vacías. Cada celda es de 5 % de O₂ × 10 kPa y trae conteos por resultado y por `point_type` (`test`/`limit`), `experiment_ids`, `needs_review_count` y puntos con O₂ o presión `assumed`. El régimen sale de `gravity_g`, no de la etiqueta `gravity_environment`.
-- `reference_conditions`: cada condición de [`data/reference/conditions.json`](data/reference/conditions.json) con sus fuentes y la evidencia cercana (±3 % de O₂ y ±10 kPa, en cualquier gravedad), cuántos puntos están en la gravedad de la condición y cuántos son medidos. `gap` es `true` con un `gap_reason`: `no_points`, `no_matching_gravity` (hay puntos cercanos, pero solo en otra gravedad) u `only_assumed_conditions`.
-- `totals`: puntos, experimentos, resultados, `needs_review` y valores asumidos.
-- Las constantes (tamaño de celda, tolerancias, umbrales de gravedad) viven en `src/atlas/coverage/domain/coverage.py`.
-
-`data/reference/conditions.json` (gravedad lunar y marciana, atmósfera de exploración de NASA, traje EVA, cabina de la ISS) cita una fuente con URL para cada valor numérico y se valida con Pydantic al responder. Para agregar una condición, copia una existente y cita la fuente; no se aceptan valores sin ella.
-
-## Consultas con agentes (`/query`)
-
-Para integrar el front sin gastar tokens ni levantar Postgres: `AGENTS_MOCK=1 .venv/bin/uvicorn atlas.main:app --reload`.
-El diseño de los agentes, el contrato de UI, los eventos SSE y las variables de entorno están en `curren_repo_context/`.
-
-## Despliegue en Railway
-
-El repositorio trae la configuración lista: [`Dockerfile`](Dockerfile) (Python 3.12, instala el paquete y copia `db/` y `data/`) y [`railway.json`](railway.json) (builder Dockerfile, `atlas-load` como *pre-deploy*, health check en `/health`).
-
-1. **Base de datos.** Crea en el proyecto de Railway una base Postgres con **pgvector** (plantilla *pgvector* de Railway); la plantilla estándar de Postgres no incluye la extensión que exige `db/schema.sql`.
-2. **Servicio.** Crea un servicio desde este repositorio con la rama `backend` como origen. Railway detecta `railway.json` y construye con el `Dockerfile`.
-3. **Variables** (pestaña *Variables* del servicio):
-
-   | Variable | Valor |
-   | --- | --- |
-   | `DATABASE_URL` | Referencia a la base: `${{pgvector.DATABASE_URL}}` (ajusta al nombre de tu servicio) |
-   | `VOYAGE_API_KEY` | Clave de Voyage AI (búsqueda y reranking) |
-   | `CLAUDE_CODE_OAUTH_TOKEN` | Token de Claude Code para los agentes |
-   | `CORS_ORIGINS` | `["https://<tu-proyecto>.vercel.app"]`; solo hace falta si un navegador llama directo a la API |
-   | `AGENTS_MOCK` | `0` en producción; `1` responde `/query` sin Claude ni Voyage |
-
-   El resto (`AGENT_MODEL`, `AGENT_EFFORT`, `COMPOSITOR_MODE`, …) tiene valores por defecto; ver `.env.example` y `curren_repo_context/env.md`. `PORT` lo inyecta Railway.
-4. **Dominio.** En *Settings → Networking* genera un dominio público y úsalo como `ATLAS_API_URL` en Vercel.
-5. **Índice RAG (una vez, y cada vez que cambie `data/`).** `atlas-load` corre en cada despliegue y es idempotente; el indexado gasta cuota de Voyage, así que se lanza a mano:
-
-   ```bash
-   railway run atlas-index
-   ```
-
-Notas:
-
-- El front consulta la API desde sus rutas de servidor (`/api/atlas/*`), así que el navegador nunca habla directo con Railway y CORS no interviene en el flujo normal.
-- `/query` puede transmitir hasta ~120 s; el front ya fija `maxDuration` en su ruta de Vercel para esperarlo.
-- La caché de respuestas (`data/query_cache.json`) vive en el disco efímero del contenedor y se reinicia en cada despliegue. Para conservarla, monta un volumen y apunta `QUERY_CACHE_FILE` a él.
-- Prueba local de la imagen: `docker build -t atlas-api . && docker run --rm -e PORT=8000 -e AGENTS_MOCK=1 -p 8000:8000 atlas-api`.
-
-## Pruebas
-
-```bash
-.venv/bin/pytest
-ATLAS_TEST_DATABASE_URL=postgresql://atlas:atlas@localhost:5433/atlas .venv/bin/pytest
-```
-
-La segunda corrida incluye las pruebas contra Postgres; requiere haber ejecutado `atlas-load`. Las pruebas de búsqueda usan un embedder falso (sin red), crean un esquema temporal aislado y lo eliminan al terminar; no vacían el índice existente.
-
-## Estructura
-
-Cada módulo de `src/atlas/` es un área del producto con sus capas `domain`, `application`, `infrastructure` y `api`.
-
-| Módulo | Rol | Responsabilidad |
-| --- | --- | --- |
-| `experiments` | 1 | Contrato de datos, validación, carga a Postgres y endpoints del mapa |
-| `search` | 2 | Ingesta de documentos, embeddings con Voyage, pgvector, reranker y citas |
-| `coverage` | 1 | Mapa de cobertura y brechas (`GET /coverage`) con condiciones de referencia de misión |
-| `agents` | 3 | Orquestador en Python, clasificador, analista (filtros en Python sobre los experimentos), investigador (RAG) y compositor; extractor (offline) pendiente |
-| `query` | 3 y 5 | `POST`/`GET /query` con streaming SSE del JSON de UI, caché de demo en archivo |
-| `shared` | 3 | Configuración, conexión a la base y dependencias de FastAPI |
-
-Otros directorios:
-
-- `db/schema.sql`: esquema idempotente (`experiments`, `experiment_tests`, `document_chunks`).
-- `data/experiments/PSI-<n>.json`: un archivo por investigación.
-- `data/raw/PSI-<n>/`: copia sin cambios de la tabla experimental de PSI.
-- `data/search/sources.json`: investigaciones que solo alimentan la búsqueda con citas (no son puntos del mapa).
-- `data/schema/experiment.schema.json`: JSON Schema generado para el front; no se edita a mano.
-- `docs/data-extraction.md`: formato, reglas del equipo y prompt de extracción.
-- `curren_repo_context/`: contexto vigente del repo (flujo de agentes, contrato de UI, eventos SSE, variables de entorno).
-
-Las credenciales (`VOYAGE_API_KEY`, `CLAUDE_CODE_OAUTH_TOKEN`) van solo en `.env`, que nunca se sube a Git.
-
-### Protección del índice
-
-`atlas-index` aborta antes de abrir la base de datos si faltan `DATA_DIR` o
-`experiments/`, no hay registros JSON o algún registro es inválido. Una colección
-vacía nunca autoriza borrar el índice. Para retirar una investigación, elimínala
-de una colección válida y no vacía; la sincronización incremental sigue retirando
-los fragmentos obsoletos. No uses una carpeta vacía para reiniciar el índice.
-
-Las consultas de búsqueda limitan el embedding a 4 s y el reranking a 2 s
-(presupuesto de proveedores, sin incluir SQL). Un fallo del embedding devuelve
-503 sin detalles del proveedor; el reranker conserva el orden vectorial si falla
-o vence su plazo. La ingesta mantiene sus reintentos de cuota. `/search` y el
-investigador solo toman una conexión del pool durante la consulta SQL.
-
-### Actualización de la base: significado del oxígeno
-
-El contrato 1.1 añade `o2_basis` (`ambient` por defecto, `oxidizer_stream` para
-el oxígeno del quemador). Los 153 ensayos inversos de PSI-159 conservan sus
-mediciones y citas, pero quedan fuera de filtros atmosféricos O₂/presión y de
-`/coverage`. El conjunto completo sigue disponible sin filtros y en RAG.
-Con los archivos actuales: 1115 observaciones completas; 962 puntos atmosféricos
-en cobertura. El filtro lunar devuelve 18 puntos de PSI-159, no 45; los otros
-27 describen la corriente oxidante, no una atmósfera de hábitat.
-
-Antes de desplegar, con respaldo y autorización sobre la base correspondiente:
-
-1. Ejecuta `atlas-validate` para verificar los archivos y el esquema exportado.
-2. Ejecuta `atlas-load`: aplica `db/schema.sql` de forma idempotente, añade la
-   columna plana y actualiza los registros JSON desde los archivos validados.
-3. Ejecuta `atlas-index` para refrescar los fragmentos y sus etiquetas de O₂.
-
-La migración protege filas planas antiguas mediante la identidad exacta del CSV
-inverso citado. Las lecturas de JSON anteriores al reload reconocen esa misma
-fuente si falta `o2_basis`; nunca interpretan las notas libres. El backfill no
-reescribe el JSON: `atlas-load` completa esa actualización. El despliegue y estas
-operaciones **no** fueron ejecutados como parte de las pruebas locales.
-
-`test_id` debe ser único dentro de cada investigación; puede repetirse entre
-investigaciones. `atlas-load` informa el archivo y los IDs duplicados y aborta
-antes de conectar si el lote contiene cualquier archivo inválido o está vacío.
-Corrige los archivos y vuelve a validar; no se carga parcialmente un lote inválido.
+- [Referencia técnica: endpoints, búsqueda, pruebas y operación](docs/referencia.md)
+- [Despliegue (Railway, base con pgvector y Vercel)](docs/deploy.md)
+- [Formato y reglas de extracción de datos PSI](docs/data-extraction.md)
+- [Flujo de los agentes, contrato de UI y eventos SSE](curren_repo_context/README.md)

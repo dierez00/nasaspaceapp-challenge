@@ -1,3 +1,9 @@
+# Atlas del Fuego Lunar
+
+Frontend interactivo en `/`, con datos sintéticos y copiloto simulado. Consulta [arquitectura, contratos y conexión futura a FastAPI](docs/atlas-frontend.md).
+
+Para la demo: `pnpm install`, `pnpm prisma:generate`, `pnpm dev`. No requiere Supabase en ejecución. Las instrucciones siguientes describen la base SaaS que se conserva para futuras funciones autenticadas.
+
 # Plantilla SaaS
 
 Starter multi-tenant para comenzar productos web con Next.js App Router, Supabase Auth, PostgreSQL y Prisma. Incluye autenticación, organizaciones, roles, rutas protegidas, pruebas y CI; el dominio de negocio queda deliberadamente vacío.

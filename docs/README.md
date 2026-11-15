@@ -1,5 +1,6 @@
 # Documentación
 
-Decisiones de arquitectura, contratos y procedimientos del frontend del Atlas. La visión general, la arquitectura completa y el despliegue están en el [README principal](../README.md).
+Documentación técnica del frontend. La presentación del proyecto está en el [README principal](../README.md).
 
+- [Despliegue (Vercel y Railway)](deploy.md)
 - [Atlas: frontend, contratos y adaptadores](atlas-frontend.md)

@@ -27,3 +27,7 @@ test-results/
 .DS_Store
 .idea/
 .vscode/
+
+# Python caches from local data validation
+__pycache__/
+*.py[cod]

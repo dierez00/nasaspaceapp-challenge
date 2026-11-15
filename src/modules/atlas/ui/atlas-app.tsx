@@ -15,27 +15,60 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
   const { state, dispatch } = useAtlas();
   const reduced = useReducedMotion();
   return (
-    <main className="atlas-app bg-white text-[#0A0E17]" data-tab={state.tab}>
+    <main className="atlas-app" data-tab={state.tab}>
       <nav className="atlas-topbar" aria-label="Atlas">
         <Link
           className="atlas-brand"
           href="/"
           aria-label="Atlas del fuego lunar, inicio"
         >
-          <span className="brand-orbit">
-            a<span>✦</span>
-          </span>
-          <span>
-            ATLAS<span className="brand-divider">/</span>
-            <small>FUEGO LUNAR</small>
-          </span>
+          <svg className="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="10" fill="#0b3d91" />
+            <path
+              d="M16 6c.6 4.6 5.6 6.8 5.6 11.4A5.6 5.6 0 0 1 16 23a5.6 5.6 0 0 1-5.6-5.6C10.4 14 13 12.6 13.6 9.6c.9.9 1.2 2 1.2 3.2C16 11 16.2 8.4 16 6Z"
+              fill="#ff5a1f"
+            />
+            <path
+              d="M4.5 22.5c6 3.2 17 1.6 23-4.6"
+              fill="none"
+              stroke="#fff"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              opacity=".9"
+            />
+          </svg>
+          <span>Atlas del fuego lunar</span>
         </Link>
-        <div className="mission-label">
-          <span className="mission-line" /> LUNAR COMBUSTION RESEARCH
+        <div
+          className="workspace-tabs"
+          role="tablist"
+          aria-label="Vista de exploración"
+        >
+          <button
+            role="tab"
+            aria-selected={state.view === "lab"}
+            onClick={() => dispatch({ type: "view", view: "lab" })}
+          >
+            Laboratorio
+          </button>
+          <button
+            role="tab"
+            aria-selected={state.view === "map"}
+            onClick={() => dispatch({ type: "view", view: "map" })}
+          >
+            Mapa de evidencias
+          </button>
         </div>
-        <span className="demo-indicator">
+        <span
+          className="demo-indicator"
+          title={
+            mode === "demo"
+              ? "Los ensayos y respuestas son datos de demostración"
+              : "Ensayos cargados desde el catálogo remoto"
+          }
+        >
           <i />
-          {mode === "demo" ? "MODO DEMOSTRACIÓN" : "DATOS REMOTOS"}
+          {mode === "demo" ? "Modo demostración" : "Datos remotos"}
         </span>
       </nav>
       <div className="mobile-tabs" role="group" aria-label="Panel visible">
@@ -54,27 +87,6 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
       </div>
       <div className="atlas-split">
         <div className="simulation-workspace">
-          <div
-            className="workspace-tabs"
-            role="tablist"
-            aria-label="Vista de exploración"
-          >
-            <button
-              role="tab"
-              aria-selected={state.view === "lab"}
-              onClick={() => dispatch({ type: "view", view: "lab" })}
-            >
-              Laboratorio
-            </button>
-            <button
-              role="tab"
-              aria-selected={state.view === "map"}
-              onClick={() => dispatch({ type: "view", view: "map" })}
-            >
-              Mapa de evidencias
-            </button>
-            <span />
-          </div>
           {state.view === "lab" ? (
             <Laboratory />
           ) : (
@@ -93,13 +105,6 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
         </div>
         <CopilotPanel mode={mode} />
       </div>
-      <footer className="atlas-statusbar">
-        <span />
-        <span>FÍSICA VISUAL · NO PREDICTIVA</span>
-        <span>
-          18–50% O₂ <b>/</b> 0–16 psi <span className="status-cross">⊕</span>
-        </span>
-      </footer>
     </main>
   );
 }

@@ -54,103 +54,128 @@ function ScenarioControls({ slot }: { slot: Slot }) {
   ];
   return (
     <section className="scenario-controls" aria-label={`Controles ${slot}`}>
-      <div className="scenario-control-head">
-        <span className="slot-dot">{slot}</span>
-        <label>
-          Material
-          <select
-            aria-label={`Material ${slot}`}
-            value={scenario.material}
-            onChange={(event) => edit(slot, { material: event.target.value })}
+      <div className="control-row control-row-conditions">
+        <div className="cluster cluster-material">
+          <span className="slot-dot" aria-hidden="true">
+            {slot}
+          </span>
+          <label className="cluster-label">
+            Material
+            <select
+              aria-label={`Material ${slot}`}
+              value={scenario.material}
+              onChange={(event) => edit(slot, { material: event.target.value })}
+            >
+              {materials.map((material) => (
+                <option key={material}>{material}</option>
+              ))}
+            </select>
+          </label>
+          <button
+            className="restore-scenario"
+            onClick={() => {
+              dispatch({ type: "restore", slot });
+              clock.restart(!reduced);
+            }}
+            title="Restaurar condiciones originales"
+            aria-label={`Restaurar ${slot}`}
           >
-            {materials.map((material) => (
-              <option key={material}>{material}</option>
-            ))}
-          </select>
-        </label>
-        <button
-          className="restore-scenario"
-          onClick={() => {
-            dispatch({ type: "restore", slot });
-            clock.restart(!reduced);
-          }}
-          title="Restaurar condiciones originales"
-          aria-label={`Restaurar ${slot}`}
-        />
-      </div>
-      <div className="scenario-sliders">
+            ↶ Original
+          </button>
+        </div>
         {(
           [
             { key: "pressure", label: "Presión", unit: "psi", min: 0, max: 16 },
             { key: "oxygen", label: "Oxígeno", unit: "% O₂", min: 18, max: 50 },
           ] as const
-        ).map((control) => (
-          <div className="condition-control" key={control.key}>
-            <div>
-              <label htmlFor={`${slot}-${control.key}`}>{control.label}</label>
-              <div>
-                <input
-                  type="number"
-                  aria-label={`${control.label} numérica ${slot}`}
-                  min={control.min}
-                  max={control.max}
-                  step="0.1"
-                  value={scenario[control.key]}
-                  onChange={(event) =>
-                    edit(slot, { [control.key]: event.target.valueAsNumber })
-                  }
-                />
-                <small>{control.unit}</small>
+        ).map((control) => {
+          const value = scenario[control.key];
+          const fill = Math.min(
+            100,
+            Math.max(0, ((value - control.min) / (control.max - control.min)) * 100),
+          );
+          return (
+            <div className="cluster condition-control" key={control.key}>
+              <div className="condition-head">
+                <label className="cluster-label" htmlFor={`${slot}-${control.key}`}>
+                  {control.label}
+                </label>
+                <div className="condition-value">
+                  <input
+                    type="number"
+                    aria-label={`${control.label} numérica ${slot}`}
+                    min={control.min}
+                    max={control.max}
+                    step="0.1"
+                    value={value}
+                    onChange={(event) =>
+                      edit(slot, { [control.key]: event.target.valueAsNumber })
+                    }
+                  />
+                  <small>{control.unit}</small>
+                </div>
               </div>
+              <input
+                id={`${slot}-${control.key}`}
+                aria-label={`${control.label} ${slot}`}
+                type="range"
+                min={control.min}
+                max={control.max}
+                step="0.1"
+                value={value}
+                style={{ "--fill": `${fill}%` } as React.CSSProperties}
+                onChange={(event) =>
+                  edit(slot, { [control.key]: Number(event.target.value) })
+                }
+              />
             </div>
-            <input
-              id={`${slot}-${control.key}`}
-              aria-label={`${control.label} ${slot}`}
-              type="range"
-              min={control.min}
-              max={control.max}
-              step="0.1"
-              value={scenario[control.key]}
-              onChange={(event) =>
-                edit(slot, { [control.key]: Number(event.target.value) })
-              }
-            />
-          </div>
-        ))}
+          );
+        })}
       </div>
-      <div className="scenario-buttons">
-        <div role="group" aria-label={`Gravedad ${slot}`}>
-          {(["micro", "lunar", "earth"] as const).map((gravity) => (
-            <button
-              key={gravity}
-              aria-label={`${gravityLabels[gravity]} ${slot}`}
-              aria-pressed={scenario.gravity === gravity}
-              onClick={() => edit(slot, { gravity })}
-            >
-              {gravityLabels[gravity]}
-              <small>
-                {gravity === "micro"
-                  ? "ISS"
-                  : gravity === "lunar"
-                    ? "LUNA"
-                    : "TIERRA"}
-              </small>
-            </button>
-          ))}
-        </div>
-        <div role="group" aria-label={`Estado de llama ${slot}`}>
-          {(["ignition", "propagation", "extinction"] as const).map(
-            (flameState) => (
+      <div className="control-row control-row-modes">
+        <div className="cluster">
+          <span className="cluster-label">Gravedad</span>
+          <div className="segmented" role="group" aria-label={`Gravedad ${slot}`}>
+            {(["micro", "lunar", "earth"] as const).map((gravity) => (
               <button
-                key={flameState}
-                aria-label={`${stateLabels[flameState]} ${slot}`}
-                aria-pressed={scenario.flameState === flameState}
-                onClick={() => edit(slot, { flameState })}
+                key={gravity}
+                data-gravity={gravity}
+                aria-label={`${gravityLabels[gravity]} ${slot}`}
+                aria-pressed={scenario.gravity === gravity}
+                onClick={() => edit(slot, { gravity })}
               >
-                {stateLabels[flameState]}
+                {gravityLabels[gravity]}
+                <small>
+                  {gravity === "micro"
+                    ? "ISS"
+                    : gravity === "lunar"
+                      ? "Luna"
+                      : "Tierra"}
+                </small>
               </button>
-            ),
-          )}
+            ))}
+          </div>
+        </div>
+        <div className="cluster">
+          <span className="cluster-label">Fase de la llama</span>
+          <div
+            className="segmented"
+            role="group"
+            aria-label={`Estado de llama ${slot}`}
+          >
+            {(["ignition", "propagation", "extinction"] as const).map(
+              (flameState) => (
+                <button
+                  key={flameState}
+                  aria-label={`${stateLabels[flameState]} ${slot}`}
+                  aria-pressed={scenario.flameState === flameState}
+                  onClick={() => edit(slot, { flameState })}
+                >
+                  {stateLabels[flameState]}
+                </button>
+              ),
+            )}
+          </div>
         </div>
       </div>
     </section>
@@ -186,6 +211,7 @@ function Playback() {
         max="8"
         step="0.01"
         value={time}
+        style={{ "--fill": `${(time / 8) * 100}%` } as React.CSSProperties}
         onChange={(event) => {
           clock.pause();
           clock.seek(Number(event.target.value));
@@ -194,7 +220,7 @@ function Playback() {
       <output data-testid="simulation-time">
         {time.toFixed(1)} <span>/ 8.0 s ↻</span>
       </output>
-      <span className="timeline-note" />
+      <span className="timeline-note">Bucle de 8 s</span>
     </div>
   );
 }
@@ -246,11 +272,10 @@ export function Laboratory() {
     <section className="laboratory" aria-label="Laboratorio de combustión">
       <header className="lab-heading">
         <div>
-          <p className="micro-label">CÁMARA DE COMBUSTIÓN / LAB 01</p>
           <h2>
             El fuego, en otra gravedad<span>.</span>
           </h2>
-          <p>Enciende una pregunta. Explora lo que cambia.</p>
+          <p>Cambia las condiciones y observa cómo responde la llama.</p>
         </div>
         <button
           className={`compare-toggle ${state.compare ? "enabled" : ""}`}
@@ -265,7 +290,7 @@ export function Laboratory() {
       {state.compare && (
         <div className="comparison-toolbar">
           <span>
-            COMPARACIÓN SINCRONIZADA <i />
+            <i /> Comparación sincronizada
           </span>
           <div
             className="scenario-tabs"
@@ -323,12 +348,14 @@ export function Laboratory() {
                   <div>
                     <strong>{scenario.material}</strong>
                     <small>
-                      {scenario.experimentId ?? "ESCENARIO LIBRE"} ·{" "}
+                      {scenario.experimentId ? `${scenario.experimentId} · ` : ""}
                       {scenario.provenance === "hypothetical"
-                        ? "ESCENARIO HIPOTÉTICO"
+                        ? "Escenario hipotético"
                         : scenario.evidence === "demo"
-                          ? "ORIGINAL DEMO"
-                          : "CONDICIONES ORIGINALES"}
+                          ? "Original demo"
+                          : scenario.experimentId
+                            ? "Condiciones originales"
+                            : "Escenario libre"}
                     </small>
                   </div>
                   <span className="scene-gravity">
@@ -336,7 +363,11 @@ export function Laboratory() {
                   </span>
                 </div>
                 <div className="scene-side-label">
-                  {scenario.gravity === "micro"}
+                  {scenario.gravity === "micro"
+                    ? "Transporte difusivo"
+                    : scenario.gravity === "lunar"
+                      ? "Gravedad parcial · ilustración"
+                      : "Convección ascendente"}
                 </div>
                 {scenario.pressure === 0 && (
                   <div className="vacuum-notice">
@@ -365,8 +396,8 @@ export function Laboratory() {
         <div className="scene-bottom">
           <span>
             {unsupported
-              ? "VISTA SVG DE RESPALDO"
-              : "ARRASTRA PARA ORBITAR · RUEDA PARA ACERCAR"}
+              ? "Vista SVG de respaldo"
+              : "Arrastra para orbitar · rueda para acercar"}
           </span>
           <button
             aria-label="Restablecer cámara"
@@ -400,10 +431,9 @@ export function Laboratory() {
         ))}
       </div>
       <footer className="lab-disclaimer">
-        <span>◇ REPRESENTACIÓN CUALITATIVA</span>
         <p>
-          Los controles modifican la apariencia. No calculan combustión ni
-          límites de seguridad.
+          <strong>Representación cualitativa.</strong> Los controles modifican
+          la apariencia; no calculan combustión ni límites de seguridad.
         </p>
       </footer>
     </section>

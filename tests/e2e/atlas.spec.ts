@@ -65,7 +65,7 @@ for (const viewport of [
     await page.getByRole("button", { name: "1g B", exact: true }).click();
     await expect(page.getByTestId("scene-B")).toContainText("45.0");
     await expect(page.getByTestId("scene-B")).toContainText(
-      "ESCENARIO HIPOTÉTICO",
+      "Escenario hipotético",
     );
     await expect(page.getByTestId("simulation-time")).toContainText("4.0");
     if (viewport.width < 1024)

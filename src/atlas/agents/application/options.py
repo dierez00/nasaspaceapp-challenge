@@ -27,7 +27,17 @@ def load_prompt(name: str) -> str:
 
 
 def _json_schema(schema: dict[str, Any]) -> dict[str, Any]:
-    return {"type": "json_schema", "schema": schema}
+    return {"type": "json_schema", "schema": _strict_schema(schema)}
+
+
+def _strict_schema(node: Any) -> Any:
+    # The CLI validates --json-schema in strict mode and rejects Pydantic's OpenAPI-only
+    # "discriminator" keyword; oneOf stays, and Pydantic still validates the output.
+    if isinstance(node, dict):
+        return {k: _strict_schema(v) for k, v in node.items() if k != "discriminator"}
+    if isinstance(node, list):
+        return [_strict_schema(v) for v in node]
+    return node
 
 
 def _base(

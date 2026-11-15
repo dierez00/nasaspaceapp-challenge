@@ -534,7 +534,7 @@ def test_every_agent_is_isolated_and_only_gets_its_own_tools():
     assert list(analyst.mcp_servers) == ["analista"]
     assert researcher.allowed_tools == ["mcp__investigador__buscar_documentos"]
     assert composer.allowed_tools == [] and composer.mcp_servers == {}
-    assert composer.output_format == {"type": "json_schema", "schema": UIPayload.model_json_schema()}
+    assert composer.output_format == {"type": "json_schema", "schema": options._strict_schema(UIPayload.model_json_schema())}
     assert classifier.max_turns == 1
     assert classifier.model == "claude-haiku-5-5"
     assert classifier.output_format["schema"] == Classification.model_json_schema()
@@ -788,3 +788,11 @@ def test_rules_drop_agent_answers_with_invented_figures():
     ui = build_rules_ui(DEFAULT_CLASSIFICATION, analyst, RESEARCHER_OK)
     bodies = [c.body for c in ui.components if c.type == "text"]
     assert "Hay 7 ensayos." not in bodies and RESEARCHER_OK["respuesta"] in bodies
+
+
+def test_structured_output_schemas_have_no_openapi_discriminator():
+    # The Claude CLI rejects "discriminator" in strict --json-schema validation.
+    settings = Settings(claude_code_oauth_token=None)
+    for opts in (options.composer_options(settings), options.classifier_options(settings)):
+        assert "discriminator" not in json.dumps(opts.output_format["schema"])
+    assert "oneOf" in json.dumps(options.composer_options(settings).output_format["schema"])

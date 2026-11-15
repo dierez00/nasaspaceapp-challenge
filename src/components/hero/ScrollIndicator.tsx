@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useSmoothScroll } from "@/components/common/SmoothScrollProvider";
 
 export function ScrollIndicator() {
+  const { scrollTo } = useSmoothScroll();
   const [scrollY, setScrollY] = useState(0);
   const [isManual, setIsManual] = useState(false);
   const [manualProgress, setManualProgress] = useState(0);
@@ -53,15 +55,9 @@ export function ScrollIndicator() {
 
     window.requestAnimationFrame(animate);
 
-    const target =
-      document.getElementById("dashboard") ||
-      document.getElementById("componentes");
-
-    if (target) {
-      setTimeout(() => {
-        target.scrollIntoView({ behavior: "smooth" });
-      }, 250);
-    }
+    setTimeout(() => {
+      scrollTo("#dashboard", { duration: 1.8 });
+    }, 250);
   };
 
   // Desplazamiento efectivo interpolado (rango total extendido de 0 a 220px)

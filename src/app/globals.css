@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
 :root {
   /* Aerospace Dark Telemetry Palette */
@@ -19,7 +20,6 @@
 }
 
 html {
-  scroll-behavior: smooth;
   color-scheme: dark;
 }
 
@@ -34,10 +34,13 @@ body {
 
 /* Starfield animations */
 @keyframes starTwinkle {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.25;
     transform: scale(0.85);
   }
+
   50% {
     opacity: 1;
     transform: scale(1.15);
@@ -45,10 +48,13 @@ body {
 }
 
 @keyframes flameBreathing {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     filter: drop-shadow(0 0 35px rgba(56, 189, 248, 0.45));
   }
+
   50% {
     transform: scale(1.035);
     filter: drop-shadow(0 0 50px rgba(56, 189, 248, 0.65));
@@ -56,9 +62,12 @@ body {
 }
 
 @keyframes floatGentle {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-5px);
   }
@@ -89,13 +98,16 @@ body {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: #02040a;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #1e293b;
   border-radius: 3px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }

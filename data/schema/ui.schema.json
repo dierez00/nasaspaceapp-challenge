@@ -1,5 +1,317 @@
 {
   "$defs": {
+    "BriefComponent": {
+      "additionalProperties": false,
+      "description": "Evidence brief: verdict, evidence, gap, next steps and one text per audience.",
+      "properties": {
+        "type": {
+          "const": "brief",
+          "title": "Type",
+          "type": "string"
+        },
+        "verdict": {
+          "description": "One confident sentence of what the data shows",
+          "minLength": 1,
+          "title": "Verdict",
+          "type": "string"
+        },
+        "evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BriefEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gap": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BriefGap"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "next_steps": {
+          "items": {
+            "$ref": "#/$defs/BriefStep"
+          },
+          "maxItems": 3,
+          "title": "Next Steps",
+          "type": "array"
+        },
+        "lenses": {
+          "$ref": "#/$defs/BriefLenses"
+        }
+      },
+      "required": [
+        "type",
+        "verdict",
+        "evidence",
+        "gap",
+        "next_steps",
+        "lenses"
+      ],
+      "title": "BriefComponent",
+      "type": "object"
+    },
+    "BriefEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "columns": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Columns",
+          "type": "array"
+        },
+        "rows": {
+          "description": "Rows copied from a recorded query; one cell per column",
+          "items": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "title": "Rows",
+          "type": "array"
+        },
+        "experiment_ids": {
+          "description": "Experiments of these rows to highlight on the map",
+          "items": {
+            "pattern": "^PSI-\\d+$",
+            "type": "string"
+          },
+          "title": "Experiment Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "title",
+        "columns",
+        "rows",
+        "experiment_ids"
+      ],
+      "title": "BriefEvidence",
+      "type": "object"
+    },
+    "BriefGap": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "description": "What is missing, in one plain sentence",
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "pressure_kpa_min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Pressure Kpa Min"
+        },
+        "pressure_kpa_max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Pressure Kpa Max"
+        },
+        "o2_percent_min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "O2 Percent Min"
+        },
+        "o2_percent_max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "O2 Percent Max"
+        },
+        "gravity": {
+          "anyOf": [
+            {
+              "enum": [
+                "microgravity",
+                "lunar",
+                "martian",
+                "normal"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Gravity"
+        }
+      },
+      "required": [
+        "description",
+        "pressure_kpa_min",
+        "pressure_kpa_max",
+        "o2_percent_min",
+        "o2_percent_max",
+        "gravity"
+      ],
+      "title": "BriefGap",
+      "type": "object"
+    },
+    "BriefLenses": {
+      "additionalProperties": false,
+      "properties": {
+        "student": {
+          "description": "Concept in plain language plus one thinking question",
+          "minLength": 1,
+          "title": "Student",
+          "type": "string"
+        },
+        "teacher": {
+          "description": "Short class activity: hypothesis, variables, what to observe",
+          "minLength": 1,
+          "title": "Teacher",
+          "type": "string"
+        },
+        "researcher": {
+          "description": "Rigor: ranges, assumptions, o2_basis, sources to check",
+          "minLength": 1,
+          "title": "Researcher",
+          "type": "string"
+        }
+      },
+      "required": [
+        "student",
+        "teacher",
+        "researcher"
+      ],
+      "title": "BriefLenses",
+      "type": "object"
+    },
+    "BriefStep": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "simulate",
+            "propose_experiment",
+            "explore_map"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "label": {
+          "description": "Short action label in Spanish",
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "pressure_kpa": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Pressure Kpa"
+        },
+        "o2_percent": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "O2 Percent"
+        },
+        "gravity": {
+          "anyOf": [
+            {
+              "enum": [
+                "microgravity",
+                "lunar",
+                "martian",
+                "normal"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Gravity"
+        },
+        "material": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Material"
+        }
+      },
+      "required": [
+        "kind",
+        "label",
+        "pressure_kpa",
+        "o2_percent",
+        "gravity",
+        "material"
+      ],
+      "title": "BriefStep",
+      "type": "object"
+    },
     "Citation": {
       "additionalProperties": false,
       "properties": {
@@ -252,6 +564,7 @@
       "items": {
         "discriminator": {
           "mapping": {
+            "brief": "#/$defs/BriefComponent",
             "citations": "#/$defs/CitationsComponent",
             "gap_map": "#/$defs/GapMapComponent",
             "notice": "#/$defs/NoticeComponent",
@@ -275,10 +588,13 @@
           },
           {
             "$ref": "#/$defs/NoticeComponent"
+          },
+          {
+            "$ref": "#/$defs/BriefComponent"
           }
         ]
       },
-      "maxItems": 6,
+      "maxItems": 7,
       "minItems": 1,
       "title": "Components",
       "type": "array"

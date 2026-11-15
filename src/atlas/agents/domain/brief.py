@@ -1,0 +1,247 @@
+"""Evidence brief built in Python: gap bounds, verdict, next steps and audience lenses.
+
+Everything numeric in a brief is computed here from the question or from what the analyst
+recorded, never by the LLM. The rules composer uses these builders directly; grounding uses
+them to replace what the composer wrote when it is not backed by the data.
+"""
+
+import re
+from typing import Any
+
+from atlas.agents.domain.classification import Classification
+from atlas.agents.domain.ui import (
+    BriefComponent,
+    BriefEvidence,
+    BriefGap,
+    BriefLenses,
+    BriefStep,
+)
+
+MAX_STEPS = 3
+EVIDENCE_TITLE = "Ensayos consultados"
+BRIEF_GRAVITIES = ("microgravity", "lunar", "martian", "normal")
+_GRAVITY_LABEL = {
+    "microgravity": "microgravedad",
+    "lunar": "gravedad lunar",
+    "martian": "gravedad marciana",
+    "normal": "gravedad normal",
+}
+_GRAVITY_WORDS = (
+    ("microgravity", ("microgravedad", "microgravity")),
+    ("lunar", ("lunar", "luna")),
+    ("martian", ("marciana", "marte", "martian")),
+)
+_MIN_WORDS = r"(?:m[aá]s de|mayor(?:es)? (?:a|que|de)|por encima de|al menos|>=|≥|>)"
+_MAX_WORDS = r"(?:menos de|menor(?:es)? (?:a|que|de)|por debajo de|como m[aá]ximo|<=|≤|<)"
+_NUMBER = r"(\d+(?:[.,]\d+)?)"
+_O2_MIN = re.compile(rf"{_MIN_WORDS}\s*{_NUMBER}\s*%")
+_O2_MAX = re.compile(rf"{_MAX_WORDS}\s*{_NUMBER}\s*%")
+_PRESSURE_MIN = re.compile(rf"{_MIN_WORDS}\s*{_NUMBER}\s*kpa", re.IGNORECASE)
+_PRESSURE_MAX = re.compile(rf"{_MAX_WORDS}\s*{_NUMBER}\s*kpa", re.IGNORECASE)
+_O2_TOPIC = re.compile(r"o2|o₂|ox[ií]geno|oxygen", re.IGNORECASE)
+
+
+def compute_gap(question: str, queries: list[dict[str, Any]]) -> BriefGap | None:
+    """Gap region from the recorded query filters (or the question), with a plain description.
+
+    A gap exists when the last query with filters found no tests, or when its grouped rows
+    show a gravity regime of the region that has no tests.
+    """
+    filtered = [q for q in queries if isinstance(q.get("filtros"), dict)]
+    last = filtered[-1] if filtered else None
+    filters = (last or {}).get("filtros") or {}
+    bounds = {
+        "o2_percent_min": _num(filters.get("o2_min")),
+        "o2_percent_max": _num(filters.get("o2_max")),
+        "pressure_kpa_min": _num(filters.get("presion_min_kpa")),
+        "pressure_kpa_max": _num(filters.get("presion_max_kpa")),
+    }
+    if all(v is None for v in bounds.values()):
+        bounds = _bounds_from_question(question)
+    gravity = _single_gravity(filters.get("gravity_environment")) or _gravity_from_question(question)
+
+    has_bounds = any(v is not None for v in bounds.values())
+    condition = _describe_condition(bounds)
+    if last is not None and last.get("total") == 0 and (has_bounds or gravity):
+        where = f" en {_GRAVITY_LABEL[gravity]}" if gravity else ""
+        what = f" con {condition}" if condition else " con esas condiciones"
+        return BriefGap(description=f"No hay ensayos registrados{what}{where}.", gravity=gravity, **bounds)
+
+    missing = _missing_gravity(last)
+    if missing is not None:
+        what = f" con {condition}" if condition else " con estas condiciones"
+        return BriefGap(
+            description=f"No hay ensayos en {_GRAVITY_LABEL[missing]}{what}.", gravity=missing, **bounds
+        )
+    return None
+
+
+def gap_numbers(gap: BriefGap | None) -> list[float]:
+    if gap is None:
+        return []
+    values = (gap.pressure_kpa_min, gap.pressure_kpa_max, gap.o2_percent_min, gap.o2_percent_max)
+    return [v for v in values if v is not None]
+
+
+def default_verdict(classification: Classification, queries: list[dict[str, Any]], has_sources: bool) -> str:
+    with_rows = [q for q in queries if q.get("total") is not None]
+    if with_rows:
+        total = with_rows[-1]["total"]
+        if total == 0:
+            return "El Atlas no tiene ensayos con esas condiciones."
+        if classification.tipo == "huecos":
+            return f"El Atlas cubre estas condiciones con {total} registros; lo que queda fuera es el hueco."
+        return f"Los datos del Atlas muestran {total} registros con esas condiciones."
+    if has_sources:
+        return "Los informes de NASA PSI explican este tema y los fragmentos citados lo respaldan."
+    return "El Atlas no tiene datos ni documentos que respondan a esta pregunta."
+
+
+def default_evidence(queries: list[dict[str, Any]]) -> BriefEvidence | None:
+    """The last recorded table, copied as is."""
+    tables = [q for q in queries if q.get("columns") and q.get("rows")]
+    if not tables:
+        return None
+    last = tables[-1]
+    return BriefEvidence(
+        title=EVIDENCE_TITLE,
+        columns=last["columns"],
+        rows=last["rows"],
+        experiment_ids=experiment_ids(last["columns"], last["rows"]),
+    )
+
+
+def experiment_ids(columns: list[str], rows: list[list[Any]]) -> list[str]:
+    if "experiment_id" not in columns:
+        return []
+    index = columns.index("experiment_id")
+    return sorted({r[index] for r in rows if isinstance(r[index], str) and re.fullmatch(r"PSI-\d+", r[index])})
+
+
+def default_steps(gap: BriefGap | None, has_data: bool) -> list[BriefStep]:
+    steps: list[BriefStep] = []
+    if gap is not None or has_data:
+        steps.append(default_step("simulate", gap))
+    if gap is not None:
+        steps.append(default_step("propose_experiment", gap))
+    steps.append(default_step("explore_map", gap))
+    return steps[:MAX_STEPS]
+
+
+_STEP_LABELS = {
+    "simulate": "Simular este escenario en el laboratorio",
+    "propose_experiment": "Proponer un ensayo en esa región",
+    "explore_map": "Ver estas condiciones en el mapa",
+}
+
+
+def default_step(kind: str, gap: BriefGap | None) -> BriefStep:
+    params: dict[str, Any] = {"pressure_kpa": None, "o2_percent": None, "gravity": None, "material": None}
+    if gap is not None and kind != "explore_map":
+        params["pressure_kpa"] = _first(gap.pressure_kpa_min, gap.pressure_kpa_max)
+        params["o2_percent"] = _first(gap.o2_percent_min, gap.o2_percent_max)
+        params["gravity"] = gap.gravity
+    return BriefStep(kind=kind, label=_STEP_LABELS[kind], **params)  # type: ignore[arg-type]
+
+
+def default_lenses(gap: BriefGap | None, total: int | None) -> BriefLenses:
+    scope = f" ({total} registros)" if isinstance(total, int) and total > 0 else ""
+    where = f" en {_GRAVITY_LABEL[gap.gravity]}" if gap is not None and gap.gravity else ""
+    return BriefLenses(
+        student=(
+            "La llama depende del oxígeno, de la presión y de la gravedad: sin gravedad el aire caliente no sube "
+            f"y la llama se comporta distinto. Piensa: ¿qué crees que pasaría{where or ' con menos oxígeno'}?"
+        ),
+        teacher=(
+            f"Actividad: plantea una hipótesis sobre estas condiciones{where}. Cambia una sola variable "
+            "(oxígeno, presión o gravedad) en el simulador y observa si la llama se sostiene, cambia de forma "
+            "o se apaga."
+        ),
+        researcher=(
+            f"Revisa los rangos de O₂ y presión de los datos{scope}, la base del O₂ (atmósfera o corriente de "
+            "oxidante), los ensayos marcados para revisión y contrasta con las fuentes citadas."
+        ),
+    )
+
+
+def build_rules_brief(
+    classification: Classification, queries: list[dict[str, Any]], has_sources: bool, question: str
+) -> BriefComponent:
+    queries = [q for q in queries if q.get("columns")]
+    gap = compute_gap(question, queries)
+    evidence = default_evidence(queries)
+    totals = [q["total"] for q in queries if isinstance(q.get("total"), int)]
+    total = totals[-1] if totals else None
+    return BriefComponent(
+        type="brief",
+        verdict=default_verdict(classification, queries, has_sources),
+        evidence=evidence,
+        gap=gap,
+        next_steps=default_steps(gap, evidence is not None),
+        lenses=default_lenses(gap, total),
+    )
+
+
+def _bounds_from_question(question: str) -> dict[str, float | None]:
+    o2_topic = bool(_O2_TOPIC.search(question))
+    return {
+        "o2_percent_min": _match(_O2_MIN, question) if o2_topic else None,
+        "o2_percent_max": _match(_O2_MAX, question) if o2_topic else None,
+        "pressure_kpa_min": _match(_PRESSURE_MIN, question),
+        "pressure_kpa_max": _match(_PRESSURE_MAX, question),
+    }
+
+
+def _match(pattern: re.Pattern[str], text: str) -> float | None:
+    found = pattern.search(text)
+    return float(found.group(1).replace(",", ".")) if found else None
+
+
+def _describe_condition(bounds: dict[str, float | None]) -> str:
+    parts = []
+    parts.extend(_range("O₂", " %", bounds["o2_percent_min"], bounds["o2_percent_max"]))
+    parts.extend(_range("presión", " kPa", bounds["pressure_kpa_min"], bounds["pressure_kpa_max"]))
+    return " y ".join(parts)
+
+
+def _range(name: str, unit: str, low: float | None, high: float | None) -> list[str]:
+    if low is not None and high is not None:
+        return [f"{name} entre {_fmt(low)} y {_fmt(high)}{unit}"]
+    if low is not None:
+        return [f"{name} de al menos {_fmt(low)}{unit}"]
+    if high is not None:
+        return [f"{name} de hasta {_fmt(high)}{unit}"]
+    return []
+
+
+def _fmt(value: float) -> str:
+    return str(int(value)) if float(value).is_integer() else str(value)
+
+
+def _num(value: Any) -> float | None:
+    return float(value) if isinstance(value, (int, float)) and not isinstance(value, bool) else None
+
+
+def _first(*values: float | None) -> float | None:
+    return next((v for v in values if v is not None), None)
+
+
+def _single_gravity(value: Any) -> str | None:
+    if isinstance(value, list) and len(value) == 1 and value[0] in BRIEF_GRAVITIES:
+        return value[0]
+    return None
+
+
+def _gravity_from_question(question: str) -> str | None:
+    text = question.casefold()
+    found = [g for g, words in _GRAVITY_WORDS if any(re.search(rf"\b{w}\b", text) for w in words)]
+    return found[0] if len(found) == 1 else None
+
+
+def _missing_gravity(query: dict[str, Any] | None) -> str | None:
+    """Lunar or martian regime absent from the grouped rows of the last query."""
+    if not query or "gravity_environment" not in (query.get("columns") or []) or not query.get("rows"):
+        return None
+    index = query["columns"].index("gravity_environment")
+    present = {r[index] for r in query["rows"]}
+    return next((g for g in ("lunar", "martian") if g not in present), None)

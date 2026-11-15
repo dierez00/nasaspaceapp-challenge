@@ -11,6 +11,10 @@ from the tools, not from the LLM:
              Items that do not match are dropped.
 - gap_map:   experiment_ids must appear in the logged rows or fragments. If none
              is left, the experiments of the logged table are used instead.
+- brief:     evidence is a recorded table (replaced otherwise); the gap bounds are computed
+             in Python from the filters, never taken from the LLM; next-step figures must
+             be in the data or the gap; verdict and each audience lens are replaced by the
+             rules text when they hold figures that are not in the data.
 - free text: summary, text, notice, table titles and the gap_map note may only
              contain figures that appear in the data (cells, totals, correlation,
              fragment text) or in the question, PSI ids that appear in the data and
@@ -21,7 +25,13 @@ import math
 import re
 from typing import Any
 
+from atlas.agents.domain import brief as brief_rules
+from atlas.agents.domain.classification import DEFAULT_CLASSIFICATION
 from atlas.agents.domain.ui import (
+    BriefComponent,
+    BriefEvidence,
+    BriefGap,
+    BriefStep,
     Citation,
     CitationsComponent,
     GapMapComponent,
@@ -32,6 +42,7 @@ from atlas.agents.domain.ui import (
 )
 
 AgentResult = dict[str, Any] | None
+MAX_COMPONENTS = 7
 
 NO_GAP_IDS_NOTE = "Sin experimentos concretos para resaltar."
 FALLBACK_TABLE_TITLE = "Ensayos consultados"
@@ -58,7 +69,17 @@ class Evidence:
         for source in self.sources:
             numbers.update(_numbers_in(source["content"]))
         numbers.update(_numbers_in(question))
+        self.question = question
+        self.gap = brief_rules.compute_gap(question, self.queries)
+        numbers.update(brief_rules.gap_numbers(self.gap))
         self.numbers = numbers
+        self.words = {question.casefold()} | {c.casefold() for q in self.queries for c in _cells(q) if isinstance(c, str)}
+
+    def knows_number(self, value: float | None) -> bool:
+        return value is None or any(math.isclose(value, n, rel_tol=1e-9, abs_tol=1e-9) for n in self.numbers)
+
+    def knows_word(self, word: str | None) -> bool:
+        return not word or any(word.casefold() in w for w in self.words)
 
     def table_ids(self) -> list[str]:
         """Experiments of the last logged table, as the rules composer highlights them."""
@@ -82,7 +103,10 @@ class Evidence:
 
 
 def ground_ui(
-    ui: UIPayload, evidence: Evidence, fallback_summary: str
+    ui: UIPayload,
+    evidence: Evidence,
+    fallback_summary: str,
+    fallback_brief: BriefComponent | None = None,
 ) -> tuple[UIPayload | None, list[str]]:
     """Returns the grounded UI (None if nothing but notices is left) and what was corrected."""
     components: list[Any] = []
@@ -99,6 +123,15 @@ def ground_ui(
         summary = fallback_summary
         fixes.append("summary reemplazado")
 
+    briefs = [c for c in components if isinstance(c, BriefComponent)]
+    if len(briefs) > 1:
+        components = [c for c in components if not isinstance(c, BriefComponent)]
+        components.insert(0, briefs[0])
+        fixes.append("brief duplicado descartado")
+    if not briefs and fallback_brief is not None and any(c.type != "notice" for c in components):
+        components.insert(0, fallback_brief)
+        fixes.append("brief añadido")
+
     if not any(c.type != "notice" for c in components):
         return None, fixes
     return UIPayload(summary=summary, components=components), fixes
@@ -111,10 +144,73 @@ def _ground_component(component: Any, evidence: Evidence) -> Any:
         return _ground_citations(component, evidence.sources)
     if isinstance(component, GapMapComponent):
         return _ground_gap_map(component, evidence)
+    if isinstance(component, BriefComponent):
+        return _ground_brief(component, evidence)
     if isinstance(component, (TextComponent, NoticeComponent)):
         text = component.body if isinstance(component, TextComponent) else component.message
         return component if evidence.text_is_grounded(text) else None
     return component
+
+
+def _ground_brief(brief: BriefComponent, evidence: Evidence) -> BriefComponent:
+    queries = evidence.queries
+    totals = [q["total"] for q in queries if isinstance(q.get("total"), int)]
+    gap = _ground_brief_gap(brief.gap, evidence)
+    verdict = brief.verdict
+    if not evidence.text_is_grounded(verdict):
+        verdict = brief_rules.default_verdict(DEFAULT_CLASSIFICATION, queries, bool(evidence.sources))
+    defaults = brief_rules.default_lenses(gap, totals[-1] if totals else None)
+    lenses = brief.lenses.model_copy(
+        update={
+            name: text if evidence.text_is_grounded(text) else getattr(defaults, name)
+            for name, text in brief.lenses.model_dump().items()
+        }
+    )
+    steps = [_ground_step(step, gap, evidence) for step in brief.next_steps[: brief_rules.MAX_STEPS]]
+    return brief.model_copy(
+        update={
+            "verdict": verdict,
+            "evidence": _ground_brief_evidence(brief.evidence, evidence),
+            "gap": gap,
+            "next_steps": steps,
+            "lenses": lenses,
+        }
+    )
+
+
+def _ground_brief_evidence(table: BriefEvidence | None, evidence: Evidence) -> BriefEvidence | None:
+    if table is None:
+        return None
+    as_table = _ground_table(
+        TableComponent(type="table", title=table.title, columns=table.columns, rows=table.rows), evidence
+    )
+    if as_table is None:
+        return None
+    ids = [i for i in table.experiment_ids if i in evidence.ids]
+    if as_table.rows != table.rows or as_table.columns != table.columns or not ids:
+        ids = brief_rules.experiment_ids(as_table.columns, as_table.rows)
+    return BriefEvidence(title=as_table.title, columns=as_table.columns, rows=as_table.rows, experiment_ids=ids)
+
+
+def _ground_brief_gap(gap: BriefGap | None, evidence: Evidence) -> BriefGap | None:
+    """Bounds and gravity come from the computed gap; the LLM only may word the description."""
+    computed = evidence.gap
+    if computed is None or gap is None:
+        return computed
+    if evidence.text_is_grounded(gap.description):
+        return computed.model_copy(update={"description": gap.description})
+    return computed
+
+
+def _ground_step(step: BriefStep, gap: BriefGap | None, evidence: Evidence) -> BriefStep:
+    base = brief_rules.default_step(step.kind, gap)
+    label = step.label if evidence.text_is_grounded(step.label) else base.label
+    figures = {
+        "pressure_kpa": step.pressure_kpa if evidence.knows_number(step.pressure_kpa) else None,
+        "o2_percent": step.o2_percent if evidence.knows_number(step.o2_percent) else None,
+    }
+    material = step.material if evidence.knows_word(step.material) else None
+    return step.model_copy(update={"label": label, "material": material, **figures})
 
 
 def _ground_table(table: TableComponent, evidence: Evidence) -> TableComponent | None:

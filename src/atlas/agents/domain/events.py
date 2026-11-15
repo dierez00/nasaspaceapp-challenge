@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
+from atlas.agents.domain.ui import BRIEF_VERSION
+
 EventName = Literal["status", "ui", "error"]
 
 # Values of status.step, in the order they can appear.
@@ -21,3 +23,10 @@ class Event:
 
 def status(step: str) -> Event:
     return Event("status", {"step": step})
+
+
+def with_brief_version(data: dict[str, Any]) -> dict[str, Any]:
+    """Adds `brief_version` to a `ui` payload that carries a `brief` component, so the front can detect it."""
+    if any(isinstance(c, dict) and c.get("type") == "brief" for c in data.get("components", [])):
+        return {**data, "brief_version": BRIEF_VERSION}
+    return data

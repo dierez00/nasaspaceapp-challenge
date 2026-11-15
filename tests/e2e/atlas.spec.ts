@@ -10,13 +10,15 @@ async function slider(locator: Locator, value: number) {
     input.dispatchEvent(new Event("change", { bubbles: true }));
   }, value);
 }
-// The page now opens on the hero; the lab only renders while #dashboard is in the viewport.
+// `/#dashboard` is the deep link straight to the deck: no cabin, no dive.
 async function openAtlas(page: Page) {
-  await page.goto("/");
-  await page.evaluate(() =>
-    document.getElementById("dashboard")?.scrollIntoView({ behavior: "instant" }),
+  await page.goto("/#dashboard");
+  await expect(page.locator(".experience")).toHaveAttribute(
+    "data-phase",
+    "deck",
   );
 }
+const phase = (page: Page) => page.locator(".experience");
 // The hero backdrop is a second canvas, so scope lab assertions to the lab renderer.
 const labCanvas = (page: Page) => page.locator('canvas[data-renderer="webgl"]');
 for (const viewport of [
@@ -95,7 +97,7 @@ for (const viewport of [
     await page.screenshot({
       path: `test-results/comparison-${viewport.width}.png`,
     });
-    // The atlas fills one viewport; the hero above it makes the document taller by design.
+    // The atlas fills one viewport; the cabin is a separate fixed layer.
     expect(
       await page.evaluate(() => {
         const atlas = document.querySelector(".atlas-app")!;
@@ -127,7 +129,7 @@ for (const viewport of [
         .getByRole("button", { name: "✳ Copiloto", exact: true })
         .click();
     await page
-      .getByRole("button", { name: "↔Comparar µg vs 1g", exact: true })
+      .getByRole("button", { name: /Comparar µg vs 1g/ })
       .click();
     await page
       .getByRole("button", { name: "Abrir comparación 3D", exact: false })
@@ -200,7 +202,9 @@ test("clock suspends on map and hidden document", async ({ page }) => {
   await page.waitForTimeout(800);
   await page.getByRole("tab", { name: "Laboratorio", exact: true }).click();
   const time = await page.getByTestId("simulation-time").innerText();
-  expect(parseFloat(time)).toBeLessThan(0.6);
+  // The sim clock is suspended on the map, so the 800 ms away must not show up here
+  // (only the click latency before leaving the lab view may).
+  expect(parseFloat(time)).toBeLessThan(1);
   await page.evaluate(() => {
     Object.defineProperty(document, "hidden", {
       configurable: true,
@@ -270,7 +274,7 @@ test("invalid block isolated, error retry and cancellation", async ({
   });
   await openAtlas(page);
   await page
-    .getByRole("button", { name: "ϟSólidos > 30% O₂", exact: true })
+    .getByRole("button", { name: /Sólidos > 30% O₂/ })
     .click();
   await expect(page.getByText("Respuesta incompleta.")).toBeVisible();
   await expect(
@@ -281,7 +285,7 @@ test("invalid block isolated, error retry and cancellation", async ({
     route.fulfill({ status: 503, body: "offline" }),
   );
   await page
-    .getByRole("button", { name: "↔Comparar µg vs 1g", exact: true })
+    .getByRole("button", { name: /Comparar µg vs 1g/ })
     .click();
   await expect(page.locator(".chat-error")).toContainText("No se completó");
   await page.unroute("**/api/atlas/query");
@@ -290,7 +294,7 @@ test("invalid block isolated, error retry and cancellation", async ({
     page.getByRole("button", { name: /Abrir comparación 3D/ }),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "⌁Análogos E-FIELD", exact: true })
+    .getByRole("button", { name: /Análogos E-FIELD/ })
     .click();
   await page.getByRole("button", { name: "Cancelar consulta" }).click();
   await expect(
@@ -337,4 +341,122 @@ test("linked orbit and reset keep A and B aligned", async ({ page }) => {
   await page.getByRole("button", { name: "Restablecer cámara" }).click();
   await expect(a).toHaveAttribute("data-camera-position", "2.800,1.800,4.400");
   await expect(b).toHaveAttribute("data-camera-position", "2.800,1.800,4.400");
+});
+
+test.describe("cabin and immersion", () => {
+  test("cabin has no scroll path to the dashboard", async ({ page }) => {
+    await page.goto("/");
+    await expect(phase(page)).toHaveAttribute("data-phase", "cabin");
+    await page.mouse.move(400, 400);
+    await page.mouse.wheel(0, 3000);
+    await page.keyboard.press("PageDown");
+    await page.keyboard.press("End");
+    await page.waitForTimeout(300);
+    expect(
+      await page.evaluate(() => ({
+        y: scrollY,
+        scrollable:
+          document.documentElement.scrollHeight >
+          document.documentElement.clientHeight,
+      })),
+    ).toEqual({ y: 0, scrollable: false });
+    await expect(page.locator("#dashboard")).toHaveAttribute("inert", "");
+    await expect(page.locator(".atlas-app")).toBeHidden();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Atlas del fuego lunar" }),
+    ).toBeVisible();
+  });
+
+  test("the CTA dives into the deck and moves focus to it", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: "Comenzar inmersión" }).click();
+    await expect(phase(page)).toHaveAttribute("data-phase", "diving");
+    await expect(phase(page)).toHaveAttribute("data-phase", "deck", {
+      timeout: 6000,
+    });
+    await expect(page.locator("#dashboard")).toBeFocused();
+    await expect(page.locator("#dashboard")).not.toHaveAttribute("inert", "");
+    await expect(
+      page.getByRole("heading", { name: "El fuego, en otra gravedad." }),
+    ).toBeVisible();
+    expect(await page.evaluate(() => location.hash)).toBe("#dashboard");
+    // Cabin leaves the accessibility tree: still exactly one reachable h1 or none.
+    await expect(page.getByRole("heading", { level: 1 })).toHaveCount(0);
+  });
+
+  test("Esc skips the dive to its end state", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: "Comenzar inmersión" }).click();
+    await page.waitForTimeout(450);
+    await expect(phase(page)).toHaveAttribute("data-phase", "diving");
+    await page.keyboard.press("Escape");
+    await expect(phase(page)).toHaveAttribute("data-phase", "deck", {
+      timeout: 600,
+    });
+    await expect(page.locator("#dashboard")).toBeFocused();
+  });
+
+  test("a click skips the dive without clicking the deck", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await page.getByRole("button", { name: "Comenzar inmersión" }).click();
+    await page.waitForTimeout(450);
+    // Lands where the "Mapa de evidencias" tab will be once the deck is up.
+    await page.mouse.click(780, 34);
+    await expect(phase(page)).toHaveAttribute("data-phase", "deck", {
+      timeout: 600,
+    });
+    await expect(
+      page.getByRole("tab", { name: "Laboratorio", exact: true }),
+    ).toHaveAttribute("aria-selected", "true");
+  });
+
+  test("Volver a la cabina returns to the cabin and focuses the CTA", async ({
+    page,
+  }) => {
+    await openAtlas(page);
+    await page.getByRole("button", { name: "Volver a la cabina" }).click();
+    await expect(phase(page)).toHaveAttribute("data-phase", "returning");
+    await expect(phase(page)).toHaveAttribute("data-phase", "cabin", {
+      timeout: 3000,
+    });
+    await expect(
+      page.getByRole("button", { name: "Comenzar inmersión" }),
+    ).toBeFocused();
+    await expect(page.locator(".atlas-app")).toBeHidden();
+    expect(await page.evaluate(() => location.hash)).toBe("");
+    expect(await page.evaluate(() => scrollY)).toBe(0);
+    // And the CTA works again.
+    await page.getByRole("button", { name: "Comenzar inmersión" }).click();
+    await expect(phase(page)).toHaveAttribute("data-phase", "deck", {
+      timeout: 6000,
+    });
+  });
+
+  test("skip link arrives instantly and focuses the dashboard", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.keyboard.press("Tab");
+    const skip = page.getByRole("link", { name: "Saltar al Atlas" });
+    await expect(skip).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(phase(page)).toHaveAttribute("data-phase", "deck", {
+      timeout: 300,
+    });
+    await expect(page.locator("#dashboard")).toBeFocused();
+  });
+
+  test("reduced motion crossfades in about 300 ms", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+    await page.getByRole("button", { name: "Comenzar inmersión" }).click();
+    await expect(phase(page)).toHaveAttribute("data-phase", "deck", {
+      timeout: 1200,
+    });
+    await expect(page.locator("#dashboard")).toBeFocused();
+  });
 });

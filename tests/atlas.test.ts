@@ -120,11 +120,15 @@ describe("copilot contracts", () => {
       }))
         events.push(event);
       expect(events.at(-1)?.type).toBe("done");
-      expect(
-        events.filter((event) => event.type === "text-delta"),
-      ).toHaveLength(1);
-      if (text !== "Hola")
-        expect(events.some((event) => event.type === "ui-block")).toBe(true);
+      const briefs = events.filter(
+        (event) =>
+          event.type === "ui-block" &&
+          (event.block as { type?: string }).type === "EvidenceBrief",
+      );
+      const texts = events.filter((event) => event.type === "text-delta");
+      // Each question gets one answer: an evidence brief, or one explanation.
+      expect(briefs.length + texts.length).toBe(1);
+      if (text !== "Hola") expect(briefs).toHaveLength(1);
     }
   });
 });
@@ -270,33 +274,23 @@ describe("NASA PSI adapter", () => {
   it("answers guided queries from the PSI catalog", async () => {
     const { experiments } = toAtlasExperiments([record]);
     const gateway = new DemoCopilotGateway(experiments, "psi");
-    const text = [];
     const blocks = [];
     for await (const event of gateway.query({
       ...query,
       text: "Sólidos > 30% O₂",
     })) {
-      if (event.type === "text-delta") text.push(event.text);
-      if (event.type === "ui-block") blocks.push(event.block);
+      if (event.type === "ui-block") blocks.push(validateBlock(event.block));
     }
-    expect(text.join("")).toContain("Ninguna prueba con sólidos");
-    expect(blocks).toContainEqual({
-      type: "ExperimentCard",
-      experimentId: "PSI-1/T2",
-    });
+    const brief = blocks.find((block) => block.type === "EvidenceBrief");
+    expect(brief?.verdict).toContain("Ningún ensayo con sólidos supera el 30 %");
+    expect(brief?.evidence?.experimentIds).toEqual(["PSI-1"]);
+    expect(brief?.gap).toMatchObject({ o2PercentMin: 30.01, gravity: null });
   });
 });
 
 describe("FastAPI /query translation", () => {
   const sse = (event: string, data: unknown) =>
     `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
-  const catalog = [
-    {
-      ...demoExperiments[0],
-      id: "PSI-99/1-1",
-      provenance: "verified" as const,
-    },
-  ];
 
   it("turns status, ui and components into copilot events", async () => {
     const body = stream([
@@ -337,13 +331,11 @@ describe("FastAPI /query translation", () => {
       }),
     ]);
     const events = [];
-    for await (const event of translateBackendStream(body, "q1", catalog))
+    for await (const event of translateBackendStream(body, "q1"))
       events.push(event);
     expect(events.map((e) => e.type)).toEqual([
-      "agent-status",
-      "agent-status",
-      "agent-status",
-      "agent-status",
+      "progress",
+      "progress",
       "text-delta",
       "ui-block",
       "ui-block",
@@ -352,20 +344,21 @@ describe("FastAPI /query translation", () => {
       "ui-block",
       "done",
     ]);
-    expect(events[4]).toMatchObject({ text: "Resumen\n\nDetalle" });
+    expect(events[2]).toMatchObject({ text: "Resumen" });
     const blocks = events.flatMap((e) =>
       e.type === "ui-block" ? [validateBlock(e.block)] : [],
     );
     expect(blocks.map((b) => b.type)).toEqual([
-      "FallbackCard",
-      "GravityBounds",
-      "ExperimentCard",
+      "Narrative",
+      "DataTable",
+      "MapFocus",
       "SourceList",
-      "FallbackCard",
+      "Notice",
     ]);
-    expect(blocks[2]).toEqual({
-      type: "ExperimentCard",
-      experimentId: "PSI-99/1-1",
+    expect(blocks[2]).toMatchObject({
+      type: "MapFocus",
+      experimentIds: ["PSI-99"],
+      gravity: "lunar",
     });
   });
 
@@ -374,7 +367,6 @@ describe("FastAPI /query translation", () => {
     for await (const e of translateBackendStream(
       stream([sse("error", { message: "falló" })]),
       "q",
-      catalog,
     ))
       failed.push(e);
     expect(failed).toEqual([{ type: "error", queryId: "q", message: "falló" }]);
@@ -382,7 +374,6 @@ describe("FastAPI /query translation", () => {
     for await (const e of translateBackendStream(
       stream([sse("status", { step: "componiendo" })]),
       "q",
-      catalog,
     ))
       cut.push(e);
     expect(cut.at(-1)?.type).toBe("error");

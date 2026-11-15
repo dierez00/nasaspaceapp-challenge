@@ -49,21 +49,17 @@ export async function POST(request: Request) {
               "Content-Type": "application/json",
               Accept: "text/event-stream",
             },
-            // Backend worst case without cache is ~68 s (classifier 8 + agents 20 + composer 2 x 20).
+            // Briefs take 27-54 s, worst case ~108 s (classifier + agents + composer with retry).
             signal: AbortSignal.any([
               request.signal,
-              AbortSignal.timeout(90000),
+              AbortSignal.timeout(120000),
             ]),
             cache: "no-store",
           },
         );
         if (!upstream.ok || !upstream.body)
           return unavailable("Backend no disponible", 502);
-        events = translateBackendStream(
-          upstream.body,
-          parsed.data.queryId,
-          catalog,
-        );
+        events = translateBackendStream(upstream.body, parsed.data.queryId);
       } catch {
         return unavailable("No se pudo conectar con el backend", 502);
       }

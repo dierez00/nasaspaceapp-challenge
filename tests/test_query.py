@@ -12,6 +12,7 @@ from fastapi.testclient import TestClient
 from atlas.agents.application import options
 from atlas.agents.application.claude_agents import ClaudeAgents
 from atlas.agents.application.run_query import Timeouts, run_query
+from atlas.agents.domain.grounding import Evidence
 from atlas.agents.domain.classification import DEFAULT_CLASSIFICATION, Classification, classify_by_keywords
 from atlas.agents.domain.ensayos import MAX_ROWS, FiltroEnsayos, consultar
 from atlas.agents.domain.ui import UIPayload
@@ -664,3 +665,126 @@ def test_committed_ui_schema_matches_the_contract():
     committed = json.loads((Path(__file__).resolve().parents[1] / "data/schema/ui.schema.json").read_text())
 
     assert committed == UIPayload.model_json_schema(), "regenerate data/schema/ui.schema.json (see curren_repo_context)"
+
+
+# --- Grounding of the composer UI ------------------------------------------
+
+def ui_with(*components) -> dict:
+    return {"summary": "Respuesta.", "components": list(components)}
+
+
+TABLE_OK = {"type": "table", "title": "T", "columns": ["experiment_id", "material"], "rows": [["PSI-100", "PMMA"]]}
+CITATION_OK = {"experiment_id": "PSI-99", "source_file": "report.pdf", "section": "3.1", "quote": "flame   spread"}
+
+
+def composed(*components):
+    agents = FakeAgents(composer=[ui_with(*components)])
+    return ui_event(collect(run_query("q", agents, composer_mode="agent", timeouts=FAST)))
+
+
+def test_grounded_tables_and_citations_pass_unchanged():
+    ui = composed(TABLE_OK, {"type": "citations", "items": [CITATION_OK]})
+    assert ui.cacheable
+    table, citations = ui.data["components"]
+    assert table["rows"] == [["PSI-100", "PMMA"]]
+    assert citations["items"][0]["quote"] == "flame   spread"
+
+
+def test_an_invented_table_row_is_replaced_by_the_logged_table():
+    invented = {**TABLE_OK, "rows": [["PSI-100", "PMMA"], ["PSI-7", "wood"]]}
+    [table] = composed(invented).data["components"]
+    assert table["rows"] == ANALYST_OK["consultas"][0]["rows"]
+
+
+def test_a_table_with_unknown_columns_gets_the_logged_columns():
+    [table] = composed({**TABLE_OK, "columns": ["experiment_id", "o2"]}).data["components"]
+    assert table["columns"] == ["experiment_id", "material"]
+
+
+def test_citations_must_be_literal_text_of_a_logged_fragment():
+    items = [
+        CITATION_OK,
+        {**CITATION_OK, "quote": "The flame went out."},
+        {**CITATION_OK, "source_file": "other.pdf"},
+        {**CITATION_OK, "section": "inventada"},
+    ]
+    [citations] = composed({"type": "citations", "items": items}).data["components"]
+    assert len(citations["items"]) == 2
+    assert all(i["section"] == "3.1" for i in citations["items"])
+
+
+def test_gap_map_keeps_only_experiments_found_in_the_data():
+    gap = {"type": "gap_map", "title": "M", "experiment_ids": ["PSI-99", "PSI-1234"], "gravity_environment": None, "note": None}
+    [gap_map] = composed(gap).data["components"]
+    assert gap_map["experiment_ids"] == ["PSI-99"]
+
+
+def test_ui_with_nothing_grounded_falls_back_to_rules():
+    fake_quote = {"type": "citations", "items": [{**CITATION_OK, "quote": "Nada de esto existe."}]}
+    notice = {"type": "notice", "level": "info", "message": "Aviso."}
+    ui = composed(fake_quote, notice)
+    assert not ui.cacheable
+    assert {c["type"] for c in ui.data["components"]} >= {"table", "citations"}
+
+
+TABLE_WITH_TOTAL = {**ANALYST_OK["consultas"][0], "rows": [["PSI-99", 12.5], ["PSI-100", 3]], "total": 2}
+
+
+def evidence(question: str = "q") -> Evidence:
+    analyst = {"respuesta": None, "consultas": [{**TABLE_WITH_TOTAL, "columns": ["experiment_id", "o2"]}]}
+    researcher = {"respuesta": None, "fuentes": [{**RESEARCHER_OK["fuentes"][0], "content": "Flame spread at 1,283 mm in 2012."}]}
+    return Evidence(question, analyst, researcher)
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Hay 2 ensayos.",  # total
+        "PSI-99 llega a 12.5 y PSI-100 a 3.",  # cells and known ids
+        "El 12,5 del PSI-99.",  # decimal comma
+        "Se propagó 1,283 mm en 2012 [1].",  # figures of the fragment and a known ref
+        "A 30 kPa no hay datos.",  # figure taken from the question
+        "Sin cifras.",
+    ],
+)
+def test_text_with_figures_from_the_data_is_grounded(text):
+    assert evidence("¿Qué pasa a 30 kPa?").text_is_grounded(text)
+
+
+@pytest.mark.parametrize(
+    "text",
+    ["Hay 99 ensayos.", "PSI-99 llega a 12.6.", "Lo dice PSI-7.", "Según [2].", "El 50% se apagó."],
+)
+def test_invented_figures_ids_or_refs_are_not_grounded(text):
+    assert not evidence().text_is_grounded(text)
+
+
+def test_text_with_an_invented_figure_is_dropped():
+    ui = composed({"type": "text", "body": "Hay 99 ensayos."}, {"type": "text", "body": "PSI-99 usa cotton."})
+    assert [c["body"] for c in ui.data["components"]] == ["PSI-99 usa cotton."]
+
+
+def test_summary_with_an_invented_figure_is_replaced_by_the_rules_summary():
+    agents = FakeAgents(composer=[{"summary": "Hay 40 ensayos.", "components": [TABLE_OK]}])
+    ui = ui_event(collect(run_query("q", agents, composer_mode="agent", timeouts=FAST)))
+    assert ui.data["summary"] == "Comparación de los ensayos registrados en el Atlas."
+
+
+def test_gap_map_with_only_invented_ids_uses_the_experiments_of_the_table():
+    gap = {"type": "gap_map", "title": "M", "experiment_ids": ["PSI-1234"], "gravity_environment": None, "note": None}
+    [gap_map] = composed(gap).data["components"]
+    assert gap_map["experiment_ids"] == ["PSI-100", "PSI-99"]
+
+
+def test_gap_map_without_any_experiment_says_so():
+    gap = {"type": "gap_map", "title": "M", "experiment_ids": ["PSI-1234"], "gravity_environment": None, "note": None}
+    agents = FakeAgents(analyst={"respuesta": None, "consultas": []}, researcher=None, composer=[ui_with(gap)])
+    [gap_map] = ui_event(collect(run_query("q", agents, composer_mode="agent", timeouts=FAST))).data["components"]
+    assert gap_map["experiment_ids"] == [] and gap_map["note"] == "Sin experimentos concretos para resaltar."
+
+
+def test_rules_drop_agent_answers_with_invented_figures():
+    analyst = {**ANALYST_OK, "respuesta": "Hay 7 ensayos."}
+    ui = build_rules_ui(DEFAULT_CLASSIFICATION, analyst, RESEARCHER_OK)
+    bodies = [c.body for c in ui.components if c.type == "text"]
+    assert "Hay 7 ensayos." not in bodies and RESEARCHER_OK["respuesta"] in bodies

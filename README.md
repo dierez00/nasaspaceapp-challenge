@@ -17,6 +17,8 @@ docker compose up -d db          # Postgres 17 + pgvector en localhost:5433
 - API: <http://localhost:8000> · documentación interactiva en `/docs`
 - `GET /health`: estado de la API y de la base de datos
 - `GET /experiments` y `GET /experiments/{id}`: experimentos validados para el mapa
+  - Filtros opcionales de `GET /experiments`, con límites inclusivos: `min_o2_percent`, `max_o2_percent`, `min_pressure_kpa`, `max_pressure_kpa` y `exclude_assumed=true` (descarta puntos con O₂ o presión supuestos). Cada experimento conserva solo sus `tests` que cumplen y se omiten los que quedan sin ninguno; un rango invertido responde 422.
+  - Ejemplo, hábitat lunar (34 % O₂, 56.5 kPa en `data/reference/conditions.json`): `GET /experiments?min_o2_percent=30&max_pressure_kpa=70.3` devuelve solo PSI-159 (45 puntos). En las llamas inversas de PSI-159, `o2_percent` es la corriente que sale del quemador, no el aire de la cámara.
 - `GET /coverage`: cobertura del mapa y brechas frente a condiciones de misión
 
 ## Búsqueda (RAG)

@@ -276,3 +276,23 @@ def test_cache_entry_that_fails_the_contract_is_a_miss(tmp_path: Path):
     broken = {"question": "q", "summary": "x", "components": [{"type": "brief", "verdict": "sin el resto"}]}
     path.write_text(json.dumps({f"v2|{normalize('q')}": broken}), encoding="utf-8")
     assert FileQueryCache(path).get("q") is None
+
+
+def test_gap_uses_the_empty_query_even_if_a_later_one_has_data():
+    later = {"filtros": {}, "columns": ["material_class", "ensayos"], "rows": [["polymer", 3]], "total": 1}
+    gap = compute_gap(QUESTION, [EMPTY_QUERY, later])
+    assert gap is not None and gap.o2_percent_min == 30.0
+
+
+def test_grouped_experiment_lists_count_as_evidence_ids():
+    grouped = {
+        "filtros": {},
+        "columns": ["gravity_environment", "ensayos", "experimentos"],
+        "rows": [["microgravity", 5, "PSI-100, PSI-101"]],
+        "total": 1,
+    }
+    component = brief(
+        evidence={"title": "T", "columns": grouped["columns"], "rows": grouped["rows"], "experiment_ids": ["PSI-100"]}
+    )
+    assert ground(component, {"consultas": [grouped]}).evidence.experiment_ids == ["PSI-100"]
+    assert Evidence("q", {"consultas": [grouped]}, None).ids == {"PSI-100", "PSI-101"}

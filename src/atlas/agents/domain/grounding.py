@@ -275,7 +275,8 @@ def _cells(query: dict[str, Any]) -> list[Any]:
 
 
 def _ids_in(cells: list[Any]) -> set[str]:
-    return {c for c in cells if isinstance(c, str) and _PSI_ID.fullmatch(c)}
+    """PSI ids in string cells, also inside a grouped `experimentos` list ("PSI-1, PSI-2")."""
+    return {match.group(0) for c in cells if isinstance(c, str) for match in _PSI_ID.finditer(c)}
 
 
 def _numbers_in(value: Any) -> set[float]:

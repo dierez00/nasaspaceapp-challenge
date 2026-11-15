@@ -10,7 +10,7 @@ El orquestador no es una IA: es código Python (`agents/application/run_query.py
 | 1. Clasificador | Claude Haiku | Decide el tipo (huecos, comparar, evidencia o general) y si hacen falta datos, fuentes o ambos. Si tarda más de 8 s, se asume que hace falta todo |
 | 2a. Analista | Claude | Elige los filtros (O₂, presión, material, resultado…) y llama a `consultar_ensayos`. El cálculo lo hace Python; Claude solo elige los parámetros y redacta el resumen |
 | 2b. Investigador | Claude + Voyage | Busca fragmentos con `search_documents`, la misma búsqueda de `/search` (embeddings y reranker), y redacta la respuesta citando experimento, archivo y sección. Con `INVESTIGADOR_MODE=direct` no usa Claude |
-| 3. Compositor | Claude | Convierte los resultados en el JSON que dibuja el front. Si falla dos veces o tarda más de 20 s, el JSON se arma con reglas fijas, sin IA. Con `COMPOSITOR_MODE=rules` no usa Claude |
+| 3. Compositor | Claude | Convierte los resultados en el JSON que dibuja el front. Si falla dos veces o tarda más de 30 s, el JSON se arma con reglas fijas, sin IA. Con `COMPOSITOR_MODE=rules` no usa Claude |
 | 4. Anclaje | No | Comprueba tablas, citas, experimentos del mapa y cifras del texto contra lo que registraron las herramientas (`agents/domain/grounding.py`) |
 
 ## Antes de las preguntas

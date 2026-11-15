@@ -44,12 +44,30 @@ _O2_TOPIC = re.compile(r"o2|o₂|ox[ií]geno|oxygen", re.IGNORECASE)
 def compute_gap(question: str, queries: list[dict[str, Any]]) -> BriefGap | None:
     """Gap region from the recorded query filters (or the question), with a plain description.
 
-    A gap exists when the last query with filters found no tests, or when its grouped rows
-    show a gravity regime of the region that has no tests.
+    A gap exists when a recorded query with filters found no tests (the latest one wins), or
+    when the grouped rows of the last query show a lunar or martian regime with no tests.
     """
     filtered = [q for q in queries if isinstance(q.get("filtros"), dict)]
+    for query in reversed(filtered):
+        bounds, gravity = _region(question, query)
+        if query.get("total") == 0 and (any(v is not None for v in bounds.values()) or gravity):
+            condition = _describe_condition(bounds)
+            where = f" en {_GRAVITY_LABEL[gravity]}" if gravity else ""
+            what = f" con {condition}" if condition else " con esas condiciones"
+            return BriefGap(description=f"No hay ensayos registrados{what}{where}.", gravity=gravity, **bounds)
+
     last = filtered[-1] if filtered else None
-    filters = (last or {}).get("filtros") or {}
+    missing = _missing_gravity(last)
+    if last is None or missing is None:
+        return None
+    bounds, _ = _region(question, last)
+    condition = _describe_condition(bounds)
+    what = f" con {condition}" if condition else " con estas condiciones"
+    return BriefGap(description=f"No hay ensayos en {_GRAVITY_LABEL[missing]}{what}.", gravity=missing, **bounds)
+
+
+def _region(question: str, query: dict[str, Any]) -> tuple[dict[str, float | None], str | None]:
+    filters = query.get("filtros") or {}
     bounds = {
         "o2_percent_min": _num(filters.get("o2_min")),
         "o2_percent_max": _num(filters.get("o2_max")),
@@ -58,22 +76,7 @@ def compute_gap(question: str, queries: list[dict[str, Any]]) -> BriefGap | None
     }
     if all(v is None for v in bounds.values()):
         bounds = _bounds_from_question(question)
-    gravity = _single_gravity(filters.get("gravity_environment")) or _gravity_from_question(question)
-
-    has_bounds = any(v is not None for v in bounds.values())
-    condition = _describe_condition(bounds)
-    if last is not None and last.get("total") == 0 and (has_bounds or gravity):
-        where = f" en {_GRAVITY_LABEL[gravity]}" if gravity else ""
-        what = f" con {condition}" if condition else " con esas condiciones"
-        return BriefGap(description=f"No hay ensayos registrados{what}{where}.", gravity=gravity, **bounds)
-
-    missing = _missing_gravity(last)
-    if missing is not None:
-        what = f" con {condition}" if condition else " con estas condiciones"
-        return BriefGap(
-            description=f"No hay ensayos en {_GRAVITY_LABEL[missing]}{what}.", gravity=missing, **bounds
-        )
-    return None
+    return bounds, _single_gravity(filters.get("gravity_environment")) or _gravity_from_question(question)
 
 
 def gap_numbers(gap: BriefGap | None) -> list[float]:
@@ -112,10 +115,15 @@ def default_evidence(queries: list[dict[str, Any]]) -> BriefEvidence | None:
 
 
 def experiment_ids(columns: list[str], rows: list[list[Any]]) -> list[str]:
-    if "experiment_id" not in columns:
-        return []
-    index = columns.index("experiment_id")
-    return sorted({r[index] for r in rows if isinstance(r[index], str) and re.fullmatch(r"PSI-\d+", r[index])})
+    """PSI ids of the `experiment_id` column or of the grouped `experimentos` column."""
+    found: set[str] = set()
+    for name in ("experiment_id", "experimentos"):
+        if name in columns:
+            index = columns.index(name)
+            for row in rows:
+                if isinstance(row[index], str):
+                    found.update(re.findall(r"\bPSI-\d+\b", row[index]))
+    return sorted(found)
 
 
 def default_steps(gap: BriefGap | None, has_data: bool) -> list[BriefStep]:

@@ -4,7 +4,13 @@ import { useAtlas } from "@/modules/atlas/ui/atlas-provider";
 import { HttpCopilotGateway } from "../infra/http-gateway";
 import { validateBlock, type Query, type UIBlock } from "../domain/contracts";
 import { describeCopilotError } from "../domain/errors";
-import { BlockRenderer, GravityBounds } from "./blocks";
+import {
+  progressCopy,
+  type Audience,
+  type ProgressStep,
+} from "../domain/brief";
+import { BlockRenderer } from "./blocks";
+import { setAudience } from "./audience-store";
 import "./copilot.css";
 
 type Message = {
@@ -15,18 +21,79 @@ type Message = {
   status: "loading" | "done" | "error" | "cancelled";
   error?: string;
 };
-const chips = ["Sólidos > 30% O₂", "Comparar µg vs 1g", "Análogos E-FIELD"];
-const agents = [
-  { id: "analyst", name: "Analista PSI" },
-  { id: "physics", name: "Física de llama" },
-  { id: "synthesizer", name: "Síntesis" },
+const starters: {
+  audience: Audience;
+  who: string;
+  chip: string;
+  prompt: string;
+  hint: string;
+}[] = [
+  {
+    audience: "student",
+    who: "Estudiante",
+    chip: "¿Cómo cambia la llama sin gravedad?",
+    prompt: "¿Cómo cambia una llama cuando no hay gravedad?",
+    hint: "Una explicación sencilla y una pregunta para pensar.",
+  },
+  {
+    audience: "teacher",
+    who: "Docente",
+    chip: "Compara µg vs 1g para PMMA",
+    prompt: "Compara µg vs 1g para PMMA",
+    hint: "Una actividad de clase: hipótesis, variables y qué observar.",
+  },
+  {
+    audience: "researcher",
+    who: "Investigador",
+    chip: "Sólidos con más de 30 % de O₂",
+    prompt: "¿Hay ensayos de sólidos con más de 30 % de O₂?",
+    hint: "Filas exactas, rangos, descarga en CSV y cita.",
+  },
 ];
 const gateway = new HttpCopilotGateway();
+const SLOW_AFTER_MS = 20000;
+
+/** What is happening, in user terms. Steps never name agents; the list only grows. */
+function Progress({
+  steps,
+  trials,
+}: {
+  steps: ProgressStep[];
+  trials: number;
+}) {
+  const [slow, setSlow] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => setSlow(true), SLOW_AFTER_MS);
+    return () => clearTimeout(timer);
+  }, []);
+  const current = steps.at(-1);
+  return (
+    <div className="progress">
+      <p role="status" className="progress-now">
+        <i aria-hidden="true" />
+        {current ? progressCopy(current, trials) : "Enviando la pregunta"}…
+      </p>
+      {steps.length > 1 && (
+        <ol aria-hidden="true">
+          {steps.slice(0, -1).map((step) => (
+            <li key={step}>{progressCopy(step, trials)}</li>
+          ))}
+        </ol>
+      )}
+      {slow && (
+        <small>
+          Una ficha con fuentes puede tardar cerca de un minuto. Puedes seguir
+          explorando el mapa mientras tanto.
+        </small>
+      )}
+    </div>
+  );
+}
 export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
-  const { state, dispatch } = useAtlas();
+  const { state, dispatch, experiments } = useAtlas();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [statuses, setStatuses] = useState<Record<string, string>>({});
+  const [steps, setSteps] = useState<ProgressStep[]>([]);
   const active = useRef<{ id: string; controller: AbortController } | null>(
     null,
   );
@@ -37,7 +104,7 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
     active.current?.controller.abort();
     const controller = new AbortController();
     active.current = { id: query.queryId, controller };
-    setStatuses({});
+    setSteps([]);
     follow.current = true;
     setMessages((current) => [
       ...current.map((message) =>
@@ -50,11 +117,10 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
     try {
       for await (const event of gateway.query(query, controller.signal)) {
         if (active.current?.id !== query.queryId) return;
-        if (event.type === "agent-status")
-          setStatuses((current) => ({
-            ...current,
-            [event.agent]: event.status,
-          }));
+        if (event.type === "progress")
+          setSteps((current) =>
+            current.includes(event.step) ? current : [...current, event.step],
+          );
         else
           setMessages((current) =>
             current.map((message) => {
@@ -87,7 +153,7 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
     } finally {
       if (active.current?.id === query.queryId) {
         active.current = null;
-        setStatuses({});
+        setSteps([]);
       }
     }
   }, []);
@@ -130,17 +196,6 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
           </span>
         </div>
       </header>
-      <div className="agent-telemetry" aria-label="Telemetría de agentes">
-        {agents.map((agent) => (
-          <span
-            key={agent.id}
-            className={statuses[agent.id] === "working" ? "working" : ""}
-          >
-            <i className={statuses[agent.id] === "done" ? "complete" : ""} />
-            {agent.name}
-          </span>
-        ))}
-      </div>
       <div
         className="chat-history"
         ref={history}
@@ -156,24 +211,34 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
               80;
         }}
       >
-        <section className="welcome-message">
-          <div className="assistant-label">
-            <span aria-hidden="true">✳</span> Atlas{" "}
-            <small>{mode === "demo" ? "Demo" : "Copiloto"}</small>
-          </div>
-          <h3>
-            ¿Cómo arde el fuego
-            <br />
-            lejos de la Tierra?
+        <section className="welcome-message" aria-labelledby="welcome-title">
+          <h3 id="welcome-title">
+            ¿Qué quieres saber del fuego fuera de la Tierra?
           </h3>
           <p>
-            Explora las condiciones que transforman una llama. Cruza evidencias
-            y descubre el espacio entre lo que sabemos y lo que falta por
-            probar.
+            Pregunta con tus palabras. Cada respuesta llega como una ficha: lo
+            que dicen los datos, la evidencia, lo que falta y qué probar
+            después.
           </p>
-          <GravityBounds explanation="El centro es una pregunta abierta. La silueta lunar es ilustrativa, no una predicción." />
+          <ul className="starters">
+            {starters.map((starter) => (
+              <li key={starter.audience}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAudience(starter.audience);
+                    submit(starter.prompt);
+                  }}
+                >
+                  <span className="label">{starter.who}</span>
+                  <strong>{starter.prompt}</strong>
+                  <small>{starter.hint}</small>
+                </button>
+              </li>
+            ))}
+          </ul>
           <p className="welcome-hint">
-            Selecciona una muestra en el mapa o empieza con una pregunta.
+            También puedes tocar un ensayo o una zona vacía del mapa.
           </p>
         </section>
         {messages.map((message) => (
@@ -201,12 +266,7 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
               ))}
             </div>
             {message.status === "loading" && (
-              <p role="status" className="thinking">
-                {mode === "demo"
-                  ? "Preparando exploración simulada"
-                  : "Consultando evidencias"}
-                <span> · · ·</span>
-              </p>
+              <Progress steps={steps} trials={experiments.length} />
             )}
             {message.status === "error" && (
               <div className="chat-error" role="alert">
@@ -233,14 +293,23 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
         ))}
       </div>
       <div className="chat-composer">
-        <div className="demo-chips">
-          {chips.map((chip, index) => (
-            <button key={chip} onClick={() => submit(chip)}>
-              <span>{["ϟ", "↔", "⌁"][index]}</span>
-              {chip}
-            </button>
-          ))}
-        </div>
+        {messages.length > 0 && (
+          <div className="demo-chips">
+            {starters.map((starter) => (
+              <button
+                key={starter.audience}
+                type="button"
+                onClick={() => {
+                  setAudience(starter.audience);
+                  submit(starter.prompt);
+                }}
+              >
+                <span>{starter.who}</span>
+                {starter.chip}
+              </button>
+            ))}
+          </div>
+        )}
         <form
           onSubmit={(event) => {
             event.preventDefault();
@@ -252,7 +321,7 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
           </label>
           <textarea
             id="atlas-question"
-            placeholder="Pregunta sobre el fuego en la Luna…"
+            placeholder="Escribe tu pregunta…"
             rows={1}
             maxLength={2000}
             value={input}
@@ -269,7 +338,7 @@ export function CopilotPanel({ mode }: { mode: "demo" | "remote" }) {
             }}
           />
           <div className="composer-bottom">
-                        {busy ? (
+            {busy ? (
               <button
                 type="button"
                 aria-label="Cancelar consulta"

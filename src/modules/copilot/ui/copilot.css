@@ -34,44 +34,6 @@
   font-size: var(--text-sm);
   color: var(--slate);
 }
-.agent-telemetry {
-  flex-shrink: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 0 20px 14px;
-  border-bottom: 1px solid var(--line);
-}
-.agent-telemetry > span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 28px;
-  padding: 0 10px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-sunken);
-  font-size: var(--text-sm);
-  color: var(--slate);
-  white-space: nowrap;
-}
-.agent-telemetry i {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #a9b3c3;
-}
-.agent-telemetry .working {
-  background: var(--nasa-blue-tint);
-  color: var(--nasa-blue);
-  font-weight: 600;
-}
-.agent-telemetry .working i {
-  background: var(--nasa-blue);
-  animation: agentPulse 1.3s infinite;
-}
-.agent-telemetry i.complete {
-  background: var(--safe-emerald);
-}
 .chat-history {
   flex: 1;
   min-height: 0;
@@ -156,14 +118,6 @@
 .generated-blocks > div {
   animation: fadeUp 0.55s var(--ease-out) both;
 }
-.thinking {
-  margin-top: 12px;
-  font-size: var(--text-sm);
-  color: var(--nasa-blue);
-}
-.thinking span {
-  animation: agentPulse 1.3s infinite;
-}
 .subtle-note {
   font-size: var(--text-sm);
   color: var(--slate);
@@ -204,9 +158,19 @@
 }
 .demo-chips {
   display: flex;
-  flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 10px;
+  margin: 0 -16px 10px;
+  padding: 0 16px 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+}
+.demo-chips::-webkit-scrollbar {
+  display: none;
+}
+.demo-chips button {
+  flex-shrink: 0;
+  scroll-snap-align: start;
 }
 .demo-chips button {
   min-height: 40px;
@@ -237,6 +201,10 @@
 }
 .demo-chips span {
   color: var(--nasa-blue);
+  font-weight: 600;
+}
+.chat-composer textarea:focus-visible {
+  outline: none;
 }
 .chat-composer form {
   display: flex;
@@ -308,7 +276,11 @@
 }
 .immersive-card {
   padding: 16px;
-  background: linear-gradient(160deg, var(--nasa-blue-tint), var(--instrument-white) 60%);
+  background: linear-gradient(
+    160deg,
+    var(--nasa-blue-tint),
+    var(--instrument-white) 60%
+  );
 }
 .card-kicker {
   display: flex;
@@ -528,7 +500,6 @@
   .copilot-heading {
     padding: 14px 16px 12px;
   }
-  .agent-telemetry,
   .chat-history,
   .chat-composer {
     padding-left: 16px;
@@ -540,9 +511,6 @@
     padding-top: 14px;
     padding-bottom: 10px;
   }
-  .agent-telemetry {
-    padding-bottom: 10px;
-  }
   .chat-history {
     padding-top: 14px;
   }
@@ -552,4 +520,161 @@
     height: min(82dvh, 760px);
     min-height: 480px;
   }
+}
+
+/* Starters: three ways to use the tool */
+.starters {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+.starters button {
+  width: 100%;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius-inner);
+  background: var(--instrument-white);
+  text-align: left;
+  transition:
+    border-color 0.2s var(--ease-out),
+    background-color 0.2s var(--ease-out),
+    transform 0.15s var(--ease-out);
+}
+.starters button:active {
+  transform: scale(0.985);
+}
+@media (hover: hover) {
+  .starters button:hover {
+    border-color: var(--nasa-blue);
+    background: var(--nasa-blue-tint);
+  }
+}
+.starters .label {
+  color: var(--nasa-blue);
+}
+.starters strong {
+  font-size: var(--text-base);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+}
+.starters small {
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  color: var(--slate);
+}
+
+/* Progress: what is happening, in plain terms */
+.progress {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--surface-sunken);
+  border-radius: var(--radius-inner);
+}
+.progress-now {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--nasa-blue);
+}
+.progress-now i {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--nasa-blue);
+  animation: agentPulse 1.3s infinite;
+}
+.progress ol {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--text-sm);
+  color: var(--slate);
+}
+.progress li::before {
+  content: "✓";
+  margin-right: 8px;
+  color: var(--safe-emerald-ink);
+}
+.progress small {
+  display: block;
+  margin-top: 8px;
+  font-size: var(--text-sm);
+  line-height: 1.45;
+  color: var(--slate);
+}
+
+/* Prose, notices and map focus */
+.prose {
+  font-size: var(--text-base);
+  line-height: 1.6;
+  max-width: 68ch;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.prose p {
+  margin: 0 0 10px;
+}
+.prose p:last-child {
+  margin-bottom: 0;
+}
+.prose code {
+  font: 500 var(--text-sm) var(--font-data);
+}
+.notice-card {
+  padding: 12px 14px;
+  border-radius: var(--radius-inner);
+  background: var(--surface-sunken);
+}
+.notice-card.is-warning {
+  background: var(--flame-orange-tint);
+}
+.notice-card.is-warning .label {
+  color: var(--flame-orange-ink);
+}
+.notice-card p {
+  margin-top: 4px;
+  font-size: var(--text-base);
+  line-height: 1.5;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.map-focus {
+  padding: 14px 16px;
+}
+.map-focus h3 {
+  font-size: var(--text-md);
+  line-height: 1.35;
+}
+.map-focus p {
+  margin: 6px 0 0;
+  font-size: var(--text-base);
+  line-height: 1.5;
+  color: var(--slate);
+}
+.map-focus .brief-button {
+  margin-top: 12px;
+}
+.data-table {
+  padding: 14px 16px;
+}
+.data-table h3 {
+  margin-bottom: 10px;
+  font-size: var(--text-md);
+  line-height: 1.35;
+}
+.fallback-card {
+  background: var(--flame-orange-tint);
 }

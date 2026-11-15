@@ -46,10 +46,10 @@ User feedback (2026-11-15):
 - [x] B1 Backend evidence-brief contract and professor tone: brief component (verdict, evidence table, gap, next steps, audience sections), audience parameter, no internals leakage, tests.
 - [x] F2 Front evidence brief: render the brief and real tables, highlight evidence and gap on the main map, next-step actions, audience selector, CSV export and citation; remove the "Respuesta de respaldo" flattening.
 - [x] F3 Comparative simulator: three gravities side by side, qualitative indicators, physics annotations, nearest real trials.
-- [ ] O1 Observatory identity and continuity: shared orbital-combustion SVG emblem, uninterrupted dark cabin-to-panel transition, updated design tokens.
-- [ ] O2 Instrument-first workspace: dominant map/lab, contextual collapsible copilot, progressive evidence, student exploration and researcher precision, responsive controls.
-- [ ] O3 Flame presentation: richer qualitative volume, structure and restrained motion within the existing single rendering loop; accessible SVG/reduced-motion fallback.
-- [ ] Q1 End-to-end QA: restart the backend on the test branch, live queries, screenshots, e2e, docs.
+- [x] O1 Observatory identity and continuity: shared orbital-combustion SVG emblem, uninterrupted dark cabin-to-panel transition, updated design tokens.
+- [x] O2 Instrument-first workspace: dominant map/lab, contextual collapsible copilot, progressive evidence, student exploration and researcher precision, responsive controls.
+- [x] O3 Flame presentation: richer qualitative volume, structure and restrained motion within the existing single rendering loop; accessible SVG/reduced-motion fallback.
+- [x] Q1 End-to-end QA: restart the backend on the test branch, live queries, screenshots, e2e, docs.
 
 ## Acceptance criteria
 - Asking "Sólidos > 30% O₂" yields:
@@ -90,7 +90,7 @@ User feedback (2026-11-15):
 - Checks: lint, typecheck, 97 tests, build green. Draw calls/frame: 6 single, 12 three views (1440/1366/390), one WebGL canvas. Shots scratchpad `f3*-*.png`. Live simulate step verified against :8000 (focus badge on µg).
 - Open for Q1: e2e not rerun (expects `physics-note` with "difusión" at 4 s and `.qualitative-grid` text, both preserved); catalog has no real lunar/earth PMMA trials so those columns show "Sin ensayos".
 
-## Next step
+## Next step (superseded by Q1 below)
 Resolve F3 commit delivery strategy and commit the verified work unit, then Q1 (fix stale e2e starters and complete live end-to-end QA); restart the backend on `test/evidence-brief` only with authorization before live Q1.
 
 ## Approved observatory extension (2026-11-15)
@@ -115,3 +115,12 @@ Resolve F3 commit delivery strategy and commit the verified work unit, then Q1 (
 - Regression: combined material Nomex, terrestrial gravity, zero maximum pressure and 40–45% O₂ yields 0/12 plotted points; a six-trial evidence request reports 0 highlighted / 6 hidden. Keyboard reveal displays all six and accurately reports 6/12, preserves all four filter dimensions and disabled zero-row filtered CSV, then restores 0/12 on return. Unit coverage also checks partially visible rows within one investigation.
 - Checks on the corrected source: `pnpm lint`, `pnpm typecheck`, `pnpm test` (**85 passed**), `ATLAS_DATA_MODE=demo pnpm build`, and `git diff --check` passed. `pnpm test:e2e --config test-results/observatory.playwright.config.ts -g 'evidence focus reveals|contextual briefs retain|instrument leads'`: **4 passed** (desktop/mobile workspace, contextual evidence focus and mixed-filter reveal). Inspected `test-results/evidence-filter-reveal.png` after relocating the banner above the plot.
 - The earlier full-suite **23 passed / 2 desktop FPS failures** remains the recorded performance limitation; expensive FPS tests were not rerun for this map-only fix. No live backend/provider checks, commits, staging, pushes or PRs. Own mock server remains at `http://127.0.0.1:3102/#dashboard`; parent owns the Engram mirror update.
+
+
+## Q1 end-to-end QA (done)
+- **E2E** (temp config, production build `ATLAS_DATA_MODE=demo` on :3100, installed Chromium/SwiftShader; repo config needs msedge): 26 tests, **24 passed, 2 failed**. All of `atlas.spec.ts` (except the two desktop lab FPS tests), `comparative-simulator.spec.ts` (3/3) and `observatory.spec.ts` (4/4) pass. Failures: `immersive laboratory` 1440x900 (6.6 fps) and 1366x768 (5.9 fps) against the unchanged 45 fps budget; environmental (software GL), thresholds untouched, mobile 390 passes its 30 fps budget. The stale starter chip selector was already fixed by O2; Q1 only added the new "Sugerencias" toggle step.
+- **Live check** (user's :3000 -> real backend :8000, `Datos remotos`, B2 server started 05:08): brief renders verdict, evidence table, gap, next steps and the three lenses; no agent-internal text, no raw enums in prose (humanized: "microgravedad", "atmosfera ambiental"; raw tokens only exist in table payload and are labeled). The strict schema with B2 prompt rules works in real calls (fresh questions, no fallback). Latency of fresh questions (cache miss): 38.2 s and 37.9 s; the two literal task questions were served from the backend file cache (0.4-0.6 s). Simulate step opens the three-gravity view with the focused gravity badge; "Ver hueco en el mapa" draws the hatched gap band and the banner; "Ver en el mapa" highlights.
+- **Backend note:** `data/query_cache.json` (untracked, in the backend worktree) holds a pre-B2 entry for "Compara µg vs 1g para PMMA": gap text says "gravedad normal" while its overlay gravity is `lunar`. Fresh calls are consistent; delete the cache file (and restart) to see the B2 behavior for that exact question. Not touched by Q1.
+- **Polish:** copilot composer collapses the audience chips behind a "Sugerencias" toggle after the first answer (composer height ~170 -> ~110 px); a new answer opens scrolled to its verdict (progress/errors still follow the end); map banner gains "Volver al asistente" (hidden on wide screens while the assistant is open) for the narrow-screen round trip. Docs: `docs/atlas-frontend.md` now describes progress events, the brief and block table, and the 120 s query timeout.
+- Not done: `GravityBounds` "Explorar" buttons keep `edit` (using `simulate` would force the three-gravity view, a behavior change). Lab real-GPU performance remains unverified. Shots: scratchpad `q1-*.png`.
+- Checks: `pnpm lint`, `pnpm typecheck`, `pnpm test` (97 passed), `ATLAS_DATA_MODE=demo pnpm build` green. Backend untouched (213 passed, 3 skipped at B2).

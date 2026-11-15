@@ -29,7 +29,7 @@ Agents, `POST /query` (owned by a teammate), changes to indexing.
 - [x] T1 Port, Voyage adapter, settings, use-case integration with fallback.
 - [x] T2 API flag + response field, wiring in `create_app`.
 - [x] T3 Tests + README.
-- [ ] T4 Live check against the real index (after `atlas-index` finishes).
+- [x] T4 Live check against the real index (after `atlas-index` finishes).
 
 ## Acceptance criteria
 - With a reranker, top-k follows reranker order; without one or on failure, vector order is returned and the request succeeds.
@@ -43,5 +43,7 @@ Agents, `POST /query` (owned by a teammate), changes to indexing.
 - Created 2026-11-14. Baseline: 39 passed, 3 skipped.
 - 2026-11-14: T1-T3 done in one work unit. `.venv/bin/python -m pytest -q`: 47 passed, 3 skipped. Model `rerank-2.5` (Voyage docs: recommended `rerank-2.5`/`rerank-2.5-lite`; SDK 0.6.0 `AsyncClient.rerank(query, documents, model, top_k)`). Pool default 30.
 
+- 2026-11-15: T4 live check on the full index (1283 chunks). With the default 30 candidates every rerank fails with RateLimitError on the free tier (~342 tokens/chunk x 30 ≈ 10K tokens, the 10K TPM cap); fallback returned vector order in <1.5 s as designed. With `RERANK_CANDIDATES=12`: 200 in 1.3 s, rerank_score set and order changed. Without a Voyage payment method, set `RERANK_CANDIDATES=12` on the demo machine.
+
 ## Next step
-T4 (live check) once `atlas-index` finishes.
+Done. Open: top hits for broad queries are near-duplicate per-test chunks of one experiment (result diversity).

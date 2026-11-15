@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { scaleLinear } from "d3-scale";
 import { ticks } from "d3-array";
 import {
@@ -9,13 +9,36 @@ import {
   gravityLabels,
   type Experiment,
 } from "../domain/experiment";
+import {
+  investigationId,
+  isHighlighted,
+} from "../domain/overlays";
 import { useAtlas } from "./atlas-provider";
 import "./atlas-map.css";
 import { Flame } from "./flame";
 import { useSimulation } from "@/modules/simulation/application/simulation-provider";
 
 export function AtlasMap() {
-  const { state, dispatch, experiments } = useAtlas();
+  const { state, dispatch, experiments, clearOverlays } = useAtlas();
+  const { highlight, gap, focusPending } = state.overlays;
+  const highlightSet = useMemo(() => new Set(highlight), [highlight]);
+  const matchedCount = useMemo(
+    () =>
+      highlight.length
+        ? new Set(
+            experiments
+              .filter((e) => isHighlighted(e, highlightSet))
+              .map((e) => investigationId(e.id)),
+          ).size
+        : 0,
+    [experiments, highlight, highlightSet],
+  );
+  const bannerButton = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!focusPending) return;
+    bannerButton.current?.focus({ preventScroll: true });
+    dispatch({ type: "overlay-focused" });
+  }, [focusPending, dispatch]);
   const { load } = useSimulation();
   const container = useRef<HTMLDivElement>(null);
   const svg = useRef<SVGSVGElement>(null);
@@ -126,6 +149,16 @@ export function AtlasMap() {
               <stop stopColor="#FF5A1F" stopOpacity="0" />
               <stop offset="1" stopColor="#FF5A1F" stopOpacity=".07" />
             </linearGradient>
+            <pattern
+              id="gap-hatch"
+              width="9"
+              height="9"
+              patternUnits="userSpaceOnUse"
+              patternTransform="rotate(45)"
+            >
+              <rect width="9" height="9" fill="rgba(11, 61, 145, 0.07)" />
+              <line x1="0" y1="0" x2="0" y2="9" stroke="rgba(11, 61, 145, 0.35)" strokeWidth="1.5" />
+            </pattern>
             <clipPath id="lunar-clip">
               <rect
                 x={x(0)}
@@ -194,6 +227,25 @@ export function AtlasMap() {
             d={`M${x(0)} ${y(50)} H${x(10.2)} V${y(30)} H${x(0)} Z`}
             className="lunar-outline"
           />
+          {gap?.region && (
+            <g className="gap-overlay" data-testid="gap-overlay" pointerEvents="none">
+              <rect
+                x={x(gap.region.pressureMin)}
+                y={y(gap.region.oxygenMax)}
+                width={Math.max(2, x(gap.region.pressureMax) - x(gap.region.pressureMin))}
+                height={Math.max(2, y(gap.region.oxygenMin) - y(gap.region.oxygenMax))}
+                fill="url(#gap-hatch)"
+                className="gap-region"
+              />
+              <text
+                x={x(gap.region.pressureMin) + 8}
+                y={y(gap.region.oxygenMin) - 10}
+                className="gap-region-label"
+              >
+                {gap.label}
+              </text>
+            </g>
+          )}
           <text x={x(10.2) + 7} y={y(30) - 8} className="threshold-label">
             10.2 psi
           </text>
@@ -250,8 +302,13 @@ export function AtlasMap() {
           {groupCoordinates(experiments).map((group) => {
             const experiment =
               group.find((e) => e.id === state.selectedId) ?? group[0];
+            const matched =
+              highlightSet.size === 0 ||
+              group.some((e) => isHighlighted(e, highlightSet));
             const active =
-              state.gravity === "all" || state.gravity === experiment.gravity;
+              matched &&
+              (state.gravity === "all" || state.gravity === experiment.gravity);
+            const emphasized = highlightSet.size > 0 && matched;
             const focused = group.some((e) => e.id === state.selectedId);
             return (
               <g
@@ -290,6 +347,15 @@ export function AtlasMap() {
                   </title>
                   <g transform={`scale(${nodeScale})`}>
                   <circle r="22" fill="transparent" />
+                  {emphasized && (
+                    <circle
+                      className="node-highlight"
+                      r="25"
+                      fill="rgba(11, 61, 145, 0.08)"
+                      stroke="#0B3D91"
+                      strokeWidth="2"
+                    />
+                  )}
                   {focused && (
                     <g fill="none" stroke="#0B3D91">
                       <circle r="23" />
@@ -362,6 +428,29 @@ export function AtlasMap() {
             </g>
           )}
         </svg>
+        {(highlight.length > 0 || gap) && (
+          <div
+            className="overlay-banner"
+            role="group"
+            aria-label="Resaltado de la ficha"
+          >
+            <p id="overlay-banner-text">
+              {highlight.length > 0 &&
+                `${matchedCount} ${matchedCount === 1 ? "experimento resaltado" : "experimentos resaltados"}`}
+              {highlight.length > 0 && gap && " · "}
+              {gap &&
+                `${gap.label}${gap.region ? "" : ": sin ensayos en este régimen"}`}
+            </p>
+            <button
+              ref={bannerButton}
+              type="button"
+              aria-describedby="overlay-banner-text"
+              onClick={clearOverlays}
+            >
+              Quitar resaltado
+            </button>
+          </div>
+        )}
         {probe && (
           <output
             className={`probe-readout ${lunar ? "critical" : ""}`}

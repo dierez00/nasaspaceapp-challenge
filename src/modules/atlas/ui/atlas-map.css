@@ -448,3 +448,84 @@
     opacity: 0.25;
   }
 }
+
+/* Overlays asked for by the copilot: highlighted evidence and a drawn gap */
+.node-highlight {
+  pointer-events: none;
+}
+.gap-region {
+  stroke: var(--nasa-blue);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 4;
+}
+.gap-region-label {
+  font: 600 var(--text-sm) var(--font-data);
+  fill: var(--nasa-blue);
+  paint-order: stroke;
+  stroke: var(--instrument-white);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .gap-overlay {
+    animation: overlayIn 0.35s var(--ease-out) both;
+  }
+  .node-highlight {
+    animation: overlayIn 0.35s var(--ease-out) both;
+  }
+}
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+}
+.overlay-banner {
+  position: absolute;
+  top: 8px;
+  left: 72px;
+  max-width: calc(100% - 200px);
+  display: flex;
+  align-items: center;
+  gap: 4px 12px;
+  flex-wrap: wrap;
+  padding: 6px 6px 6px 14px;
+  background: var(--instrument-white);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-raised);
+}
+.overlay-banner p {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--nasa-blue);
+}
+.overlay-banner button {
+  min-height: 32px;
+  padding: 0 14px;
+  border: 1.5px solid var(--nasa-blue);
+  border-radius: var(--radius-pill);
+  background: var(--instrument-white);
+  color: var(--nasa-blue);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+@media (hover: hover) {
+  .overlay-banner button:hover {
+    background: var(--nasa-blue-tint);
+  }
+}
+@media (max-width: 599px) {
+  .overlay-banner {
+    left: 8px;
+    padding: 4px;
+  }
+  /* The text stays for screen readers; sighted users see the button and the map. */
+  .overlay-banner p {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}

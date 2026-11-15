@@ -23,6 +23,11 @@ from atlas.experiments.domain.experiment import (
 
 MAX_ROWS = 50
 
+# ambient = atmosphere of the chamber or habitat; oxidizer_stream = oxidizer stream of a burner
+# (PSI-159 inverse flames). Same split as the contract (ExperimentTest.o2_basis).
+O2Basis = Literal["ambient", "oxidizer_stream"]
+AMBIENT: list[O2Basis] = ["ambient"]
+
 COLUMNS = (
     "experiment_id",
     "test_id",
@@ -32,6 +37,7 @@ COLUMNS = (
     "material_class",
     "thickness_mm",
     "o2_percent",
+    "o2_basis",
     "o2_status",
     "pressure_kpa",
     "pressure_status",
@@ -53,6 +59,7 @@ GroupField = Literal[
     "material",
     "material_class",
     "o2_percent",
+    "o2_basis",
     "pressure_kpa",
     "gravity_environment",
     "flow_direction",
@@ -87,6 +94,14 @@ class FiltroEnsayos(BaseModel):
     gravity_environment: list[GravityEnvironment] | None = None
     outcome: list[BurnOutcome] | None = None
     flow_direction: list[FlowDirection] | None = None
+    o2_basis: list[O2Basis] | None = Field(
+        default=None,
+        description=(
+            "ambient = O2 de la atmósfera; oxidizer_stream = O2 de la corriente de oxidante de un quemador "
+            "(PSI-159, llamas inversas), no es una atmósfera. Si indicas o2_min, o2_max o un rango de presión "
+            "y no indicas o2_basis, solo se consideran ensayos ambient"
+        ),
+    )
     o2_min: float | None = Field(default=None, description="O2 mínimo en %, inclusive")
     o2_max: float | None = Field(default=None, description="O2 máximo en %, inclusive")
     presion_min_kpa: float | None = None
@@ -115,8 +130,19 @@ def flatten(experiments: Iterable[Experiment]) -> list[dict[str, Any]]:
     ]
 
 
+def effective_o2_basis(f: FiltroEnsayos) -> list[O2Basis] | None:
+    """The o2_basis the query really applies. Ranges of O2 or pressure describe an atmosphere, so
+    without an explicit o2_basis they only look at ambient tests (same rule as GET /experiments)."""
+    if f.o2_basis is not None:
+        return f.o2_basis
+    atmospheric = (f.o2_min, f.o2_max, f.presion_min_kpa, f.presion_max_kpa)
+    return AMBIENT if any(v is not None for v in atmospheric) else None
+
+
 def matches(row: dict[str, Any], f: FiltroEnsayos) -> bool:
+    basis = effective_o2_basis(f)
     checks = [
+        basis is None or row["o2_basis"] in basis,
         f.experiment_ids is None or row["experiment_id"] in f.experiment_ids,
         f.point_type is None or row["point_type"] in f.point_type,
         f.limit_type is None or row["limit_type"] in f.limit_type,
@@ -154,7 +180,27 @@ def consultar(experiments: Iterable[Experiment], f: FiltroEnsayos) -> dict[str, 
     }
     if f.correlacion:
         result["correlacion"] = _correlation(rows, *f.correlacion)
+    result["o2_basis"] = _o2_basis_report(rows, f)
     return result
+
+
+def _o2_basis_report(rows: list[dict[str, Any]], f: FiltroEnsayos) -> dict[str, Any]:
+    """Makes the basis of every O2 figure visible: what was applied, how many tests of each basis
+    the result covers, and a warning when ambient and oxidizer_stream O2 end up mixed."""
+    applied = effective_o2_basis(f)
+    counts = {basis: sum(1 for r in rows if r["o2_basis"] == basis) for basis in ("ambient", "oxidizer_stream")}
+    report: dict[str, Any] = {
+        "aplicado": applied,
+        "por_defecto": applied is not None and f.o2_basis is None,
+        "ensayos": counts,
+    }
+    uses_o2 = "o2_percent" in (*f.agrupar_por, *f.metricas, *(f.correlacion or ()))
+    if uses_o2 and all(counts.values()) and "o2_basis" not in f.agrupar_por:
+        report["advertencia"] = (
+            "El O2 mezcla atmósfera (ambient) y corriente de oxidante (oxidizer_stream): "
+            "filtra o2_basis o agrupa por o2_basis antes de hablar de atmósferas."
+        )
+    return report
 
 
 def _group(

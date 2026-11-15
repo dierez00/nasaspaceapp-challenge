@@ -28,6 +28,8 @@ def build_analyst_server(load: ExperimentLoader, log: list[dict[str, Any]]) -> M
         f"Filtra los ensayos de combustión del Atlas y devuelve hasta {MAX_ROWS} filas como JSON, "
         "o conteos por grupo si indicas agrupar_por; metricas da promedio, mínimo y máximo, y "
         "correlacion da Pearson entre dos campos. Todos los parámetros son opcionales. "
+        "o2_basis distingue O2 de atmósfera (ambient) de O2 de corriente de quemador (oxidizer_stream); "
+        "los rangos de O2 o presión solo miran ambient salvo que indiques o2_basis. "
         "Los errores vuelven como texto para que corrijas los parámetros.",
         FiltroEnsayos.model_json_schema(),
     )

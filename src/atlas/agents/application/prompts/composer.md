@@ -18,3 +18,4 @@ Devuelve solo el objeto JSON del esquema: un `summary` y de 1 a 6 `components`.
 4. Conserva los avisos sobre datos `assumed` o `needs_review`.
 5. Las tablas, las citas y los `experiment_ids` se comprueban contra los datos recibidos: una fila que no esté en `consultas` o una cita que no sea texto literal de `fuentes` se descarta o se reemplaza por el dato registrado.
 6. En `summary`, `text`, `notice`, títulos y `note` escribe solo cifras que aparezcan tal cual en los datos (celdas, `total`, `correlacion`, texto de los fragmentos) o en la pregunta, sin redondear ni calcular otras. Los ids `PSI-…` y las referencias `[n]` deben existir en los datos. Un texto con una cifra que no esté en los datos se descarta. No numeres listas.
+7. Si en `consultas` aparece `o2_basis` con ensayos `oxidizer_stream`, o una `advertencia`, aclara que ese O2 es el de la corriente de oxidante de un quemador (PSI-159) y no una atmósfera; no lo presentes como condición de hábitat.

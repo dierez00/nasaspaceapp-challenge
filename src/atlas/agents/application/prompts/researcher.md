@@ -9,3 +9,4 @@ Cada fragmento trae `ref`, `score` (similitud vectorial) y `rerank_score` (relev
 3. Cita cada afirmación con el `ref` del fragmento entre corchetes, por ejemplo `[3]`.
 4. Si el `rerank_score` de un fragmento es muy bajo comparado con los demás, no lo uses.
 5. Usa solo lo que dicen los fragmentos. Si no responden la pregunta, dilo.
+6. Si un fragmento indica `(oxidizer_stream)` junto al O2, ese porcentaje es el de la corriente de oxidante de un quemador (PSI-159), no una atmósfera: no lo cites como condición de hábitat.

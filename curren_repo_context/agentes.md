@@ -33,13 +33,23 @@ El analista **no escribe SQL ni llama a la API**: carga los experimentos en Pyth
 2. **Validación.** Los argumentos se validan con `FiltroEnsayos` (`agents/domain/ensayos.py`), que usa `extra="forbid"`. Los valores permitidos son los `Literal` del contrato de experimentos.
 3. **Filtros:**
    - `experiment_ids`, `point_type` (`test` o `limit`, contrato 1.1), `limit_type`, `material` (texto contenido, sin distinguir mayúsculas), `material_class`, `gravity_environment`, `outcome`, `flow_direction`;
+   - `o2_basis` (lista de `ambient` y `oxidizer_stream`, ver más abajo);
    - rangos `o2_min`/`o2_max` y `presion_min_kpa`/`presion_max_kpa`;
    - `solo_revisados`.
-4. **Agrupación.** `agrupar_por` acepta hasta 3 campos y devuelve `ensayos` y `experimentos` por grupo.
+4. **Agrupación.** `agrupar_por` acepta hasta 3 campos (incluido `o2_basis`) y devuelve `ensayos` y `experimentos` por grupo.
    - **Métricas:** `metricas` acepta hasta 4 campos numéricos y agrega `<campo>_promedio`, `<campo>_min` y `<campo>_max`, ignorando los vacíos. Sin `agrupar_por`, da una fila con el resumen total.
    - **Correlación:** `correlacion` recibe dos campos numéricos y agrega `{"x", "y", "n", "pearson"}` al resultado. Con `n < 3`, o si un campo no varía, `pearson` es `null` y viene una `nota` explicándolo.
 5. **Salida.** Se devuelven como máximo 50 filas, junto con `total` y `truncated`.
 6. **Errores.** Los parámetros inválidos y los fallos de carga vuelven como texto con `is_error: true`.
+
+### `o2_basis`: atmósfera frente a corriente de quemador
+
+`o2_percent` es la atmósfera solo cuando `o2_basis = ambient`. En los puntos de llamas inversas de PSI-159 (`oxidizer_stream`) es el O2 de la corriente de oxidante del quemador, no el de un hábitat. Mismo criterio que `GET /experiments`, cobertura y chunking.
+
+- **Filas.** `o2_basis` es una columna de cada fila.
+- **Regla por defecto.** Si la consulta usa `o2_min`, `o2_max`, `presion_min_kpa` o `presion_max_kpa` y no indica `o2_basis`, solo cuenta `ambient`. Si indica `o2_basis`, se respeta. Sin rangos no se descarta nada.
+- **Visible.** Cada resultado trae `o2_basis: {aplicado, por_defecto, ensayos: {ambient, oxidizer_stream}}` y una `advertencia` cuando un promedio, agrupación o correlación de `o2_percent` mezcla las dos bases sin separarlas. El compositor por reglas muestra un aviso en esos casos.
+- **Prompts.** `analyst.md` explica el campo y pide `o2_basis: ["ambient"]` en preguntas de atmósferas o hábitats; `composer.md` y `researcher.md` piden no presentar el O2 del quemador como atmósfera.
 
 El esquema de la herramienta es `FiltroEnsayos.model_json_schema()`, así que si el contrato de experimentos agrega valores, la herramienta los acepta sin cambios.
 

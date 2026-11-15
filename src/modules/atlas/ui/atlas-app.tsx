@@ -14,8 +14,17 @@ import { motion, useReducedMotion } from "motion/react";
 function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
   const { state, dispatch } = useAtlas();
   const reduced = useReducedMotion();
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
   return (
-    <main className="atlas-app bg-white text-[#0A0E17]" data-tab={state.tab}>
+    <main
+      className={`atlas-app ${theme === "dark" ? "dark" : ""}`}
+      data-tab={state.tab}
+    >
       <nav className="atlas-topbar" aria-label="Atlas">
         <Link
           className="atlas-brand"
@@ -33,10 +42,21 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
         <div className="mission-label">
           <span className="mission-line" /> LUNAR COMBUSTION RESEARCH
         </div>
-        <span className="demo-indicator">
-          <i />
-          {mode === "demo" ? "MODO DEMOSTRACIÓN" : "DATOS REMOTOS"}
-        </span>
+        <div className="topbar-actions flex items-center gap-3">
+          <button
+            type="button"
+            className="theme-toggle-btn"
+            onClick={toggleTheme}
+            aria-label={`Cambiar a modo ${theme === "light" ? "oscuro" : "claro"}`}
+            title={`Cambiar a modo ${theme === "light" ? "oscuro" : "claro"}`}
+          >
+            {theme === "light" ? "🌙 Modo oscuro" : "☀️ Modo claro"}
+          </button>
+          <span className="demo-indicator">
+            <i />
+            {mode === "demo" ? "MODO DEMOSTRACIÓN" : "DATOS REMOTOS"}
+          </span>
+        </div>
       </nav>
       <div className="mobile-tabs" role="group" aria-label="Panel visible">
         <button

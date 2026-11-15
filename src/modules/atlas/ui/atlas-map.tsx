@@ -114,18 +114,22 @@ export function AtlasMap() {
           }}
         >
           <defs>
+            <linearGradient id="lunar-zone-gradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#FC3D21" stopOpacity="0.04" />
+              <stop offset="100%" stopColor="#FC3D21" stopOpacity="0.09" />
+            </linearGradient>
             <pattern
               id="lunar-hatch"
-              width="9"
-              height="9"
+              width="14"
+              height="14"
               patternUnits="userSpaceOnUse"
               patternTransform="rotate(45)"
             >
-              <line y2="9" stroke="#FC3D21" strokeOpacity=".055" />
+              <line y2="14" stroke="#FC3D21" strokeOpacity=".035" strokeWidth="1" />
             </pattern>
             <linearGradient id="scan-gradient" x1="0" y1="0" x2="0" y2="1">
               <stop stopColor="#FC3D21" stopOpacity="0" />
-              <stop offset="1" stopColor="#FC3D21" stopOpacity=".12" />
+              <stop offset="1" stopColor="#FC3D21" stopOpacity=".08" />
             </linearGradient>
             <clipPath id="lunar-clip">
               <rect
@@ -133,6 +137,7 @@ export function AtlasMap() {
                 y={y(50)}
                 width={x(10.2) - x(0)}
                 height={y(30) - y(50)}
+                rx="6"
               />
             </clipPath>
           </defs>
@@ -141,6 +146,15 @@ export function AtlasMap() {
             y={y(50)}
             width={x(10.2) - x(0)}
             height={y(30) - y(50)}
+            rx="6"
+            fill="url(#lunar-zone-gradient)"
+          />
+          <rect
+            x={x(0)}
+            y={y(50)}
+            width={x(10.2) - x(0)}
+            height={y(30) - y(50)}
+            rx="6"
             fill="url(#lunar-hatch)"
           />
           <g clipPath="url(#lunar-clip)" pointerEvents="none">
@@ -289,17 +303,17 @@ export function AtlasMap() {
                       experiment.id,
                     ].join(" / ")}
                   </title>
-                  <circle r="22" fill="transparent" />
+                  <circle r="28" fill="transparent" />
                   {focused && (
-                    <g fill="none" stroke="#0B3D91">
-                      <circle r="23" />
-                      <circle r="27" strokeOpacity=".3" />
+                    <g fill="none" stroke="var(--atlas-blue, #0B3D91)">
+                      <circle r="29" strokeWidth="1.5" />
+                      <circle r="34" strokeOpacity=".3" />
                     </g>
                   )}
                   {experiment.outcome === "ignition" && (
                     <circle
                       className="node-pulse"
-                      r="17"
+                      r="22"
                       fill="none"
                       stroke={
                         experiment.gravity === "micro" ? "#5B21B6" : "#FC3D21"
@@ -308,10 +322,10 @@ export function AtlasMap() {
                     />
                   )}
                   <svg
-                    x="-23"
-                    y="-31"
-                    width="46"
-                    height="51"
+                    x="-28"
+                    y="-37"
+                    width="56"
+                    height="62"
                     viewBox="0 0 100 110"
                   >
                     <Flame
@@ -321,7 +335,7 @@ export function AtlasMap() {
                     />
                   </svg>
                   {group.length > 1 && (
-                    <text x="16" y="-15" className="node-count">
+                    <text x="20" y="-18" className="node-count">
                       {group.length}
                     </text>
                   )}

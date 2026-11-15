@@ -58,8 +58,8 @@ Story: you sit in the ISS cupola, press *Comenzar inmersión*, travel through th
 
 ## Tasks
 - [x] D1 Design foundation: rewrite `theme.md` to the flight-deck system; tokens in `globals.css`; fonts via `next/font` in `layout.tsx`; remove the global dark `color-scheme` leak.
-- [ ] D2 Dashboard restyle, part 1: header/top bar, layout grid, lab module and controls (`atlas-app.tsx`, `atlas.css`, `laboratory.tsx`, `laboratory.css`).
-- [ ] D3 Dashboard restyle, part 2: evidence map, copilot panel and generative blocks (`atlas-map.tsx`, `atlas.css`, `copilot-panel.tsx`, `blocks.tsx`).
+- [x] D2 Dashboard restyle, part 1: header/top bar, layout grid, lab module and controls (`atlas-app.tsx`, `atlas.css`, `laboratory.tsx`, `laboratory.css`).
+- [x] D3 Dashboard restyle, part 2: evidence map, copilot panel and generative blocks (`atlas-map.tsx`, `atlas.css`, `copilot-panel.tsx`, `blocks.tsx`).
 - [ ] D4 Cabin hero + immersion transition + "Volver a la cabina"; loading screen palette (`HeroSection.tsx`, `CupolaFrame.tsx`, `ScrollIndicator.tsx`, `page.tsx`, `SmoothScrollProvider.tsx`, `LoadingScreen.tsx`).
 - [ ] D5 Visual QA and tests: screenshots at the three viewports, fix issues, update e2e and unit tests.
 
@@ -72,6 +72,8 @@ Story: you sit in the ISS cupola, press *Comenzar inmersión*, travel through th
 ## Progress / Evidence
 - Base: `frontend-skills-polish` complete (`19d84b7`).
 - D1 done in `6abddf2`: theme.md rewritten, tokens + `@theme inline` in globals.css, Unbounded/Instrument Sans/Plex Mono via next/font, light color-scheme (`.theme-cabin` utility available for D4). lint/typecheck/test: green.
+- D2 done in `6193306`: topbar with pill view tabs, Moon Dust canvas + 20px modules, lab clusters/segmented controls/slider styling, sentence-case copy, ornaments removed; lab CSS split (laboratory.css owns lab rules). lint/typecheck/test green; visual QA at 1440x900, 1366x768, 390x844 (no horizontal scroll).
+- D3 done in `44cafb4`: map (Flame Orange lunar zone, Blue Flame microgravity, 12.5-13px axes, legend), copilot bubbles/pill composer/chips, generative blocks as inner modules (new atlas-map.css, copilot.css). lint/typecheck/test/build green. e2e not run locally (msedge missing); e2e text updated: 'Escenario hipotético'.
 
 ## Next step
-D2.
+D4 (hero + immersion). Note for D4: topbar has a spare slot next to the demo chip for 'Volver a la cabina'; `.theme-cabin` utility exists for dark scoping; mobile topbar is a 2-row grid (chip is grid-column 2/row 1).

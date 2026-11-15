@@ -28,7 +28,7 @@ class MockAgents:
         filtro = FiltroEnsayos(agrupar_por=["experiment_id", "gravity_environment", "outcome"])
         result = consultar(self._experiments, filtro)
         return {
-            "respuesta": f"[mock] {result['total']} grupos de ensayos calculados desde data/experiments.",
+            "respuesta": f"El Atlas registra {result['total']} grupos de ensayos.",
             "consultas": [{"filtros": filtro.model_dump(mode="json", exclude_defaults=True), **result}],
         }
 
@@ -45,7 +45,7 @@ class MockAgents:
             }
             for index, e in enumerate(self._experiments[:_MAX_SOURCES], start=1)
         ]
-        return {"respuesta": "[mock] Resúmenes de los experimentos usados como fuentes.", "fuentes": sources}
+        return {"respuesta": "Los resúmenes de los experimentos describen estas condiciones.", "fuentes": sources}
 
     async def composer(self, prompt: str) -> Any:
         raise NotImplementedError("AGENTS_MOCK always uses the rules composer")

@@ -365,7 +365,7 @@ def test_happy_path_streams_status_then_validated_ui():
     assert steps == ["clasificando", "consultando_datos", "buscando_fuentes", "componiendo"]
     ui = ui_event(events)
     assert ui.cacheable is True
-    assert UIPayload.model_validate({k: v for k, v in ui.data.items() if k != "ms"})
+    assert UIPayload.model_validate({k: v for k, v in ui.data.items() if k not in ("ms", "brief_version")})
     assert isinstance(ui.data["ms"], int)
     assert "PSI-99" in agents.composer_prompts[0]
 
@@ -415,7 +415,8 @@ def test_a_failing_agent_does_not_stop_the_other_and_is_not_cached():
     ui = ui_event(events)
     assert ui.cacheable is False
     notices = [c for c in ui.data["components"] if c["type"] == "notice"]
-    assert "db down" in notices[0]["message"]
+    assert "db down" not in notices[0]["message"]
+    assert "Atlas" in notices[0]["message"]
 
 
 def test_agent_timeout_becomes_an_error_result():
@@ -423,7 +424,8 @@ def test_agent_timeout_becomes_an_error_result():
     collect(run_query("q", agents, timeouts=FAST))
 
     prompt = agents.composer_prompts[0]
-    assert "tiempo agotado" in prompt
+    assert "tiempo agotado" not in prompt  # failure details never reach the composer
+    assert '"sin_datos": true' in prompt
 
 
 def test_composer_retries_once_with_the_validation_error():
@@ -478,14 +480,14 @@ def test_rules_map_each_query_kind_to_its_component(tipo, component):
 def test_rules_gap_map_highlights_experiments_from_the_table():
     ui = build_rules_ui(Classification(tipo="huecos", necesita_datos=True, necesita_fuentes=False), ANALYST_OK, None)
 
-    assert ui.components[0].type == "gap_map"
-    assert ui.components[0].experiment_ids == ["PSI-100", "PSI-99"]
+    assert [c.type for c in ui.components][:2] == ["brief", "gap_map"]
+    assert ui.components[1].experiment_ids == ["PSI-100", "PSI-99"]
 
 
 def test_rules_ui_is_valid_even_with_nothing():
     ui = build_rules_ui(DEFAULT_CLASSIFICATION, {"error": "x"}, None)
 
-    assert [c.type for c in ui.components] == ["text", "notice"]
+    assert [c.type for c in ui.components] == ["brief", "text", "notice"]
 
 
 def test_keyword_classifier():
@@ -589,7 +591,7 @@ def test_cache_serves_the_second_identical_question(tmp_path: Path):
 
     assert [e.data.get("step") for e in second if e.name == "status"] == ["cache"]
     assert ui_event(second).data["summary"] == "Respuesta."
-    assert json.loads((tmp_path / "cache.json").read_text())[normalize("compara pmma")]["question"] == "¿Compara PMMA?"
+    assert json.loads((tmp_path / "cache.json").read_text())[f"v2|{normalize('compara pmma')}"]["question"] == "¿Compara PMMA?"
 
 
 def test_cache_skips_answers_with_agent_errors(tmp_path: Path):
@@ -639,8 +641,9 @@ def test_post_query_streams_sse_in_mock_mode(mock_client):
     assert [name for name, _ in events][-1] == "ui"
     assert events[0] == ("status", {"step": "clasificando"})
     ui = events[-1][1]
-    assert set(ui) == {"summary", "components", "ms"}
-    assert ui["components"][0]["type"] == "gap_map"
+    assert set(ui) == {"summary", "components", "ms", "brief_version"}
+    assert ui["brief_version"] == 1
+    assert [c["type"] for c in ui["components"]][:2] == ["brief", "gap_map"]
     UIPayload.model_validate({"summary": ui["summary"], "components": ui["components"]})
 
 
@@ -677,6 +680,11 @@ TABLE_OK = {"type": "table", "title": "T", "columns": ["experiment_id", "materia
 CITATION_OK = {"experiment_id": "PSI-99", "source_file": "report.pdf", "section": "3.1", "quote": "flame   spread"}
 
 
+def plain(ui) -> list[dict]:
+    """Components of a ui event without the brief the grounding adds when the composer leaves it out."""
+    return [c for c in ui.data["components"] if c["type"] != "brief"]
+
+
 def composed(*components):
     agents = FakeAgents(composer=[ui_with(*components)])
     return ui_event(collect(run_query("q", agents, composer_mode="agent", timeouts=FAST)))
@@ -685,19 +693,19 @@ def composed(*components):
 def test_grounded_tables_and_citations_pass_unchanged():
     ui = composed(TABLE_OK, {"type": "citations", "items": [CITATION_OK]})
     assert ui.cacheable
-    table, citations = ui.data["components"]
+    table, citations = plain(ui)
     assert table["rows"] == [["PSI-100", "PMMA"]]
     assert citations["items"][0]["quote"] == "flame   spread"
 
 
 def test_an_invented_table_row_is_replaced_by_the_logged_table():
     invented = {**TABLE_OK, "rows": [["PSI-100", "PMMA"], ["PSI-7", "wood"]]}
-    [table] = composed(invented).data["components"]
+    [table] = plain(composed(invented))
     assert table["rows"] == ANALYST_OK["consultas"][0]["rows"]
 
 
 def test_a_table_with_unknown_columns_gets_the_logged_columns():
-    [table] = composed({**TABLE_OK, "columns": ["experiment_id", "o2"]}).data["components"]
+    [table] = plain(composed({**TABLE_OK, "columns": ["experiment_id", "o2"]}))
     assert table["columns"] == ["experiment_id", "material"]
 
 
@@ -708,14 +716,14 @@ def test_citations_must_be_literal_text_of_a_logged_fragment():
         {**CITATION_OK, "source_file": "other.pdf"},
         {**CITATION_OK, "section": "inventada"},
     ]
-    [citations] = composed({"type": "citations", "items": items}).data["components"]
+    [citations] = plain(composed({"type": "citations", "items": items}))
     assert len(citations["items"]) == 2
     assert all(i["section"] == "3.1" for i in citations["items"])
 
 
 def test_gap_map_keeps_only_experiments_found_in_the_data():
     gap = {"type": "gap_map", "title": "M", "experiment_ids": ["PSI-99", "PSI-1234"], "gravity_environment": None, "note": None}
-    [gap_map] = composed(gap).data["components"]
+    [gap_map] = plain(composed(gap))
     assert gap_map["experiment_ids"] == ["PSI-99"]
 
 
@@ -761,25 +769,25 @@ def test_invented_figures_ids_or_refs_are_not_grounded(text):
 
 def test_text_with_an_invented_figure_is_dropped():
     ui = composed({"type": "text", "body": "Hay 99 ensayos."}, {"type": "text", "body": "PSI-99 usa cotton."})
-    assert [c["body"] for c in ui.data["components"]] == ["PSI-99 usa cotton."]
+    assert [c["body"] for c in plain(ui)] == ["PSI-99 usa cotton."]
 
 
 def test_summary_with_an_invented_figure_is_replaced_by_the_rules_summary():
     agents = FakeAgents(composer=[{"summary": "Hay 40 ensayos.", "components": [TABLE_OK]}])
     ui = ui_event(collect(run_query("q", agents, composer_mode="agent", timeouts=FAST)))
-    assert ui.data["summary"] == "Comparación de los ensayos registrados en el Atlas."
+    assert ui.data["summary"] == "Las diferencias entre los ensayos del Atlas se ven en la tabla."
 
 
 def test_gap_map_with_only_invented_ids_uses_the_experiments_of_the_table():
     gap = {"type": "gap_map", "title": "M", "experiment_ids": ["PSI-1234"], "gravity_environment": None, "note": None}
-    [gap_map] = composed(gap).data["components"]
+    [gap_map] = plain(composed(gap))
     assert gap_map["experiment_ids"] == ["PSI-100", "PSI-99"]
 
 
 def test_gap_map_without_any_experiment_says_so():
     gap = {"type": "gap_map", "title": "M", "experiment_ids": ["PSI-1234"], "gravity_environment": None, "note": None}
     agents = FakeAgents(analyst={"respuesta": None, "consultas": []}, researcher=None, composer=[ui_with(gap)])
-    [gap_map] = ui_event(collect(run_query("q", agents, composer_mode="agent", timeouts=FAST))).data["components"]
+    [gap_map] = plain(ui_event(collect(run_query("q", agents, composer_mode="agent", timeouts=FAST))))
     assert gap_map["experiment_ids"] == [] and gap_map["note"] == "Sin experimentos concretos para resaltar."
 
 

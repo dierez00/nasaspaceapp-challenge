@@ -14,7 +14,8 @@ only included when grounding.Evidence finds every figure, PSI id and [n] ref in 
 from typing import Any
 
 from atlas.agents.domain.classification import Classification
-from atlas.agents.domain.grounding import AgentResult, Evidence
+from atlas.agents.domain.brief import build_rules_brief
+from atlas.agents.domain.grounding import MAX_COMPONENTS, AgentResult, Evidence
 from atlas.agents.domain.ui import (
     Citation,
     CitationsComponent,
@@ -29,12 +30,17 @@ MAX_CITATIONS = 5
 MAX_QUOTE = 600
 
 _SUMMARIES = {
-    "huecos": "Estas son las condiciones con datos en el Atlas; las zonas sin ensayos son los huecos.",
-    "comparar": "Comparación de los ensayos registrados en el Atlas.",
-    "evidencia": "Esto dicen los documentos de NASA PSI sobre la pregunta.",
-    "general": "Esto es lo que el Atlas tiene sobre la pregunta.",
+    "huecos": "Las zonas del mapa sin ensayos son los huecos: ahí está lo que aún no sabemos.",
+    "comparar": "Las diferencias entre los ensayos del Atlas se ven en la tabla.",
+    "evidencia": "Los informes de NASA PSI explican este fenómeno; las citas muestran en qué se basan.",
+    "general": "El Atlas reúne ensayos e informes sobre esta pregunta; esto es lo que muestran.",
 }
-_NO_DATA = "No encontré datos ni fuentes para responder; prueba a reformular la pregunta."
+_NO_DATA = "No hay ensayos ni informes del Atlas que respondan a esta pregunta; prueba con otras condiciones."
+# Notices speak about the data, never about who failed or why.
+_UNAVAILABLE = {
+    "analista": "No se pudieron consultar los ensayos del Atlas en este momento.",
+    "investigador": "No se pudieron consultar los informes de NASA PSI en este momento.",
+}
 
 
 def rules_summary(classification: Classification) -> str:
@@ -48,7 +54,10 @@ def build_rules_ui(
     evidence = Evidence(question, analyst, researcher)
     table = _last_table(analyst)
     citations = _citations(researcher)
-    components: list[Any] = []
+    has_sources = citations is not None
+    components: list[Any] = [
+        build_rules_brief(classification, (analyst or {}).get("consultas", []), has_sources, question)
+    ]
 
     if classification.tipo == "huecos":
         components.append(
@@ -76,13 +85,11 @@ def build_rules_ui(
         components.append(citations)
     for name, result in (("analista", analyst), ("investigador", researcher)):
         if result and result.get("error"):
-            components.append(
-                NoticeComponent(type="notice", level="warning", message=f"El {name} no respondió: {result['error']}")
-            )
+            components.append(NoticeComponent(type="notice", level="warning", message=_UNAVAILABLE[name]))
 
-    if not any(c.type != "notice" for c in components):
-        components.insert(0, TextComponent(type="text", body=_NO_DATA))
-    return UIPayload(summary=_SUMMARIES[classification.tipo], components=components[:6])
+    if table is None and not has_sources and all(c.type in ("brief", "notice") for c in components):
+        components.insert(1, TextComponent(type="text", body=_NO_DATA))
+    return UIPayload(summary=_SUMMARIES[classification.tipo], components=components[:MAX_COMPONENTS])
 
 
 def _o2_basis_notice(analyst: AgentResult, table: TableComponent | None) -> NoticeComponent | None:

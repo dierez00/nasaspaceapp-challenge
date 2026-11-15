@@ -25,9 +25,11 @@ from atlas.agents.domain.events import (
     STEP_RESEARCHER,
     Event,
     status,
+    with_brief_version,
 )
 from atlas.agents.domain.grounding import AgentResult, Evidence, ground_ui
 from atlas.agents.domain.ui import UIPayload
+from atlas.agents.domain.brief import build_rules_brief
 from atlas.agents.domain.ui_rules import build_rules_ui, rules_summary
 
 log = logging.getLogger(__name__)
@@ -87,7 +89,7 @@ async def run_query(
     failed = any(result and result.get("error") for result in (analyst, researcher))
     yield Event(
         "ui",
-        {**ui.model_dump(mode="json"), "ms": round((time.monotonic() - started) * 1000)},
+        with_brief_version({**ui.model_dump(mode="json"), "ms": round((time.monotonic() - started) * 1000)}),
         cacheable=composed_by == "agent" and not failed,
     )
 
@@ -143,7 +145,8 @@ async def _compose(
                 )
                 continue
             evidence = Evidence(question, analyst, researcher)
-            grounded, fixes = ground_ui(ui, evidence, rules_summary(classification))
+            fallback_brief = build_rules_brief(classification, evidence.queries, bool(evidence.sources), question)
+            grounded, fixes = ground_ui(ui, evidence, rules_summary(classification), fallback_brief)
             if fixes:
                 log.warning("composer output not grounded in the tools' data: %s", ", ".join(fixes))
             if grounded is None:
@@ -155,13 +158,23 @@ async def _compose(
 def build_composer_prompt(
     question: str, classification: Classification, analyst: AgentResult, researcher: AgentResult
 ) -> str:
+    # Neutral names: the composer writes for the user and must not learn who produced what.
     sections = [
         f"## Pregunta\n\n{question}",
-        f"## Clasificación\n\n{classification.model_dump_json()}",
-        f"## Analista\n\n{_json(_trim_analyst(analyst))}",
-        f"## Investigador\n\n{_json(_trim_researcher(researcher))}",
+        f"## Tipo de pregunta\n\n{classification.model_dump_json()}",
+        f"## Datos de ensayos\n\n{_json(_neutral(_trim_analyst(analyst)))}",
+        f"## Fragmentos de informes\n\n{_json(_neutral(_trim_researcher(researcher)))}",
     ]
     return "\n\n".join(sections)
+
+
+def _neutral(result: AgentResult) -> AgentResult:
+    """Renames `respuesta` to `lectura` and replaces failure details with a plain absence of data."""
+    if not result:
+        return result
+    if result.get("error"):
+        return {"sin_datos": True}
+    return {("lectura" if key == "respuesta" else key): value for key, value in result.items()}
 
 
 def _trim_analyst(result: AgentResult) -> AgentResult:

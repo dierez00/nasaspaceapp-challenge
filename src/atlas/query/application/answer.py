@@ -6,7 +6,7 @@ from collections.abc import AsyncIterator
 from typing import Any, Protocol
 
 from atlas.agents.application.run_query import Agents, ComposerMode, Timeouts, run_query
-from atlas.agents.domain.events import STEP_CACHE, Event, status
+from atlas.agents.domain.events import STEP_CACHE, Event, status, with_brief_version
 
 log = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ async def answer(
     cached = _cached(cache, question)
     if cached is not None:
         yield status(STEP_CACHE)
-        yield Event("ui", {**cached, "ms": round((time.monotonic() - started) * 1000)})
+        yield Event("ui", with_brief_version({**cached, "ms": round((time.monotonic() - started) * 1000)}))
         return
 
     try:

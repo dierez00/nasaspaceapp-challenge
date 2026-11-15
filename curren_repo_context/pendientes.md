@@ -18,6 +18,9 @@
 9. **Contrato de UI.** Los componentes `text`, `table`, `gap_map`, `citations` y `notice` son una propuesta, no el contrato congelado.
 10. **Evento `error`.** Comparte nombre con el evento `error` nativo de `EventSource`. El front distingue los dos por la presencia de `data`.
 
+11. **Base del O2 (`o2_basis`).** El analista distingue la atmósfera (`ambient`) del O2 de la corriente de oxidante de un quemador (`oxidizer_stream`, solo PSI-159 llamas inversas). Los rangos de O2 o presión sin `o2_basis` solo cuentan `ambient`. Detalle en [`agentes.md`](agentes.md#o2_basis-atmósfera-frente-a-corriente-de-quemador). Las respuestas ya guardadas en `data/query_cache.json` son anteriores a este cambio: bórralas para regenerarlas.
+12. **Caché.** La clave conserva los signos `<`, `>`, `=`, `≤` y `≥`, porque "O2 > 30" y "O2 < 30" son preguntas distintas. Una caché ilegible o con entradas mal formadas se trata como fallo de caché, no como error de la consulta.
+
 ## Lo que falta de otras personas
 
 | De | Qué | Bloquea |

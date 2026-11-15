@@ -59,7 +59,10 @@ def build_researcher_server(search: SearchFn, log: list[dict[str, Any]]) -> McpS
         query = str(args.get("consulta", "")).strip()
         if not query:
             return {"content": [{"type": "text", "text": "La consulta está vacía."}], "is_error": True}
-        k = max(1, min(int(args.get("k") or 5), MAX_K))
+        try:
+            k = max(1, min(int(args.get("k") or 5), MAX_K))
+        except (TypeError, ValueError):
+            return {"content": [{"type": "text", "text": f"k debe ser un entero de 1 a {MAX_K}."}], "is_error": True}
         try:
             hits = await search(query, k)
         except Exception as exc:  # noqa: BLE001 - any failure goes back to the agent as text

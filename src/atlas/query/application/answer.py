@@ -28,7 +28,7 @@ async def answer(
     timeouts: Timeouts = Timeouts(),
 ) -> AsyncIterator[Event]:
     started = time.monotonic()
-    cached = cache.get(question) if cache else None
+    cached = _cached(cache, question)
     if cached is not None:
         yield status(STEP_CACHE)
         yield Event("ui", {**cached, "ms": round((time.monotonic() - started) * 1000)})
@@ -45,3 +45,14 @@ async def answer(
     except Exception:
         log.exception("query pipeline failed")
         yield Event("error", {"message": GENERIC_ERROR})
+
+
+def _cached(cache: QueryCache | None, question: str) -> dict[str, Any] | None:
+    """A broken cache is a miss, never a failed question."""
+    if cache is None:
+        return None
+    try:
+        return cache.get(question)
+    except Exception:  # noqa: BLE001 - any cache failure falls through to the agents
+        log.exception("could not read the query cache")
+        return None

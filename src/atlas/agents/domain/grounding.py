@@ -38,7 +38,8 @@ FALLBACK_TABLE_TITLE = "Ensayos consultados"
 
 _PSI_ID = re.compile(r"\bPSI-(\d+)\b")
 _REF = re.compile(r"\[(\d+)\]")
-_NUMBER = re.compile(r"(?<![0-9])[0-9]+(?:[.,][0-9]+)*")
+# A figure never starts inside a word or a number: the 2 of "O2", "CO2" or "o2_basis" is not one.
+_NUMBER = re.compile(r"(?<!\w)(?<![0-9][.,])[0-9]+(?:[.,][0-9]+)*")
 
 
 class Evidence:

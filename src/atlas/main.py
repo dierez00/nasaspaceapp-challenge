@@ -3,8 +3,13 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from atlas.agents.application.claude_agents import ClaudeAgents
+from atlas.agents.application.mock_agents import MockAgents
+from atlas.agents.infrastructure.document_search import DocumentSearch
 from atlas.coverage.api.router import router as coverage_router
 from atlas.experiments.api.router import router as experiments_router
+from atlas.query.api.router import router as query_router
+from atlas.query.infrastructure.file_cache import FileQueryCache
 from atlas.search.api.router import router as search_router
 from atlas.search.domain.ports import Embedder, Reranker
 from atlas.search.infrastructure.voyage_embedder import VoyageEmbedder
@@ -42,6 +47,7 @@ def create_app(
         allow_methods=["GET", "POST"],
         allow_headers=["*"],
     )
+    _configure_query(app, settings, pool, embedder, reranker)
 
     @app.get("/health", tags=["health"])
     async def health() -> dict[str, str]:
@@ -56,7 +62,23 @@ def create_app(
     app.include_router(experiments_router)
     app.include_router(coverage_router)
     app.include_router(search_router)
+    app.include_router(query_router)
     return app
+
+
+def _configure_query(
+    app: FastAPI, settings: Settings, pool, embedder: Embedder | None, reranker: Reranker | None
+) -> None:
+    app.state.settings = settings
+    if settings.agents_mock:
+        app.state.agents = MockAgents(settings.data_dir)
+        app.state.composer_mode = "rules"
+        app.state.query_cache = None
+        return
+    search = DocumentSearch(pool, embedder, reranker, settings.rerank_candidates)
+    app.state.agents = ClaudeAgents(settings, pool, search)
+    app.state.composer_mode = settings.compositor_mode
+    app.state.query_cache = FileQueryCache(settings.query_cache_file) if settings.query_cache_enabled else None
 
 
 app = create_app()

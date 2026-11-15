@@ -92,12 +92,18 @@ function ScenarioControls({ slot }: { slot: Slot }) {
           const value = scenario[control.key];
           const fill = Math.min(
             100,
-            Math.max(0, ((value - control.min) / (control.max - control.min)) * 100),
+            Math.max(
+              0,
+              ((value - control.min) / (control.max - control.min)) * 100,
+            ),
           );
           return (
             <div className="cluster condition-control" key={control.key}>
               <div className="condition-head">
-                <label className="cluster-label" htmlFor={`${slot}-${control.key}`}>
+                <label
+                  className="cluster-label"
+                  htmlFor={`${slot}-${control.key}`}
+                >
                   {control.label}
                 </label>
                 <div className="condition-value">
@@ -135,7 +141,11 @@ function ScenarioControls({ slot }: { slot: Slot }) {
       <div className="control-row control-row-modes">
         <div className="cluster">
           <span className="cluster-label">Gravedad</span>
-          <div className="segmented" role="group" aria-label={`Gravedad ${slot}`}>
+          <div
+            className="segmented"
+            role="group"
+            aria-label={`Gravedad ${slot}`}
+          >
             {(["micro", "lunar", "earth"] as const).map((gravity) => (
               <button
                 key={gravity}
@@ -312,102 +322,108 @@ export function Laboratory() {
           </button>
         </div>
       )}
-      <motion.div
-        className={`lab-viewport ${state.compare ? "is-comparing" : ""}`}
-        ref={host}
-        data-active-slot={state.activeSlot}
-        data-render-mode={unsupported ? "svg" : "3d"}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: reduced ? 0 : 0.45, ease: [0.16, 1, 0.3, 1] }}
+      <div
+        className={`lab-window cupola-octagon ${state.compare ? "is-comparing" : ""}`}
       >
-        {!unsupported && (
-          <SceneBoundary key={attempt} onError={fail}>
-            <LabCanvas
-              host={host}
-              viewA={viewA}
-              viewB={viewB}
-              mobile={mobile}
-              onLoss={fail}
-            />
-          </SceneBoundary>
-        )}
-        <div className="scene-views">
-          {slots.map((slot) => {
-            const scenario = state.scenarios[slot];
-            return (
-              <div
-                key={slot}
-                ref={slot === "A" ? viewA : viewB}
-                className={`scene-view scene-${slot}`}
-                data-testid={`scene-${slot}`}
-              >
-                {unsupported && <FallbackScene slot={slot} />}
-                <div className="scene-label">
-                  <span className="scene-letter">{slot}</span>
-                  <div>
-                    <strong>{scenario.material}</strong>
-                    <small>
-                      {scenario.experimentId ? `${scenario.experimentId} · ` : ""}
-                      {scenario.provenance === "hypothetical"
-                        ? "Escenario hipotético"
-                        : scenario.evidence === "demo"
-                          ? "Original demo"
-                          : scenario.experimentId
-                            ? "Condiciones originales"
-                            : "Escenario libre"}
-                    </small>
+        <motion.div
+          className={`lab-viewport cupola-octagon ${state.compare ? "is-comparing" : ""}`}
+          ref={host}
+          data-active-slot={state.activeSlot}
+          data-render-mode={unsupported ? "svg" : "3d"}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: reduced ? 0 : 0.45, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {!unsupported && (
+            <SceneBoundary key={attempt} onError={fail}>
+              <LabCanvas
+                host={host}
+                viewA={viewA}
+                viewB={viewB}
+                mobile={mobile}
+                onLoss={fail}
+              />
+            </SceneBoundary>
+          )}
+          <div className="scene-views">
+            {slots.map((slot) => {
+              const scenario = state.scenarios[slot];
+              return (
+                <div
+                  key={slot}
+                  ref={slot === "A" ? viewA : viewB}
+                  className={`scene-view scene-${slot}`}
+                  data-testid={`scene-${slot}`}
+                >
+                  {unsupported && <FallbackScene slot={slot} />}
+                  <div className="scene-label">
+                    <span className="scene-letter">{slot}</span>
+                    <div>
+                      <strong>{scenario.material}</strong>
+                      <small>
+                        {scenario.experimentId
+                          ? `${scenario.experimentId} · `
+                          : ""}
+                        {scenario.provenance === "hypothetical"
+                          ? "Escenario hipotético"
+                          : scenario.evidence === "demo"
+                            ? "Original demo"
+                            : scenario.experimentId
+                              ? "Condiciones originales"
+                              : "Escenario libre"}
+                      </small>
+                    </div>
+                    <span className="scene-gravity">
+                      {gravityLabels[scenario.gravity]}
+                    </span>
                   </div>
-                  <span className="scene-gravity">
-                    {gravityLabels[scenario.gravity]}
-                  </span>
-                </div>
-                <div className="scene-side-label">
-                  {scenario.gravity === "micro"
-                    ? "Transporte difusivo"
-                    : scenario.gravity === "lunar"
-                      ? "Gravedad parcial · ilustración"
-                      : "Convección ascendente"}
-                </div>
-                {scenario.pressure === 0 && (
-                  <div className="vacuum-notice">
-                    Cámara sin gas
-                    <span>No se representa combustión en vacío.</span>
+                  <div className="scene-side-label">
+                    {scenario.gravity === "micro"
+                      ? "Transporte difusivo"
+                      : scenario.gravity === "lunar"
+                        ? "Gravedad parcial · ilustración"
+                        : "Convección ascendente"}
                   </div>
-                )}
-                <div className="scene-readings">
-                  <span>
-                    {scenario.pressure.toFixed(1)}
-                    <small>psi</small>
-                  </span>
-                  <span>
-                    {scenario.oxygen.toFixed(1)}
-                    <small>% O₂</small>
-                  </span>
-                  <span className="scene-state">
-                    <i />
-                    {stateLabels[scenario.flameState]}
-                  </span>
+                  {scenario.pressure === 0 && (
+                    <div className="vacuum-notice">
+                      Cámara sin gas
+                      <span>No se representa combustión en vacío.</span>
+                    </div>
+                  )}
+                  <div className="scene-readings">
+                    <span>
+                      {scenario.pressure.toFixed(1)}
+                      <small>psi</small>
+                    </span>
+                    <span>
+                      {scenario.oxygen.toFixed(1)}
+                      <small>% O₂</small>
+                    </span>
+                    <span className="scene-state">
+                      <i />
+                      {stateLabels[scenario.flameState]}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-        <div className="scene-bottom">
-          <span>
-            {unsupported
-              ? "Vista SVG de respaldo"
-              : "Arrastra para orbitar · rueda para acercar"}
-          </span>
-          <button
-            aria-label="Restablecer cámara"
-            onClick={() => dispatch({ type: "camera" })}
-          >
-            ⊙ Restablecer cámara
-          </button>
-        </div>
-        {!active && <span className="sr-only">Renderizado suspendido</span>}
-      </motion.div>
+              );
+            })}
+          </div>
+          <div className="scene-bottom">
+            <span>
+              {unsupported
+                ? "Vista SVG de respaldo"
+                : "Arrastra para orbitar · rueda para acercar"}
+            </span>
+            <button
+              aria-label="Restablecer cámara"
+              onClick={() => dispatch({ type: "camera" })}
+            >
+              ⊙ Restablecer cámara
+            </button>
+          </div>
+          {!active && <span className="sr-only">Renderizado suspendido</span>}
+        </motion.div>
+      </div>
       {unsupported && (
         <div className="graphics-notice" role="status">
           La cámara 3D no está disponible. Los controles siguen activos en SVG.

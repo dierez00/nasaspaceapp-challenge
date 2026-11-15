@@ -6,7 +6,10 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--moon-dust);
+  /* Console canvas: Cabin Night with one static, soft light from the top edge. */
+  background:
+    radial-gradient(ellipse 90% 60% at 50% -10%, #14254a 0%, transparent 70%),
+    var(--console-bg);
   color: var(--ink);
   font-family: var(--font-body);
   font-size: var(--text-base);
@@ -51,14 +54,26 @@
   outline-offset: 2px;
 }
 
-/* Shared module surface */
+/* Shared module surface: a lit screen set into the console. The bezel is a
+   stepped dark ring; the faint inner glow reads as light from the display. */
 .laboratory,
 .camera-panel,
 .copilot-panel {
   background: var(--instrument-white);
   border: 1px solid var(--line);
   border-radius: var(--radius-module);
-  box-shadow: var(--shadow-module);
+  box-shadow:
+    0 0 0 1px var(--console-line),
+    0 0 0 5px var(--console-bezel),
+    0 0 0 6px rgba(3, 6, 14, 0.7),
+    0 22px 40px -12px rgba(0, 0, 0, 0.6),
+    inset 0 0 36px rgba(11, 61, 145, 0.08);
+}
+
+/* Focus on the dark console chrome needs a light ring. */
+.atlas-topbar :is(button, a):focus-visible,
+.mobile-tabs button:focus-visible {
+  outline-color: var(--console-focus);
 }
 
 /* Top bar */
@@ -68,15 +83,20 @@
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 16px;
-  height: 68px;
+  height: 64px;
+  margin-bottom: 18px;
   padding: 0 20px;
+  /* Mission strip */
+  background: linear-gradient(180deg, #121f3a 0%, var(--console-raised) 100%);
+  border-bottom: 1px solid var(--console-line);
+  box-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.7);
 }
 .atlas-brand {
   justify-self: start;
   display: flex;
   align-items: center;
   gap: 12px;
-  color: var(--ink);
+  color: var(--console-text);
   text-decoration: none;
   font-family: var(--font-display);
   font-size: 15px;
@@ -93,8 +113,8 @@
   display: inline-flex;
   gap: 4px;
   padding: 4px;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid var(--line);
+  background: rgba(3, 6, 14, 0.45);
+  border: 1px solid var(--console-line);
   border-radius: var(--radius-pill);
 }
 .workspace-tabs button {
@@ -103,7 +123,7 @@
   border: 0;
   border-radius: var(--radius-pill);
   background: transparent;
-  color: var(--slate);
+  color: var(--console-muted);
   font-size: var(--text-base);
   font-weight: 500;
   white-space: nowrap;
@@ -116,13 +136,14 @@
   transform: scale(0.97);
 }
 .workspace-tabs button[aria-selected="true"] {
-  background: var(--nasa-blue);
-  color: #fff;
+  background: var(--moon-dust);
+  color: var(--ink);
+  box-shadow: 0 0 14px -2px rgba(233, 237, 243, 0.35);
 }
 @media (hover: hover) {
   .workspace-tabs button[aria-selected="false"]:hover {
-    background: var(--instrument-white);
-    color: var(--ink);
+    background: rgba(233, 237, 243, 0.1);
+    color: var(--console-text);
   }
 }
 .topbar-end {
@@ -137,10 +158,10 @@
   gap: 8px;
   min-height: 40px;
   padding: 0 18px 0 14px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--console-line-strong);
   border-radius: var(--radius-pill);
-  background: var(--instrument-white);
-  color: var(--nasa-blue);
+  background: transparent;
+  color: var(--console-text);
   font-size: var(--text-base);
   font-weight: 600;
   white-space: nowrap;
@@ -157,7 +178,7 @@
 }
 @media (hover: hover) {
   .return-cabin:hover {
-    background: var(--nasa-blue-tint);
+    background: rgba(233, 237, 243, 0.12);
   }
 }
 .demo-indicator {
@@ -167,8 +188,9 @@
   min-height: 36px;
   padding: 0 14px;
   border-radius: var(--radius-pill);
-  background: var(--safe-emerald-tint);
-  color: var(--safe-emerald-ink);
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  color: #6ee7b7;
   font-size: var(--text-sm);
   font-weight: 600;
   white-space: nowrap;
@@ -177,7 +199,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--safe-emerald);
+  background: #34d399;
 }
 
 /* Layout */
@@ -186,11 +208,17 @@
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) clamp(340px, 29vw, 440px);
-  gap: 16px;
-  padding: 0 16px 16px;
+  gap: 22px;
+  padding: 0 22px 22px;
 }
 .simulation-workspace {
   min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.workspace-view {
+  flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -307,6 +335,7 @@
   .atlas-topbar {
     grid-template-columns: 1fr auto;
     height: auto;
+    margin-bottom: 14px;
     padding: 12px 16px;
     row-gap: 12px;
   }
@@ -343,10 +372,10 @@
   .mobile-tabs {
     display: flex;
     gap: 4px;
-    margin: 0 16px 12px;
+    margin: 0 18px 14px;
     padding: 4px;
-    background: rgba(255, 255, 255, 0.7);
-    border: 1px solid var(--line);
+    background: rgba(3, 6, 14, 0.45);
+    border: 1px solid var(--console-line);
     border-radius: var(--radius-pill);
   }
   .mobile-tabs button {
@@ -355,18 +384,18 @@
     border: 0;
     border-radius: var(--radius-pill);
     background: transparent;
-    color: var(--slate);
+    color: var(--console-muted);
     font-size: var(--text-base);
     font-weight: 500;
   }
   .mobile-tabs button[aria-pressed="true"] {
-    background: var(--nasa-blue);
-    color: #fff;
+    background: var(--moon-dust);
+    color: var(--ink);
   }
   .atlas-split {
     display: flex;
     flex-direction: column;
-    padding: 0 12px 16px;
+    padding: 0 18px 24px;
   }
   .simulation-workspace {
     width: 100%;

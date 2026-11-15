@@ -167,16 +167,26 @@
 }
 
 /* Sections inside the module */
-.lab-viewport {
-  position: relative;
+/* Cupola window: a lit bevel (bright above, shadow below, like the cabin panels)
+   around the octagonal glass. Never put transform/filter on an ancestor of the
+   fixed canvas: it would become the canvas's containing block. */
+.lab-window {
+  --chamfer: 28px;
   flex: 1 1 0;
   min-height: 190px;
+  display: flex;
+  padding: 5px;
+  background: linear-gradient(165deg, #5a6f99 0%, #1d2d4d 42%, #0b1528 100%);
+}
+.lab-viewport {
+  --chamfer: 24px;
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
   background: var(--cabin-night);
-  border-radius: 16px;
   overflow: hidden;
   isolation: isolate;
-  clip-path: inset(0 round 16px);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 .lab-playback {
   flex-shrink: 0;
@@ -201,7 +211,7 @@
 .lab-controls.is-comparing {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
-.lab-viewport.is-comparing {
+.lab-window.is-comparing {
   min-height: 150px;
 }
 @media (min-width: 1024px) and (max-height: 820px) {
@@ -663,7 +673,11 @@
   display: grid;
   place-items: center;
   pointer-events: none;
-  background: radial-gradient(ellipse at 50% 60%, #1b2b52, var(--cabin-night) 65%);
+  background: radial-gradient(
+    ellipse at 50% 60%,
+    #1b2b52,
+    var(--cabin-night) 65%
+  );
 }
 .fallback-flame {
   height: 160px;
@@ -724,7 +738,6 @@
   font-weight: 600;
 }
 
-
 /* Responsive */
 @media (max-width: 1279px) and (min-width: 1024px) {
   .laboratory {
@@ -764,10 +777,14 @@
   .lab-heading h2 {
     font-size: 20px;
   }
-  .lab-viewport {
+  .lab-window {
+    --chamfer: 22px;
     flex: none;
     min-height: 300px;
     height: 340px;
+  }
+  .lab-viewport {
+    --chamfer: 18px;
   }
   .lab-playback {
     gap: 8px;

@@ -25,10 +25,22 @@
   --safe-emerald-tint: #e6f6ef;
   --surface-sunken: #f2f4f8;
 
+  /* Cabin console chrome (dark): the dashboard canvas, mission strip and screen bezels */
+  --console-bg: var(--cabin-night);
+  --console-raised: #101c34;
+  --console-bezel: #16243f;
+  --console-line: rgba(233, 237, 243, 0.12);
+  --console-line-strong: rgba(233, 237, 243, 0.24);
+  --console-text: #f4f7fb;
+  --console-muted: #a9b6cc;
+  --console-focus: #a9c6ff;
+
   /* Type */
   --font-display: var(--font-unbounded), "Arial Black", system-ui, sans-serif;
-  --font-body: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-data: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --font-body:
+    var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-data:
+    var(--font-plex-mono), ui-monospace, "SFMono-Regular", Consolas, monospace;
   --text-sm: 13px;
   --text-base: 15px;
   --text-md: 16px;
@@ -90,6 +102,22 @@ body {
   color-scheme: dark;
   background-color: var(--cabin-night);
   color: #f4f7fb;
+}
+
+/* Cupola window: the same chamfered octagon as CupolaFrame, as a reusable clip.
+   Set --chamfer per surface; nest a smaller one inside for a bevel. */
+.cupola-octagon {
+  --chamfer: 24px;
+  clip-path: polygon(
+    var(--chamfer) 0,
+    calc(100% - var(--chamfer)) 0,
+    100% var(--chamfer),
+    100% calc(100% - var(--chamfer)),
+    calc(100% - var(--chamfer)) 100%,
+    var(--chamfer) 100%,
+    0 calc(100% - var(--chamfer)),
+    0 var(--chamfer)
+  );
 }
 
 /* The one allowed uppercase label style. */

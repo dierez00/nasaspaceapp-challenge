@@ -9,7 +9,7 @@ import { CopilotPanel } from "@/modules/copilot/ui/copilot-panel";
 import "./atlas.css";
 import { SimulationProvider } from "@/modules/simulation/application/simulation-provider";
 import { Laboratory } from "@/modules/simulation/ui/laboratory";
-import { motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useExperience } from "@/shared/experience/experience-context";
 
 function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
@@ -116,21 +116,36 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
       </div>
       <div className="atlas-split">
         <div className="simulation-workspace">
-          {state.view === "lab" ? (
-            <Laboratory />
-          ) : (
+          {/* Camera-like move between views: the incoming screen slides in from the
+              side it lives on. Only transform/opacity; reduced motion just fades. */}
+          <AnimatePresence initial={false}>
             <motion.div
-              className="workspace-map"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              key={state.view}
+              className="workspace-view"
+              initial={
+                reduced
+                  ? { opacity: 0 }
+                  : {
+                      opacity: 0,
+                      x: state.view === "map" ? 40 : -40,
+                      scale: 0.985,
+                    }
+              }
+              animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{
-                duration: reduced ? 0 : 0.3,
-                ease: [0.16, 1, 0.3, 1],
+                duration: reduced ? 0.12 : 0.42,
+                ease: [0.45, 0, 0.15, 1],
               }}
             >
-              <AtlasMap />
+              {state.view === "lab" ? (
+                <Laboratory />
+              ) : (
+                <div className="workspace-map">
+                  <AtlasMap />
+                </div>
+              )}
             </motion.div>
-          )}
+          </AnimatePresence>
         </div>
         <CopilotPanel mode={mode} />
       </div>

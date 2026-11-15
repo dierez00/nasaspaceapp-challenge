@@ -115,9 +115,11 @@ export function buildDive({ root, dive, onPeak, onDone }: Options, reduced: bool
     )
     .to(l.veil, { opacity: 1, duration: 0.25, ease: "power1.in" }, 1.3)
     .call(onPeak, [], 1.55)
-    // 4. The deck resolves out of the light.
-    .to(l.deck, { opacity: 1, scale: 1, duration: 0.65, ease: easeOut }, 1.55)
-    .to([l.veil, l.bloom], { opacity: 0, duration: 0.65, ease: easeOut }, 1.55);
+    // 4. The light drains away and the dark console is already there behind it,
+    //    its lit screens switching on as the whiteout clears.
+    .set(l.deck, { opacity: 1 }, 1.55)
+    .to(l.deck, { scale: 1, duration: 0.7, ease: easeOut }, 1.55)
+    .to([l.veil, l.bloom], { opacity: 0, duration: 0.7, ease: easeOut }, 1.55);
 }
 
 /** ~0.65 s: a short wash of light, then the cabin settles back into place. */

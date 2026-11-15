@@ -28,7 +28,7 @@ body:has(.experience) {
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
-  background: var(--moon-dust);
+  background: var(--console-bg);
   outline: none;
 }
 .experience[data-phase="cabin"] .deck {

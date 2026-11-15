@@ -186,8 +186,8 @@ export function SpaceBackdrop3D() {
       powerPreference: "high-performance",
     });
     renderer.setSize(width, height);
-    // Resolución nativa Retina / HiDPI [1, 2] para máxima nitidez de estrellas
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Resolución HiDPI limitada a 1.5 para contener el coste de fragmentos
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.0;
 
@@ -258,7 +258,7 @@ export function SpaceBackdrop3D() {
     earthSpecularMap.colorSpace = THREE.NoColorSpace;
     earthSpecularMap.anisotropy = 8;
 
-    const earthGeo = new THREE.SphereGeometry(0.75, 64, 64);
+    const earthGeo = new THREE.SphereGeometry(0.75, 32, 32);
     const earthMat = new THREE.MeshStandardMaterial({
       map: earthDayMap,
       normalMap: earthNormalMap,
@@ -272,7 +272,7 @@ export function SpaceBackdrop3D() {
     earth.rotation.set(0.35, 0, 0);
 
     // Halo Atmosférico Exterior (Fresnel / Glow con mezcla aditiva)
-    const atmosphereGeo = new THREE.SphereGeometry(0.75, 64, 64);
+    const atmosphereGeo = new THREE.SphereGeometry(0.75, 32, 32);
     const atmosphereMat = new THREE.MeshBasicMaterial({
       color: new THREE.Color("#38bdf8"),
       transparent: true,
@@ -285,7 +285,7 @@ export function SpaceBackdrop3D() {
     earth.add(atmosphere);
 
     // Halo tenue exterior adicional para suave difusión mesosférica
-    const glowGeo = new THREE.SphereGeometry(0.75, 64, 64);
+    const glowGeo = new THREE.SphereGeometry(0.75, 32, 32);
     const glowMat = new THREE.MeshBasicMaterial({
       color: new THREE.Color("#0ea5e9"),
       transparent: true,
@@ -307,7 +307,7 @@ export function SpaceBackdrop3D() {
     moonTexture.wrapT = THREE.RepeatWrapping;
 
     // Radio de 15 para abarcar el horizonte de lado a lado
-    const moonGeo = new THREE.SphereGeometry(15, 128, 128);
+    const moonGeo = new THREE.SphereGeometry(15, 64, 64);
     const moonMat = new THREE.MeshStandardMaterial({
       map: moonTexture,
       bumpMap: moonTexture,
@@ -325,7 +325,10 @@ export function SpaceBackdrop3D() {
 
     // 7. Bucle de Animación y Control de Framerate con Reloj Three.js
     let animationFrameId = 0;
-    let isVisible = true;
+    let running = false;
+    let inView = true;
+    let tabVisible = !document.hidden;
+    let contextLost = false;
     let reducedMotion = false;
     const clock = new THREE.Clock();
 
@@ -337,56 +340,74 @@ export function SpaceBackdrop3D() {
     };
 
     const animate = () => {
-      if (isVisible) {
-        const delta = clock.getDelta();
-        const elapsed = clock.getElapsedTime();
+      const delta = clock.getDelta();
+      const elapsed = clock.getElapsedTime();
 
-        // Rotación de los cuerpos celestes: la Luna gira sobre su eje X
-        earth.rotation.y += delta * 0.05;
-        moon.rotation.x += delta * 0.015;
+      // Rotación de los cuerpos celestes: la Luna gira sobre su eje X
+      earth.rotation.y += delta * 0.05;
+      moon.rotation.x += delta * 0.015;
 
-        // Actualización de tiempos para parpadeo de estrellas y sparkles
-        renderFrame(elapsed);
-      }
+      // Actualización de tiempos para parpadeo de estrellas y sparkles
+      renderFrame(elapsed);
       animationFrameId = requestAnimationFrame(animate);
     };
 
     // Movimiento reducido: un único cuadro estático, sin rotación ni parpadeo
     function requestStaticRender() {
-      if (reducedMotion) renderFrame(0);
+      if (reducedMotion && !contextLost) renderFrame(0);
     }
 
-    const startLoop = () => {
-      cancelAnimationFrame(animationFrameId);
-      clock.getDelta(); // reset delta para evitar saltos bruscos
-      animate();
+    // El bucle solo corre si el hero es visible, la pestaña está activa y hay contexto WebGL
+    const syncLoop = () => {
+      const shouldRun = !reducedMotion && inView && tabVisible && !contextLost;
+      if (shouldRun && !running) {
+        running = true;
+        clock.getDelta(); // reset delta para evitar saltos bruscos
+        animationFrameId = requestAnimationFrame(animate);
+      } else if (!shouldRun && running) {
+        running = false;
+        cancelAnimationFrame(animationFrameId);
+      }
     };
 
     const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const applyMotionPreference = () => {
       reducedMotion = reducedMotionQuery.matches;
-      if (reducedMotion) {
-        cancelAnimationFrame(animationFrameId);
-        requestStaticRender();
-      } else {
-        startLoop();
-      }
+      syncLoop();
+      requestStaticRender();
     };
     applyMotionPreference();
     reducedMotionQuery.addEventListener("change", applyMotionPreference);
 
-    // 8. Optimización GPU: IntersectionObserver para pausar render al scrollear
+    // 8. Optimización GPU: pausar render fuera de pantalla y con la pestaña oculta
     const observer = new IntersectionObserver(
       (entries) => {
-        const entry = entries[0];
-        isVisible = entry.isIntersecting;
-        if (isVisible) {
-          clock.getDelta(); // reset delta para evitar saltos bruscos
-        }
+        inView = entries[0].isIntersecting;
+        syncLoop();
       },
       { threshold: 0.05 }
     );
     observer.observe(container);
+
+    const handleVisibility = () => {
+      tabVisible = !document.hidden;
+      syncLoop();
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    // Pérdida/restauración de contexto WebGL: detener el bucle y reanudar al restaurar
+    const handleContextLost = (event: Event) => {
+      event.preventDefault();
+      contextLost = true;
+      syncLoop();
+    };
+    const handleContextRestored = () => {
+      contextLost = false;
+      syncLoop();
+      requestStaticRender();
+    };
+    renderer.domElement.addEventListener("webglcontextlost", handleContextLost);
+    renderer.domElement.addEventListener("webglcontextrestored", handleContextRestored);
 
     // 9. Manejo de Redimensionamiento (Resize)
     const handleResize = () => {
@@ -404,6 +425,9 @@ export function SpaceBackdrop3D() {
     return () => {
       window.removeEventListener("resize", handleResize);
       reducedMotionQuery.removeEventListener("change", applyMotionPreference);
+      document.removeEventListener("visibilitychange", handleVisibility);
+      renderer.domElement.removeEventListener("webglcontextlost", handleContextLost);
+      renderer.domElement.removeEventListener("webglcontextrestored", handleContextRestored);
       observer.disconnect();
       cancelAnimationFrame(animationFrameId);
 

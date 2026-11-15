@@ -78,6 +78,20 @@ export function HeroSection() {
               end: "bottom top",
               scrub: full ? 0.75 : true,
               invalidateOnRefresh: true,
+              // Promover capas a la GPU solo mientras el hero está en scroll activo
+              onToggle: (self) => {
+                if (!full) return;
+                gsap.set(
+                  [
+                    backdropRef.current,
+                    cupolaRef.current,
+                    flameRef.current,
+                    titleContainerRef.current,
+                    bottomGradientSeamRef.current,
+                  ],
+                  { willChange: self.isActive ? "transform" : "auto" }
+                );
+              },
             },
           });
 
@@ -181,7 +195,7 @@ export function HeroSection() {
         {/* 2. Capa de Superposición de Escotilla (z-20): Marco de cúpula blanco aeroespacial y biseles */}
         <div
           ref={cupolaRef}
-          className="absolute inset-0 z-20 pointer-events-none origin-center will-change-transform"
+          className="absolute inset-0 z-20 pointer-events-none origin-center"
         >
           <CupolaFrame />
         </div>
@@ -216,7 +230,7 @@ export function HeroSection() {
         {/* 3. Llama Esférica de Difusión en Microgravedad (z-10): Centrada como aura luminosa */}
         <div
           ref={flameRef}
-          className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none origin-center will-change-transform"
+          className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none origin-center"
         >
           <MicrogravityFlame />
         </div>
@@ -224,7 +238,7 @@ export function HeroSection() {
         {/* 4. TÍTULO MONUMENTAL (z-30): Letras Grandes siempre visibles y centradas */}
         <div
           ref={titleContainerRef}
-          className="relative z-30 text-center w-full max-w-6xl mx-auto flex flex-col items-center justify-center pointer-events-none will-change-transform py-6"
+          className="relative z-30 text-center max-w-4xl lg:max-w-5xl mx-auto flex flex-col items-center justify-center pointer-events-none py-6"
         >
           <h1 className="w-full flex flex-col items-center justify-center font-black uppercase tracking-[0.2em] leading-tight select-none drop-shadow-[0_4px_30px_rgba(0,0,0,0.95)] drop-shadow-[0_0_40px_rgba(56,189,248,0.4)]">
             <span
@@ -248,7 +262,7 @@ export function HeroSection() {
         {/* 6. DEGRADADO ESPACIAL CONTINUO HACIA EL LABORATORIO (Overlay cinemático) */}
         <div
           ref={gradientOverlayRef}
-          className="absolute inset-0 pointer-events-none z-25 opacity-0 will-change-opacity"
+          className="absolute inset-0 pointer-events-none z-25 opacity-0"
           style={{
             background:
               "linear-gradient(180deg, rgba(2, 4, 10, 0) 0%, rgba(2, 4, 10, 0.25) 35%, rgba(10, 14, 23, 0.75) 65%, rgba(14, 165, 233, 0.12) 82%, rgba(255, 255, 255, 0.95) 96%, #ffffff 100%)",
@@ -258,7 +272,7 @@ export function HeroSection() {
         {/* 7. Costura inferior de transición perfecta al fondo blanco del #dashboard */}
         <div
           ref={bottomGradientSeamRef}
-          className="absolute -bottom-1 left-0 right-0 h-44 pointer-events-none z-28 opacity-0 origin-bottom will-change-transform"
+          className="absolute -bottom-1 left-0 right-0 h-44 pointer-events-none z-28 opacity-0 origin-bottom"
           style={{
             background:
               "linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.6) 50%, #ffffff 100%)",

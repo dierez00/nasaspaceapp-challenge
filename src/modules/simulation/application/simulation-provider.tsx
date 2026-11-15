@@ -45,6 +45,7 @@ export function SimulationProvider({
   const [clock] = useState(() => new SimulationClock());
   const [reduced, setReduced] = useState(true);
   const [visible, setVisible] = useState(true);
+  const [inView, setInView] = useState(true);
   const [mobile, setMobile] = useState(false);
   useEffect(() => {
     const motion = matchMedia("(prefers-reduced-motion: reduce)");
@@ -68,8 +69,22 @@ export function SimulationProvider({
       document.removeEventListener("visibilitychange", updateVisibility);
     };
   }, [clock]);
+  // Pause the lab clock and render while the dashboard is scrolled out of the viewport.
+  useEffect(() => {
+    const target =
+      document.getElementById("dashboard") ?? document.querySelector(".atlas-app");
+    if (!target) return;
+    const observer = new IntersectionObserver(
+      (entries) => setInView(entries[entries.length - 1].isIntersecting),
+      { rootMargin: "100px 0px" },
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
   const active =
-    visible && atlas.view === "lab" && (!mobile || atlas.tab === "camera");
+    visible &&
+    inView &&
+    atlas.view === "lab" && (!mobile || atlas.tab === "camera");
   const snapshot = useSyncExternalStore(
     clock.subscribe,
     clock.getSnapshot,

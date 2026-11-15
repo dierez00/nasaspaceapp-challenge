@@ -41,7 +41,7 @@ User feedback (2026-11-15):
 - Conventional Commits, work-unit commits, no AI attribution. ~400 changed lines per task is advisory only.
 
 ## Tasks
-- [ ] X0 Map the backend: agents, prompts, `/query` SSE contract, ui components, tests, runner.
+- [x] X0 Map the backend: agents, prompts, `/query` SSE contract, ui components, tests, runner.
 - [x] F1 Cabin console shell: dark chrome with lit screens, octagonal lab window, view-switch move, theme.md update.
 - [x] B1 Backend evidence-brief contract and professor tone: brief component (verdict, evidence table, gap, next steps, audience sections), audience parameter, no internals leakage, tests.
 - [ ] F2 Front evidence brief: render the brief and real tables, highlight evidence and gap on the main map, next-step actions, audience selector, CSV export and citation; remove the "Respuesta de respaldo" flattening.

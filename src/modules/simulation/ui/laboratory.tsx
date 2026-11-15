@@ -399,13 +399,6 @@ export function Laboratory() {
           <ScenarioControls key={slot} slot={slot} />
         ))}
       </div>
-      <footer className="lab-disclaimer">
-        <span>◇ REPRESENTACIÓN CUALITATIVA</span>
-        <p>
-          Los controles modifican la apariencia. No calculan combustión ni
-          límites de seguridad.
-        </p>
-      </footer>
     </section>
   );
 }

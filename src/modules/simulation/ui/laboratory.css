@@ -3,32 +3,41 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
+  background: var(--atlas-surface);
+  transition: background 0.2s ease;
 }
 .workspace-tabs {
   display: flex;
   gap: 22px;
   align-items: center;
   padding: 0 30px;
-  height: 46px;
+  height: 48px;
   flex-shrink: 0;
   border-bottom: 1px solid var(--atlas-border);
+  background: var(--atlas-surface);
 }
 .workspace-tabs button {
   height: 100%;
   background: none;
   border: 0;
   border-bottom: 2px solid transparent;
-  color: #8993a1;
-  font-size: 11px !important;
+  color: var(--atlas-text-secondary);
+  font-size: 13px !important;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.workspace-tabs button:hover {
+  color: var(--atlas-text-primary);
 }
 .workspace-tabs button[aria-selected="true"] {
-  color: #0b3d91;
-  border-bottom-color: #0b3d91;
+  color: var(--atlas-blue);
+  border-bottom-color: var(--atlas-blue);
+  font-weight: 600;
 }
 .workspace-tabs > span {
   margin-left: auto;
-  font: 8px var(--atlas-mono);
-  color: #9aa4b2;
+  font: 9px var(--atlas-mono);
+  color: var(--atlas-text-muted);
   letter-spacing: 1px;
 }
 .workspace-map {
@@ -44,55 +53,69 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  padding: 24px 26px 12px;
+  padding: 24px 28px 14px;
   gap: 0;
+  background: var(--atlas-surface);
+  transition: background 0.2s ease;
 }
 .lab-heading {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   gap: 12px;
   flex-shrink: 0;
 }
 .lab-heading .micro-label {
-  color: #0b3d91;
-  font-size: 8px;
+  color: var(--atlas-blue);
+  font-size: 9px;
+  letter-spacing: 1.4px;
 }
 .lab-heading h1 {
   font-size: clamp(24px, 2.4vw, 36px);
   font-weight: 500;
   letter-spacing: -1.3px;
-  margin: 9px 0 7px;
+  margin: 8px 0 6px;
+  color: var(--atlas-text-primary);
 }
 .lab-heading h1 span {
-  color: #fc3d21;
+  color: var(--atlas-red);
 }
 .lab-heading p:last-child {
   font-size: 12px;
-  color: #7b8593;
+  color: var(--atlas-text-secondary);
 }
 .compare-toggle {
-  border: 1px solid #0b3d912b;
-  color: #0b3d91;
-  background: #fff;
-  padding: 10px 12px;
-  border-radius: 5px;
-  font-size: 10px !important;
+  border: 1px solid var(--atlas-border);
+  color: var(--atlas-blue);
+  background: var(--atlas-surface-subtle);
+  padding: 8px 14px;
+  border-radius: 9999px;
+  font-size: 11px !important;
+  font-weight: 500;
   white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: var(--atlas-shadow-sm);
+}
+.compare-toggle:hover {
+  background: var(--atlas-surface-hover);
+  transform: translateY(-1px);
 }
 .compare-toggle.enabled {
-  background: #edf3ff;
+  background: rgba(11, 61, 145, 0.12);
+  border-color: var(--atlas-blue);
 }
 .lab-viewport {
   position: relative;
-  background: #070f1d;
+  background: var(--atlas-viewport-bg);
   flex: 1;
-  min-height: 210px;
-  border: 1px solid #15273e;
-  border-radius: 9px;
+  min-height: 220px;
+  border: 1px solid var(--atlas-viewport-border);
+  border-radius: 14px;
   overflow: hidden;
   isolation: isolate;
+  box-shadow: var(--atlas-shadow-md);
+  transition: border-color 0.2s ease;
 }
 .laboratory-canvas {
   position: absolute !important;
@@ -236,27 +259,34 @@
   align-items: center;
   gap: 12px;
   flex-shrink: 0;
-  margin: -6px 0 11px;
+  margin: -4px 0 12px;
 }
 .comparison-toolbar > span {
-  font: 7px var(--atlas-mono);
-  letter-spacing: 0.7px;
-  color: #7d8797;
+  font: 8px var(--atlas-mono);
+  letter-spacing: 0.8px;
+  color: var(--atlas-text-secondary);
   display: flex;
   gap: 8px;
   align-items: center;
 }
 .comparison-toolbar i {
-  width: 4px;
-  height: 4px;
-  background: #059669;
+  width: 5px;
+  height: 5px;
+  background: var(--atlas-green);
   border-radius: 50%;
 }
 .comparison-toolbar > button {
-  font-size: 9px !important;
-  background: none;
-  border: 0;
-  color: #0b3d91;
+  font-size: 11px !important;
+  font-weight: 500;
+  background: var(--atlas-surface-subtle);
+  border: 1px solid var(--atlas-border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  color: var(--atlas-blue);
+  transition: all 0.2s ease;
+}
+.comparison-toolbar > button:hover {
+  background: var(--atlas-surface-hover);
 }
 .scenario-tabs {
   display: none;
@@ -264,53 +294,67 @@
 .lab-playback {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 12px;
   padding: 12px 0;
   border-bottom: 1px solid var(--atlas-border);
   flex-shrink: 0;
 }
 .play-button {
-  width: 31px;
-  height: 31px;
-  background: #0b3d91;
+  width: 34px;
+  height: 34px;
+  background: var(--atlas-blue);
   color: white;
   border: 0;
-  border-radius: 5px;
-  font-size: 11px !important;
+  border-radius: 8px;
+  font-size: 13px !important;
+  display: grid;
+  place-items: center;
+  transition: all 0.2s ease;
+}
+.play-button:hover {
+  transform: scale(1.06);
+  box-shadow: var(--atlas-shadow-sm);
 }
 .restart-button {
   background: none;
   border: 0;
-  color: #69778c;
+  color: var(--atlas-text-secondary);
   font-size: 20px !important;
-  width: 25px;
+  width: 28px;
+  transition: all 0.2s ease;
+}
+.restart-button:hover {
+  color: var(--atlas-text-primary);
+  transform: rotate(45deg);
 }
 .lab-playback input {
   flex: 1;
   min-width: 30px;
-  accent-color: #0b3d91;
-  height: 3px;
+  accent-color: var(--atlas-blue);
+  height: 4px;
 }
 .lab-playback output {
-  font: 10px var(--atlas-mono);
-  color: #0b3d91;
-  min-width: 74px;
+  font: 12px var(--atlas-mono);
+  color: var(--atlas-blue);
+  min-width: 76px;
   text-align: right;
+  font-weight: 600;
 }
 .lab-playback output > span {
-  color: #909bac;
+  color: var(--atlas-text-muted);
+  font-weight: 400;
 }
 .timeline-note {
-  font: 6px var(--atlas-mono);
-  letter-spacing: 0.7px;
-  color: #909bac;
+  font: 7px var(--atlas-mono);
+  letter-spacing: 0.8px;
+  color: var(--atlas-text-muted);
   margin-left: 4px;
 }
 .lab-controls {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   flex-shrink: 0;
-  gap: 18px;
+  gap: 20px;
   padding-top: 14px;
 }
 .lab-controls.is-comparing {
@@ -318,123 +362,151 @@
 }
 .scenario-controls {
   min-width: 0;
+  background: var(--atlas-surface-subtle);
+  border: 1px solid var(--atlas-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: var(--atlas-shadow-sm);
 }
 .scenario-control-head {
   display: flex;
   align-items: center;
-  gap: 9px;
-  margin-bottom: 12px;
+  gap: 10px;
+  margin-bottom: 14px;
 }
 .slot-dot {
-  width: 21px;
-  height: 21px;
+  width: 24px;
+  height: 24px;
   display: grid;
   place-items: center;
-  font: 9px var(--atlas-mono);
-  background: #edf2fa;
-  color: #0b3d91;
-  border-radius: 4px;
+  font: 10px var(--atlas-mono);
+  background: rgba(11, 61, 145, 0.12);
+  color: var(--atlas-blue);
+  border-radius: 6px;
+  font-weight: 700;
 }
 .scenario-control-head label {
   display: flex;
   align-items: center;
-  gap: 9px;
-  color: #8a94a3;
-  font-size: 10px;
+  gap: 10px;
+  color: var(--atlas-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
 }
 .scenario-control-head select {
-  max-width: 155px;
-  border: 0;
-  background: #f5f7fa;
-  border-radius: 4px;
-  color: #24374f;
-  padding: 5px 8px;
-  font-size: 11px;
+  max-width: 160px;
+  border: 1px solid var(--atlas-border);
+  background: var(--atlas-surface);
+  border-radius: 6px;
+  color: var(--atlas-text-primary);
+  padding: 5px 10px;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.scenario-control-head select:focus {
+  border-color: var(--atlas-blue);
 }
 .restore-scenario {
   margin-left: auto;
   background: none;
   border: 0;
-  color: #7c889a;
-  font-size: 9px !important;
+  color: var(--atlas-text-muted);
+  font-size: 11px !important;
+  transition: color 0.2s ease;
+}
+.restore-scenario:hover {
+  color: var(--atlas-text-primary);
 }
 .scenario-sliders {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: 20px;
 }
 .condition-control > div {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 10px;
-  color: #758195;
-  margin-bottom: 5px;
+  font-size: 11px;
+  color: var(--atlas-text-secondary);
+  margin-bottom: 6px;
+  font-weight: 500;
 }
 .condition-control > div > div {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 .condition-control input[type="number"] {
   appearance: textfield;
-  width: 43px;
+  width: 48px;
   text-align: right;
   border: 0;
-  border-bottom: 1px solid #dce4ee;
+  border-bottom: 1.5px solid var(--atlas-border);
   background: none;
-  font: 12px var(--atlas-mono);
-  color: #1e385a;
+  font: 13px var(--atlas-mono);
+  color: var(--atlas-text-primary);
   padding: 2px 0;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.condition-control input[type="number"]:focus {
+  border-bottom-color: var(--atlas-blue);
 }
 .condition-control input[type="number"]::-webkit-inner-spin-button {
   appearance: none;
 }
 .condition-control small {
-  font-size: 8px;
-  color: #8c98a9;
+  font-size: 9px;
+  color: var(--atlas-text-muted);
 }
 .condition-control input[type="range"] {
   width: 100%;
-  height: 3px;
-  accent-color: #0b3d91;
+  height: 4px;
+  accent-color: var(--atlas-blue);
   cursor: pointer;
 }
 .scenario-buttons {
   display: flex;
-  gap: 15px;
-  margin-top: 12px;
+  gap: 12px;
+  margin-top: 14px;
   align-items: center;
 }
 .scenario-buttons > div {
   display: flex;
   gap: 3px;
-  background: #f3f5f8;
-  border: 1px solid #edf0f4;
-  border-radius: 5px;
+  background: var(--atlas-surface);
+  border: 1px solid var(--atlas-border);
+  border-radius: 8px;
   padding: 3px;
   flex: 1;
 }
 .scenario-buttons button {
   flex: 1;
-  padding: 6px 8px;
+  padding: 6px 10px;
   border: 1px solid transparent;
-  border-radius: 3px;
+  border-radius: 6px;
   background: none;
-  color: #758195;
-  font-size: 10px !important;
+  color: var(--atlas-text-secondary);
+  font-size: 11px !important;
+  font-weight: 500;
   white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.scenario-buttons button:hover {
+  color: var(--atlas-text-primary);
 }
 .scenario-buttons button small {
-  font: 5px var(--atlas-mono);
+  font: 6px var(--atlas-mono);
   margin-left: 5px;
   letter-spacing: 0.5px;
 }
 .scenario-buttons button[aria-pressed="true"] {
-  color: #0b3d91;
-  background: white;
-  border-color: #d5e1f2;
-  box-shadow: 0 1px 3px #0b3d9108;
+  color: var(--atlas-blue);
+  background: var(--atlas-surface-subtle);
+  border-color: var(--atlas-border);
+  box-shadow: var(--atlas-shadow-sm);
+  font-weight: 600;
 }
 .is-comparing .scenario-buttons {
   flex-direction: column;

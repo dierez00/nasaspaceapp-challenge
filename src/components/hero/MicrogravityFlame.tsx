@@ -1,48 +1,76 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 export function MicrogravityFlame() {
+  const flameRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let animationFrameId: number;
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const t = (currentTime - startTime) * 0.001; // segundos
+
+      // Deriva sutil y orgánica de microgravedad mediante armónicos desfasados (acotada estrictamente a ±7px)
+      const x = Math.sin(t * 0.65) * 4.5 + Math.cos(t * 1.25) * 2.5;
+      const y = Math.cos(t * 0.75) * 5.0 + Math.sin(t * 1.15) * 2.5;
+      const rot = Math.sin(t * 0.45) * 1.2;
+
+      if (flameRef.current) {
+        flameRef.current.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) rotate(${rot.toFixed(2)}deg)`;
+      }
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
   return (
-    <div className="relative flex items-center justify-center select-none pointer-events-none">
-      {/* 1. Halo Exterior Amplio (Difusión de Oxígeno en Microgravedad) */}
+    <div
+      ref={flameRef}
+      className="relative flex items-center justify-center select-none pointer-events-none w-56 h-60 sm:w-64 sm:h-68 will-change-transform"
+      style={{ mixBlendMode: "screen" }}
+    >
+      {/* 1. Halo Exterior Amplio de Difusión de Oxígeno (Fondo Ambiental de Combustión Constante) */}
       <div
-        className="absolute w-56 h-56 sm:w-64 sm:h-64 rounded-full blur-2xl opacity-40 mix-blend-screen pointer-events-none"
+        className="absolute w-64 h-72 sm:w-80 sm:h-88 rounded-[50%] blur-3xl opacity-45 pointer-events-none"
         style={{
           background:
-            "radial-gradient(circle, rgba(56, 189, 248, 0.28) 0%, rgba(59, 130, 246, 0.12) 45%, rgba(99, 102, 241, 0.05) 65%, transparent 75%)",
+            "radial-gradient(circle, rgba(14, 165, 233, 0.22) 0%, rgba(30, 58, 138, 0.08) 60%, transparent 80%)",
         }}
       />
 
-      {/* Capa de difusión exterior de tamaño generoso (w-36 h-36) */}
+      {/* 2. Domo Principal / Campana de Gas Translúcida en Microgravedad (Brillo Uniforme y Constante) */}
       <div
-        className="absolute w-36 h-36 sm:w-44 sm:h-44 rounded-full blur-xl mix-blend-screen pointer-events-none"
+        className="relative w-48 h-52 sm:w-56 sm:h-60 rounded-[50%_50%_46%_46%] blur-lg opacity-95 pointer-events-none"
         style={{
           background:
-            "radial-gradient(circle, rgba(6, 182, 212, 0.28) 0%, rgba(37, 99, 235, 0.14) 45%, transparent 75%)",
+            "radial-gradient(circle, rgba(14, 165, 233, 0.18) 20%, rgba(56, 189, 248, 0.7) 60%, rgba(30, 58, 138, 0.95) 85%, transparent 100%)",
         }}
       />
 
-      {/* 2. Cuerpo Central (Plasma de Combustión Volumétrico) */}
+      {/* 3. Frente de Reacción Estequiométrica (Borde de Plasma Fijo sin Núcleo Blanco) */}
       <div
-        className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-cyan-400 to-blue-500 opacity-80 blur-md mix-blend-screen animate-pulse flex items-center justify-center"
+        className="absolute w-44 h-48 sm:w-52 sm:h-56 rounded-[50%_50%_46%_46%] border border-cyan-400/35 blur-[1px] opacity-75 pointer-events-none"
         style={{
-          animationDuration: "3.5s",
-          boxShadow: "0 0 20px rgba(56, 189, 248, 0.6)",
+          boxShadow:
+            "0 0 28px rgba(56, 189, 248, 0.4), inset 0 0 20px rgba(14, 165, 233, 0.3)",
         }}
       />
 
-      {/* Delicado anillo de reacción estequiométrica (NASA FLEX / SAFFIRE) */}
+      {/* 4. Núcleo Hueco de Difusión (Centro Translúcido y Frío del Combustible) */}
       <div
-        className="absolute z-15 w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-cyan-300/40 mix-blend-screen opacity-70 pointer-events-none"
+        className="absolute w-20 h-20 sm:w-24 sm:h-24 rounded-full blur-md opacity-45 pointer-events-none"
         style={{
-          boxShadow: "inset 0 0 12px rgba(56, 189, 248, 0.5), 0 0 15px rgba(6, 182, 212, 0.4)",
+          background:
+            "radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%)",
         }}
-      />
-
-      {/* 3. Núcleo Incandescente Ultrabrillante (Zona de Reacción Primaria) */}
-      <div
-        className="absolute z-20 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white shadow-[0_0_25px_10px_rgba(56,189,248,0.9)] mix-blend-screen"
       />
     </div>
   );

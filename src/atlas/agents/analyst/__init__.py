@@ -1,1 +1,1 @@
-"""Answers quantitative questions with read-only SQL over experiment_tests."""
+"""Answers quantitative questions by filtering the experiments in Python (see agents/domain/ensayos.py)."""

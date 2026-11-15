@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from atlas.coverage.api.router import router as coverage_router
 from atlas.experiments.api.router import router as experiments_router
 from atlas.search.api.router import router as search_router
 from atlas.search.domain.ports import Embedder
@@ -23,6 +24,7 @@ def create_app(settings: Settings | None = None, embedder: Embedder | None = Non
         await pool.open(wait=False)
         app.state.pool = pool
         app.state.embedder = embedder
+        app.state.data_dir = settings.data_dir
         yield
         await pool.close()
 
@@ -45,6 +47,7 @@ def create_app(settings: Settings | None = None, embedder: Embedder | None = Non
         return {"status": "ok", "database": database}
 
     app.include_router(experiments_router)
+    app.include_router(coverage_router)
     app.include_router(search_router)
     return app
 

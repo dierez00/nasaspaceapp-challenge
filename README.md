@@ -17,6 +17,7 @@ docker compose up -d db          # Postgres 17 + pgvector en localhost:5433
 - API: <http://localhost:8000> · documentación interactiva en `/docs`
 - `GET /health`: estado de la API y de la base de datos
 - `GET /experiments` y `GET /experiments/{id}`: experimentos validados para el mapa
+- `GET /coverage`: cobertura del mapa y brechas frente a condiciones de misión
 
 ## Búsqueda (RAG)
 
@@ -32,6 +33,17 @@ curl -X POST localhost:8000/search -H 'content-type: application/json' \
 - `atlas-index` es idempotente: cada chunk se identifica por el hash de su contenido, solo se embeben los nuevos y se borran los que ya no existen. Volver a ejecutarlo tras agregar archivos a `data/` es seguro; una segunda corrida seguida embebe 0.
 - `POST /search` devuelve `[{experiment_id, source_file, section, content, score}]` ordenado por similitud coseno (`k` entre 1 y 20, por defecto 5). Responde 503 si falta la clave.
 - Sin método de pago, Voyage limita a 3 RPM y 10K TPM: el indexado espera y reintenta solo, así que la primera corrida puede tardar unos minutos.
+
+## Mapa de cobertura y brechas
+
+`GET /coverage` resume cómo cubren los puntos de PSI el espacio O₂ × presión × gravedad y qué condiciones de misión no tienen evidencia. Filtro opcional: `?material_class=polymer`.
+
+- `regimes`: una entrada por régimen de gravedad (`microgravity` < 0.01 g, `lunar` < 0.25 g, `martian` < 0.6 g, `normal`), siempre las cuatro aunque estén vacías. Cada celda es de 5 % de O₂ × 10 kPa y trae conteos por resultado y por `point_type` (`test`/`limit`), `experiment_ids`, `needs_review_count` y puntos con O₂ o presión `assumed`. El régimen sale de `gravity_g`, no de la etiqueta `gravity_environment`.
+- `reference_conditions`: cada condición de [`data/reference/conditions.json`](data/reference/conditions.json) con sus fuentes y la evidencia cercana (±3 % de O₂ y ±10 kPa, en cualquier gravedad), cuántos puntos están en la gravedad de la condición y cuántos son medidos. `gap` es `true` con un `gap_reason`: `no_points`, `no_matching_gravity` (hay puntos cercanos, pero solo en otra gravedad) u `only_assumed_conditions`.
+- `totals`: puntos, experimentos, resultados, `needs_review` y valores asumidos.
+- Las constantes (tamaño de celda, tolerancias, umbrales de gravedad) viven en `src/atlas/coverage/domain/coverage.py`.
+
+`data/reference/conditions.json` (gravedad lunar y marciana, atmósfera de exploración de NASA, traje EVA, cabina de la ISS) cita una fuente con URL para cada valor numérico y se valida con Pydantic al responder. Para agregar una condición, copia una existente y cita la fuente; no se aceptan valores sin ella.
 
 ## Pruebas
 
@@ -50,6 +62,7 @@ Cada módulo de `src/atlas/` es un área del producto con sus capas `domain`, `a
 | --- | --- | --- |
 | `experiments` | 1 | Contrato de datos, validación, carga a Postgres y endpoints del mapa |
 | `search` | 2 | Ingesta de documentos, embeddings con Voyage, pgvector, reranker y citas |
+| `coverage` | 1 | Mapa de cobertura y brechas (`GET /coverage`) con condiciones de referencia de misión |
 | `agents` | 3 | Orquestador, analista, investigador, compositor y extractor (offline) |
 | `query` | 3 y 5 | `POST /query` con streaming por SSE del JSON de UI (contrato pendiente) |
 | `shared` | 3 | Configuración, conexión a la base y dependencias de FastAPI |

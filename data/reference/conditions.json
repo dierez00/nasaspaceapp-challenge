@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0",
+  "description": "Mission-relevant conditions the gap map is evaluated against. Every numeric value cites a source; gravity_g is the ratio to Earth gravity.",
+  "conditions": [
+    {
+      "id": "lunar-habitat-exploration-atmosphere",
+      "name": "Lunar habitat or lander, NASA exploration atmosphere",
+      "description": "Reduced-pressure, oxygen-enriched cabin recommended for Moon and Mars missions, in lunar gravity.",
+      "gravity_environment": "lunar",
+      "gravity_g": 0.165,
+      "gravity_sources": [
+        {
+          "title": "Moon Fact Sheet",
+          "publisher": "NASA NSSDC",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+          "locator": "Bulk parameters: surface gravity 1.62 m/s2, Moon/Earth ratio 0.165"
+        }
+      ],
+      "o2_percent": 34,
+      "pressure_kpa": 56.5,
+      "atmosphere_sources": [
+        {
+          "title": "Development, Validation and Approval of A Planetary Extravehicular Activity Prebreathe Protocol: NASA Exploration Atmosphere Tests 1 & 2",
+          "publisher": "NASA NTRS 20230015380",
+          "url": "https://ntrs.nasa.gov/citations/20230015380",
+          "locator": "Introduction: 56.5 kPa (8.2 psia), 34% O2, 66% N2 (methods section states 56.6 kPa)"
+        },
+        {
+          "title": "Effects of the 8 psia / 32% O2 Atmosphere on the Human in the Spaceflight Environment (NASA/TM-2013-217377)",
+          "publisher": "NASA NTRS 20130013505",
+          "url": "https://ntrs.nasa.gov/citations/20130013505",
+          "locator": "Abstract: recommendation later enriched from 32% to 34% O2 and from 8.0 to 8.2 psia"
+        }
+      ]
+    },
+    {
+      "id": "mars-habitat-exploration-atmosphere",
+      "name": "Mars habitat, NASA exploration atmosphere",
+      "description": "Same exploration atmosphere (recommended for Moon and Mars missions) in Martian gravity.",
+      "gravity_environment": "martian",
+      "gravity_g": 0.38,
+      "gravity_sources": [
+        {
+          "title": "Mars Fact Sheet",
+          "publisher": "NASA NSSDC",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+          "locator": "Surface gravity (mean) 3.73 m/s2, Mars/Earth ratio 0.380"
+        }
+      ],
+      "o2_percent": 34,
+      "pressure_kpa": 56.5,
+      "atmosphere_sources": [
+        {
+          "title": "Development, Validation and Approval of A Planetary Extravehicular Activity Prebreathe Protocol: NASA Exploration Atmosphere Tests 1 & 2",
+          "publisher": "NASA NTRS 20230015380",
+          "url": "https://ntrs.nasa.gov/citations/20230015380",
+          "locator": "Introduction: 56.5 kPa (8.2 psia), 34% O2, recommended for future Moon and Mars missions"
+        }
+      ]
+    },
+    {
+      "id": "lunar-habitat-2010-recommendation",
+      "name": "Lunar habitat, 2010 working-group recommendation (8.0 psia, 32% O2)",
+      "description": "Earlier recommendation of the Exploration Atmospheres Working Group, before the 8.2 psia / 34% O2 revision.",
+      "gravity_environment": "lunar",
+      "gravity_g": 0.165,
+      "gravity_sources": [
+        {
+          "title": "Moon Fact Sheet",
+          "publisher": "NASA NSSDC",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+          "locator": "Bulk parameters: surface gravity 1.62 m/s2, Moon/Earth ratio 0.165"
+        }
+      ],
+      "o2_percent": 32,
+      "pressure_kpa": 55.2,
+      "atmosphere_sources": [
+        {
+          "title": "Recommendations for Exploration Spacecraft Internal Atmospheres: The Final Report of the NASA Exploration Atmospheres Working Group (NASA/TP-2010-216134)",
+          "publisher": "NASA Johnson Space Center",
+          "url": "https://www.nasa.gov/wp-content/uploads/2023/03/henninger-8.2-34-atm-tp216134-2010.pdf",
+          "locator": "Long-duration lunar and Mars habitats: nominal 8.0 psia, 32% O2; 55.2 kPa is 8.0 psia converted at 6.895 kPa/psi"
+        }
+      ]
+    },
+    {
+      "id": "lunar-eva-suit",
+      "name": "Lunar surface EVA suit, nominal operation",
+      "description": "Suit atmosphere of 100% O2 at 4.3 psia, in lunar gravity.",
+      "gravity_environment": "lunar",
+      "gravity_g": 0.165,
+      "gravity_sources": [
+        {
+          "title": "Moon Fact Sheet",
+          "publisher": "NASA NSSDC",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+          "locator": "Bulk parameters: surface gravity 1.62 m/s2, Moon/Earth ratio 0.165"
+        }
+      ],
+      "o2_percent": 100,
+      "pressure_kpa": 29.6,
+      "atmosphere_sources": [
+        {
+          "title": "Recommendations for Exploration Spacecraft Internal Atmospheres: The Final Report of the NASA Exploration Atmospheres Working Group (NASA/TP-2010-216134)",
+          "publisher": "NASA Johnson Space Center",
+          "url": "https://www.nasa.gov/wp-content/uploads/2023/03/henninger-8.2-34-atm-tp216134-2010.pdf",
+          "locator": "In-space and surface EVA suits operate at a nominal 4.3 psia (29.6 kPa), 100% oxygen"
+        },
+        {
+          "title": "Development, Validation and Approval of A Planetary Extravehicular Activity Prebreathe Protocol: NASA Exploration Atmosphere Tests 1 & 2",
+          "publisher": "NASA NTRS 20230015380",
+          "url": "https://ntrs.nasa.gov/citations/20230015380",
+          "locator": "Introduction: 29.6 kPa (4.3 psi) spacesuit"
+        }
+      ]
+    },
+    {
+      "id": "iss-cabin",
+      "name": "ISS cabin air",
+      "description": "Nominal US segment cabin atmosphere in orbital microgravity.",
+      "gravity_environment": "microgravity",
+      "gravity_g": 1e-6,
+      "gravity_sources": [
+        {
+          "title": "Project convention for orbital microgravity",
+          "publisher": "Lunar Fire Atlas",
+          "url": null,
+          "locator": "docs/data-extraction.md: orbital microgravity is represented as 1e-6 g (representative level, not a measurement)"
+        }
+      ],
+      "o2_percent": 21,
+      "pressure_kpa": 101.3,
+      "atmosphere_sources": [
+        {
+          "title": "Recommendations for Exploration Spacecraft Internal Atmospheres: The Final Report of the NASA Exploration Atmospheres Working Group (NASA/TP-2010-216134)",
+          "publisher": "NASA Johnson Space Center",
+          "url": "https://www.nasa.gov/wp-content/uploads/2023/03/henninger-8.2-34-atm-tp216134-2010.pdf",
+          "locator": "Table of vehicle atmospheres: ISS/US 101.3 kPa (14.7 psia), 21% O2"
+        },
+        {
+          "title": "Oxygen Partial Pressure and Oxygen Concentration Flammability: Can They Be Correlated?",
+          "publisher": "NASA NTRS 20160001047 (Journal of ASTM International)",
+          "url": "https://ntrs.nasa.gov/citations/20160001047",
+          "locator": "The ISS aims to operate at 21% O2, 101.4 kPa (14.7 psia)"
+        }
+      ]
+    }
+  ]
+}

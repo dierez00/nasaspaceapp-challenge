@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef, type RefObject } from "react";
+import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { emitHeroLoadProgress } from "@/components/common/hero-load-events";
 
 // ----------------------------------------------------------------------------
 // Capa Base de Estrellas Nítidas con Parpadeo Dinámico (Equivalente Drei Stars)
@@ -96,7 +95,7 @@ function createSparklesPoints(
   size = 2.2,
   _speed = 0,
   opacity = 0.9,
-  hexColor = "#e9edf3"
+  hexColor = "#e0f2fe"
 ) {
   void _speed;
   const positions = new Float32Array(count * 3);
@@ -164,27 +163,8 @@ function createSparklesPoints(
   return { points, geometry, material };
 }
 
-interface SpaceBackdrop3DProps {
-  /** Only the visible surface renders: false parks the loop (e.g. while the deck is up). */
-  active?: boolean;
-  /** Dive progress 0..1 written by the transition timeline; drives the camera dolly. */
-  dive?: RefObject<{ p: number }>;
-}
-
-export function SpaceBackdrop3D({ active = true, dive }: SpaceBackdrop3DProps) {
+export function SpaceBackdrop3D() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const activeRef = useRef(active);
-  const syncRef = useRef<() => void>(() => {});
-  const diveRef = useRef(dive);
-
-  useEffect(() => {
-    diveRef.current = dive;
-  }, [dive]);
-
-  useEffect(() => {
-    activeRef.current = active;
-    syncRef.current();
-  }, [active]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -195,26 +175,19 @@ export function SpaceBackdrop3D({ active = true, dive }: SpaceBackdrop3DProps) {
     const height = container.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#0a1324");
+    scene.background = new THREE.Color("#02040a");
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     camera.position.set(0, 0, 5);
 
-    // Sin WebGL el fondo queda en el color base: no debe romper la página ni dejar la carga colgada
-    let renderer: THREE.WebGLRenderer;
-    try {
-      renderer = new THREE.WebGLRenderer({
-        antialias: true,
-        alpha: false,
-        powerPreference: "high-performance",
-      });
-    } catch {
-      emitHeroLoadProgress(100);
-      return;
-    }
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: false,
+      powerPreference: "high-performance",
+    });
     renderer.setSize(width, height);
-    // Resolución HiDPI limitada a 1.5 para contener el coste de fragmentos
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    // Resolución nativa Retina / HiDPI [1, 2] para máxima nitidez de estrellas
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.0;
 
@@ -234,25 +207,15 @@ export function SpaceBackdrop3D({ active = true, dive }: SpaceBackdrop3DProps) {
     sunLight.position.set(15, 3.5, 4.5);
     scene.add(sunLight);
 
-    const flameGlowLight = new THREE.PointLight(0x3b82f6, 1.1, 8);
+    const flameGlowLight = new THREE.PointLight(0x38bdf8, 1.1, 8);
     flameGlowLight.position.set(0, 0, 1.2);
     scene.add(flameGlowLight);
 
     // 3. Cargador de Texturas PBR
-    // Cada textura solicita un render al terminar de cargar (necesario en el cuadro estático
-    // de movimiento reducido, donde no hay bucle de animación).
-    // Un LoadingManager propio reporta el progreso real a la pantalla de carga.
-    const loadingManager = new THREE.LoadingManager();
-    loadingManager.onProgress = (_url, loaded, total) => {
-      if (total > 0) emitHeroLoadProgress(Math.round((loaded / total) * 100));
-    };
-    loadingManager.onLoad = () => emitHeroLoadProgress(100);
-    const textureLoader = new THREE.TextureLoader(loadingManager);
-    const loadTexture = (url: string) =>
-      textureLoader.load(url, () => requestStaticRender());
+    const textureLoader = new THREE.TextureLoader();
 
     // Textura Skybox (Estrellas / Vía Láctea): esfera gigante ampliada a r=180 para envolver detrás de las estrellas
-    const starsTexture = loadTexture("/textures/2k_stars_milky_way.jpg");
+    const starsTexture = textureLoader.load("/textures/2k_stars_milky_way.jpg");
     starsTexture.colorSpace = THREE.SRGBColorSpace;
     const skyboxGeo = new THREE.SphereGeometry(180, 32, 32);
     const skyboxMat = new THREE.MeshBasicMaterial({
@@ -271,27 +234,27 @@ export function SpaceBackdrop3D({ active = true, dive }: SpaceBackdrop3DProps) {
     scene.add(stars.points);
 
     // Capa de Sparkles 1: 350 destellos principales en primer/medio plano
-    const sparkles1 = createSparklesPoints(350, [40, 25, 25], 2.5, 0, 1.0, "#e9edf3");
+    const sparkles1 = createSparklesPoints(350, [40, 25, 25], 2.5, 0, 1.0, "#f0f9ff");
     scene.add(sparkles1.points);
 
     // Capa de Sparkles 2: 150 destellos secundarios de refuerzo
-    const sparkles2 = createSparklesPoints(150, [35, 20, 20], 4.0, 0, 0.8, "#c7d6ee");
+    const sparkles2 = createSparklesPoints(150, [35, 20, 20], 4.0, 0, 0.8, "#dbeafe");
     scene.add(sparkles2.points);
 
     // 5. La Tierra (Lejana) — Renderizado PBR Fotorrealista
-    const earthDayMap = loadTexture("/textures/2k_earth_daymap.jpg");
+    const earthDayMap = textureLoader.load("/textures/2k_earth_daymap.jpg");
     earthDayMap.colorSpace = THREE.SRGBColorSpace;
 
     // Los mapas de normales y especular deben ser lineales (NoColorSpace) para no distorsionar el relieve
-    const earthNormalMap = loadTexture("/textures/2k_earth_normal_map.png");
+    const earthNormalMap = textureLoader.load("/textures/2k_earth_normal_map.png");
     earthNormalMap.colorSpace = THREE.NoColorSpace;
     earthNormalMap.anisotropy = 8;
 
-    const earthSpecularMap = loadTexture("/textures/2k_earth_specular_map.png");
+    const earthSpecularMap = textureLoader.load("/textures/2k_earth_specular_map.png");
     earthSpecularMap.colorSpace = THREE.NoColorSpace;
     earthSpecularMap.anisotropy = 8;
 
-    const earthGeo = new THREE.SphereGeometry(0.75, 32, 32);
+    const earthGeo = new THREE.SphereGeometry(0.75, 64, 64);
     const earthMat = new THREE.MeshStandardMaterial({
       map: earthDayMap,
       normalMap: earthNormalMap,
@@ -305,9 +268,9 @@ export function SpaceBackdrop3D({ active = true, dive }: SpaceBackdrop3DProps) {
     earth.rotation.set(0.35, 0, 0);
 
     // Halo Atmosférico Exterior (Fresnel / Glow con mezcla aditiva)
-    const atmosphereGeo = new THREE.SphereGeometry(0.75, 32, 32);
+    const atmosphereGeo = new THREE.SphereGeometry(0.75, 64, 64);
     const atmosphereMat = new THREE.MeshBasicMaterial({
-      color: new THREE.Color("#3b82f6"),
+      color: new THREE.Color("#38bdf8"),
       transparent: true,
       opacity: 0.14,
       blending: THREE.AdditiveBlending,
@@ -318,9 +281,9 @@ export function SpaceBackdrop3D({ active = true, dive }: SpaceBackdrop3DProps) {
     earth.add(atmosphere);
 
     // Halo tenue exterior adicional para suave difusión mesosférica
-    const glowGeo = new THREE.SphereGeometry(0.75, 32, 32);
+    const glowGeo = new THREE.SphereGeometry(0.75, 64, 64);
     const glowMat = new THREE.MeshBasicMaterial({
-      color: new THREE.Color("#60a5fa"),
+      color: new THREE.Color("#0ea5e9"),
       transparent: true,
       opacity: 0.08,
       blending: THREE.AdditiveBlending,
@@ -333,14 +296,14 @@ export function SpaceBackdrop3D({ active = true, dive }: SpaceBackdrop3DProps) {
     scene.add(earth);
 
     // 6. La Luna — Horizonte Planetario Ancho de Órbita Baja (Ecuador centrado, sin distorsión polar)
-    const moonTexture = loadTexture("/textures/2k_moon.jpg");
+    const moonTexture = textureLoader.load("/textures/2k_moon.jpg");
     moonTexture.colorSpace = THREE.SRGBColorSpace;
     moonTexture.anisotropy = 16;
     moonTexture.wrapS = THREE.RepeatWrapping;
     moonTexture.wrapT = THREE.RepeatWrapping;
 
     // Radio de 15 para abarcar el horizonte de lado a lado
-    const moonGeo = new THREE.SphereGeometry(15, 64, 64);
+    const moonGeo = new THREE.SphereGeometry(15, 128, 128);
     const moonMat = new THREE.MeshStandardMaterial({
       map: moonTexture,
       bumpMap: moonTexture,
@@ -357,121 +320,42 @@ export function SpaceBackdrop3D({ active = true, dive }: SpaceBackdrop3DProps) {
     scene.add(moon);
 
     // 7. Bucle de Animación y Control de Framerate con Reloj Three.js
-    let animationFrameId = 0;
-    let running = false;
-    let inView = true;
-    let tabVisible = !document.hidden;
-    let contextLost = false;
-    let reducedMotion = false;
+    let animationFrameId: number;
+    let isVisible = true;
     const clock = new THREE.Clock();
 
-    // Pointer parallax in the cabin, and the dive dolly: the camera drifts toward the
-    // Moon's horizon, pitches down and widens its lens as `dive.p` goes 0 -> 1.
-    const pointer = { x: 0, y: 0, sx: 0, sy: 0 };
-    const handlePointer = (event: PointerEvent) => {
-      pointer.x = (event.clientX / window.innerWidth - 0.5) * 2;
-      pointer.y = (event.clientY / window.innerHeight - 0.5) * 2;
-    };
-    window.addEventListener("pointermove", handlePointer, { passive: true });
-    let lastFov = camera.fov;
-    const updateCamera = (delta: number) => {
-      const p = diveRef.current?.current.p ?? 0;
-      const follow = 1 - Math.exp(-delta * 4);
-      pointer.sx += (pointer.x - pointer.sx) * follow;
-      pointer.sy += (pointer.y - pointer.sy) * follow;
-      camera.position.set(
-        pointer.sx * 0.22 * (1 - p),
-        -pointer.sy * 0.12 * (1 - p) - 0.9 * p,
-        5 - 4.3 * p,
-      );
-      camera.rotation.x = -0.28 * p;
-      const fov = 45 + 22 * p;
-      if (fov !== lastFov) {
-        lastFov = fov;
-        camera.fov = fov;
-        camera.updateProjectionMatrix();
-      }
-    };
-
-    const renderFrame = (elapsed: number) => {
-      stars.material.uniforms.time.value = elapsed;
-      sparkles1.material.uniforms.time.value = elapsed;
-      sparkles2.material.uniforms.time.value = elapsed;
-      renderer.render(scene, camera);
-    };
-
     const animate = () => {
-      const delta = clock.getDelta();
-      const elapsed = clock.getElapsedTime();
+      if (isVisible) {
+        const delta = clock.getDelta();
+        const elapsed = clock.getElapsedTime();
 
-      // Rotación de los cuerpos celestes: la Luna gira sobre su eje X
-      earth.rotation.y += delta * 0.05;
-      moon.rotation.x += delta * 0.015;
-      updateCamera(delta);
+        // Rotación de los cuerpos celestes: la Luna gira sobre su eje X
+        earth.rotation.y += delta * 0.05;
+        moon.rotation.x += delta * 0.015;
 
-      // Actualización de tiempos para parpadeo de estrellas y sparkles
-      renderFrame(elapsed);
+        // Actualización de tiempos para parpadeo de estrellas y sparkles
+        stars.material.uniforms.time.value = elapsed;
+        sparkles1.material.uniforms.time.value = elapsed;
+        sparkles2.material.uniforms.time.value = elapsed;
+
+        renderer.render(scene, camera);
+      }
       animationFrameId = requestAnimationFrame(animate);
     };
+    animate();
 
-    // Movimiento reducido: un único cuadro estático, sin rotación ni parpadeo
-    function requestStaticRender() {
-      if (reducedMotion && !contextLost) renderFrame(0);
-    }
-
-    // El bucle solo corre si el hero es visible, la pestaña está activa y hay contexto WebGL
-    const syncLoop = () => {
-      const shouldRun =
-        activeRef.current && !reducedMotion && inView && tabVisible && !contextLost;
-      if (shouldRun && !running) {
-        running = true;
-        clock.getDelta(); // reset delta para evitar saltos bruscos
-        animationFrameId = requestAnimationFrame(animate);
-      } else if (!shouldRun && running) {
-        running = false;
-        cancelAnimationFrame(animationFrameId);
-      }
-    };
-
-    syncRef.current = syncLoop;
-    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const applyMotionPreference = () => {
-      reducedMotion = reducedMotionQuery.matches;
-      syncLoop();
-      requestStaticRender();
-    };
-    applyMotionPreference();
-    reducedMotionQuery.addEventListener("change", applyMotionPreference);
-
-    // 8. Optimización GPU: pausar render fuera de pantalla y con la pestaña oculta
+    // 8. Optimización GPU: IntersectionObserver para pausar render al scrollear
     const observer = new IntersectionObserver(
       (entries) => {
-        inView = entries[0].isIntersecting;
-        syncLoop();
+        const entry = entries[0];
+        isVisible = entry.isIntersecting;
+        if (isVisible) {
+          clock.getDelta(); // reset delta para evitar saltos bruscos
+        }
       },
       { threshold: 0.05 }
     );
     observer.observe(container);
-
-    const handleVisibility = () => {
-      tabVisible = !document.hidden;
-      syncLoop();
-    };
-    document.addEventListener("visibilitychange", handleVisibility);
-
-    // Pérdida/restauración de contexto WebGL: detener el bucle y reanudar al restaurar
-    const handleContextLost = (event: Event) => {
-      event.preventDefault();
-      contextLost = true;
-      syncLoop();
-    };
-    const handleContextRestored = () => {
-      contextLost = false;
-      syncLoop();
-      requestStaticRender();
-    };
-    renderer.domElement.addEventListener("webglcontextlost", handleContextLost);
-    renderer.domElement.addEventListener("webglcontextrestored", handleContextRestored);
 
     // 9. Manejo de Redimensionamiento (Resize)
     const handleResize = () => {
@@ -481,19 +365,12 @@ export function SpaceBackdrop3D({ active = true, dive }: SpaceBackdrop3DProps) {
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
-      requestStaticRender();
     };
     window.addEventListener("resize", handleResize);
 
     // 10. Limpieza estricta de memoria WebGL al desmontar
     return () => {
       window.removeEventListener("resize", handleResize);
-      window.removeEventListener("pointermove", handlePointer);
-      syncRef.current = () => {};
-      reducedMotionQuery.removeEventListener("change", applyMotionPreference);
-      document.removeEventListener("visibilitychange", handleVisibility);
-      renderer.domElement.removeEventListener("webglcontextlost", handleContextLost);
-      renderer.domElement.removeEventListener("webglcontextrestored", handleContextRestored);
       observer.disconnect();
       cancelAnimationFrame(animationFrameId);
 
@@ -532,7 +409,7 @@ export function SpaceBackdrop3D({ active = true, dive }: SpaceBackdrop3DProps) {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 z-0 bg-[#0a1324] overflow-hidden pointer-events-none select-none"
+      className="absolute inset-0 z-0 bg-[#02040a] overflow-hidden pointer-events-none select-none"
     />
   );
 }

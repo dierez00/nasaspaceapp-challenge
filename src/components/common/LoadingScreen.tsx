@@ -6,20 +6,25 @@ import {
   HERO_LOAD_PROGRESS_EVENT,
   type HeroLoadProgressDetail,
 } from "./hero-load-events";
+import { getLocale, useLocale, useT, type Locale } from "@/shared/i18n/locale";
 
 const RING_LENGTH = 251.2;
 const FADE_MS = 700;
 // Upper bound for the whole sequence: hide the screen even if WebGL or textures never finish.
 const SAFETY_TIMEOUT_MS = 8000;
 
-const getMessage = (p: number) => {
-  if (p < 35) return "Preparando la cabina…";
-  if (p < 75) return "Cargando la Luna y la Tierra…";
-  if (p < 100) return "Encendiendo la llama…";
-  return "Todo listo";
+const getMessage = (p: number, locale: Locale) => {
+  const en = locale === "en";
+  if (p < 35) return en ? "Preparing the cabin…" : "Preparando la cabina…";
+  if (p < 75)
+    return en ? "Loading the Moon and Earth…" : "Cargando la Luna y la Tierra…";
+  if (p < 100) return en ? "Lighting the flame…" : "Encendiendo la llama…";
+  return en ? "All set" : "Todo listo";
 };
 
 export function LoadingScreen() {
+  const t = useT();
+  const locale = useLocale();
   const [isFading, setIsFading] = useState(false);
   const [isMounted, setIsMounted] = useState(true);
 
@@ -45,7 +50,8 @@ export function LoadingScreen() {
         String(RING_LENGTH - (RING_LENGTH * p) / 100),
       );
       if (percentRef.current) percentRef.current.textContent = `${rounded}%`;
-      if (messageRef.current) messageRef.current.textContent = getMessage(p);
+      if (messageRef.current)
+        messageRef.current.textContent = getMessage(p, getLocale());
     };
 
     const finish = () => {
@@ -100,7 +106,10 @@ export function LoadingScreen() {
   return (
     <div
       ref={rootRef}
-      aria-label="Cargando Atlas del Fuego Lunar"
+      aria-label={t(
+        "Loading the Lunar Fire Atlas",
+        "Cargando Atlas del Fuego Lunar",
+      )}
       role="progressbar"
       aria-busy={!isFading}
       aria-hidden={isFading || undefined}
@@ -117,7 +126,7 @@ export function LoadingScreen() {
         <AtlasMark className="mb-5 h-12 w-12" />
 
         <p className="font-display text-2xl font-semibold tracking-tight text-[#f4f7fb] sm:text-3xl">
-          Atlas del fuego lunar
+          {t("Lunar Fire Atlas", "Atlas del fuego lunar")}
         </p>
 
         {/* Anillo de progreso */}
@@ -158,7 +167,7 @@ export function LoadingScreen() {
         </div>
 
         <p ref={messageRef} className="h-6 text-base text-[#cfd8e6]">
-          {getMessage(0)}
+          {getMessage(0, locale)}
         </p>
       </div>
     </div>

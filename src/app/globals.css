@@ -159,3 +159,43 @@ body {
 .loading-screen-failsafe {
   animation: loadingScreenFailsafe 0.7s ease-out 12s forwards;
 }
+
+/* EN | ES language switch (hero and Atlas top bar). */
+.language-toggle {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(3, 6, 14, 0.55);
+  border: 1px solid rgba(233, 237, 243, 0.22);
+  backdrop-filter: blur(6px);
+}
+.language-toggle button {
+  min-width: 36px;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(233, 237, 243, 0.72);
+  font: 600 12px/1 var(--font-mono, ui-monospace, monospace);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.language-toggle button[aria-pressed="true"] {
+  background: #e9edf3;
+  color: #0a0e17;
+}
+@media (hover: hover) {
+  .language-toggle button[aria-pressed="false"]:hover {
+    background: rgba(233, 237, 243, 0.12);
+    color: #fff;
+  }
+}
+.language-toggle button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}

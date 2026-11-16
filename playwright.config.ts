@@ -8,6 +8,17 @@ export default defineConfig({
     browserName: "chromium",
     channel: "msedge",
     trace: "retain-on-failure",
+    // The specs select by Spanish labels; English is the app default, so pin
+    // ES here. `language.spec.ts` clears this to check the English default.
+    storageState: {
+      cookies: [],
+      origins: [
+        {
+          origin: "http://localhost:3000",
+          localStorage: [{ name: "atlas:locale", value: "es" }],
+        },
+      ],
+    },
   },
   webServer: {
     command: "node node_modules/next/dist/bin/next dev --webpack",

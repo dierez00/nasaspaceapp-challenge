@@ -78,7 +78,7 @@ function Specimen({
   const flame = useRef<Mesh>(null),
     char = useRef<Mesh>(null),
     light = useRef<PointLight>(null);
-  const textile = !["PMMA", "Polietileno"].includes(scenario.material);
+  const textile = !["PMMA", "Polyethylene", "Polietileno"].includes(scenario.material);
   const texture = useMemo(() => makeTexture(textile), [textile]);
   const material = useMemo(
     () =>
@@ -216,6 +216,18 @@ function Scene({
 }) {
   const { reduced } = useSimulation();
   const { events } = useThree();
+  // A plain wheel always scrolls the page; zoom needs Ctrl/⌘ + wheel (or a trackpad
+  // pinch, which arrives as a ctrl wheel). Decided per event, before OrbitControls sees it.
+  useEffect(() => {
+    const host = events.connected;
+    if (!(host instanceof HTMLElement)) return;
+    const onWheel = (event: WheelEvent) => {
+      if (controls.current)
+        controls.current.enableZoom = event.ctrlKey || event.metaKey;
+    };
+    host.addEventListener("wheel", onWheel, { capture: true, passive: true });
+    return () => host.removeEventListener("wheel", onWheel, { capture: true });
+  }, [events.connected]);
   const camera = useRef<ThreeCamera>(null),
     controls = useRef<OrbitControlsImpl>(null);
   const syncing = useRef(false),

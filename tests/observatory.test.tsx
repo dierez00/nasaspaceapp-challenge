@@ -55,7 +55,7 @@ describe("observatory instrument and evidence", () => {
     ]);
     expect(csv).toContain("pressure_psi,oxygen_percent");
     expect(csv).toContain("'=command,8.2,32,micro,unknown,demo");
-    expect(csv).toContain("DEMO-1,Ficha ilustrativa del Atlas");
+    expect(csv).toContain("DEMO-1,Atlas illustrative sheet");
   });
   it("shares a native orbital mark with a real monochrome silhouette", () => {
     const normal = renderToStaticMarkup(<AtlasMark />);
@@ -82,7 +82,7 @@ it("does not attribute synthetic demonstration trials to NASA PSI in a citation"
     },
     new Date("2026-11-15"),
   );
-  expect(text).toContain("datos sintéticos");
+  expect(text).toContain("synthetic data");
   expect(text).not.toContain("NASA Physical Sciences Informatics");
 });
 

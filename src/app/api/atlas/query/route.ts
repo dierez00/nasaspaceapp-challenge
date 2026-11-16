@@ -21,10 +21,10 @@ export async function POST(request: Request) {
   try {
     input = await request.json();
   } catch {
-    return unavailable("JSON inválido", 400);
+    return unavailable("Invalid JSON", 400);
   }
   const parsed = querySchema.safeParse(input);
-  if (!parsed.success) return unavailable("Consulta inválida", 400);
+  if (!parsed.success) return unavailable("Invalid query", 400);
 
   let events: AsyncGenerator<CopilotEvent>;
   if (process.env.ATLAS_DATA_MODE !== "remote") {
@@ -62,7 +62,11 @@ export async function POST(request: Request) {
         );
         if (!upstream.ok || !upstream.body)
           return unavailable("Backend no disponible", 502);
-        events = translateBackendStream(upstream.body, parsed.data.queryId);
+        events = translateBackendStream(
+          upstream.body,
+          parsed.data.queryId,
+          parsed.data.locale,
+        );
       } catch {
         return unavailable("No se pudo conectar con el backend", 502);
       }

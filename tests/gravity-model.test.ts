@@ -40,8 +40,11 @@ describe("gravity profile", () => {
       "mixto",
       "flotación",
     ]);
-    expect(micro.colorCue).toBe("Azul tenue");
-    expect(earth.colorCue).toBe("Amarillo brillante");
+    expect(micro.colorCue).toBe("Faint blue");
+    expect(gravityProfile("micro", base, "es").colorCue).toBe("Azul tenue");
+    expect(gravityProfile("earth", base, "es").colorCue).toBe(
+      "Amarillo brillante",
+    );
     expect(micro.relativeBrightness).toBeLessThan(lunar.relativeBrightness);
     expect(lunar.relativeBrightness).toBeLessThan(earth.relativeBrightness);
   });
@@ -72,7 +75,11 @@ describe("threshold outlook", () => {
     const far = observed({ pressure: 1, oxygen: 20 });
     const result = thresholdOutlook([far, ...demoExperiments], base, "micro");
     expect(result.basis).toBe("illustrative");
-    expect(result.label).toBe("Sin ensayos: predicción ilustrativa");
+    expect(result.label).toBe("No trials: illustrative prediction");
+    expect(
+      thresholdOutlook([far, ...demoExperiments], base, "micro", undefined, "es")
+        .label,
+    ).toBe("Sin ensayos: predicción ilustrativa");
     expect(result.trials).toEqual([]);
     expect(thresholdOutlook([], { ...base, pressure: 1, oxygen: 20 }, "earth").outlook).toBe("se apaga");
     expect(thresholdOutlook([], { ...base, pressure: 14.7, oxygen: 21 }, "earth").outlook).toBe("se sostiene");
@@ -88,7 +95,8 @@ describe("physics callouts", () => {
     expect(physicsMoment(3, "ignition")).toBe("growth");
     expect(physicsMoment(7, "propagation")).toBe("steady");
     expect(physicsMoment(7, "extinction")).toBe("extinction");
-    expect(physicsCallout(3, "ignition").text).toContain("difusión");
+    expect(physicsCallout(3, "ignition").text).toContain("diffusion");
+    expect(physicsCallout(3, "ignition", "es").text).toContain("difusión");
   });
 });
 

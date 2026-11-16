@@ -140,7 +140,7 @@ export function SimulationProvider({
 }
 export function useSimulation() {
   const value = useContext(Context);
-  if (!value) throw new Error("SimulationProvider requerido");
+  if (!value) throw new Error("SimulationProvider is required");
   return value;
 }
 export function usePlayback() {

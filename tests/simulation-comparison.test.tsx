@@ -44,25 +44,33 @@ describe("three-gravity illustration", () => {
     expect(JSON.stringify(base)).toBe(before);
   });
   it("ties readings to the selected phase and respects vacuum, rather than inferring survival", () => {
-    expect(qualitativeReading(base, 0)).toContain("Inicio");
-    expect(qualitativeReading(base, 4)).toContain("fase elegida");
+    expect(qualitativeReading(base, 0)).toContain("Ignition starts");
+    expect(qualitativeReading(base, 0, "es")).toContain("Inicio");
+    expect(qualitativeReading(base, 4, "es")).toContain("fase elegida");
     expect(
-      qualitativeReading({ ...base, flameState: "extinction" }, 4),
+      qualitativeReading({ ...base, flameState: "extinction" }, 4, "es"),
     ).toContain("Se extingue");
     expect(
-      qualitativeReading({ ...base, flameState: "extinction" }, 8),
+      qualitativeReading({ ...base, flameState: "extinction" }, 8, "es"),
     ).toContain("Apagada");
-    expect(qualitativeReading({ ...base, pressure: 0 }, 4)).toBe(
+    expect(qualitativeReading({ ...base, pressure: 0 }, 4, "es")).toBe(
       "Sin gas · sin llama",
+    );
+    expect(qualitativeReading({ ...base, pressure: 0 }, 4)).toBe(
+      "No gas · no flame",
     );
   });
   it("explains the current timeline segment without claiming validated lunar interpolation", () => {
     expect(timelineExplanation(0).title).toContain("0–2");
-    expect(timelineExplanation(2).text).toContain("difusión");
-    expect(timelineExplanation(5.99).text).toContain(
+    expect(timelineExplanation(2).text).toContain("diffusion");
+    expect(timelineExplanation(2, "es").text).toContain("difusión");
+    expect(timelineExplanation(5.99, "es").text).toContain(
       "no una interpolación validada",
     );
-    expect(timelineExplanation(6).text).toContain("no una predicción");
+    expect(timelineExplanation(5.99).text).toContain(
+      "not a validated interpolation",
+    );
+    expect(timelineExplanation(6, "es").text).toContain("no una predicción");
     expect(timelineExplanation(8).title).toContain("6–8");
   });
 });
@@ -131,8 +139,9 @@ it("renders original source text and unknown outcomes separately from the illust
       </SimulationProvider>
     </AtlasProvider>,
   );
-  expect(markup).toContain("Resultado no determinado");
+  // Server render uses the default language (English).
+  expect(markup).toContain("Outcome undetermined");
   expect(markup).toContain("Exact observed excerpt");
-  expect(markup).toContain("ni predice este escenario");
+  expect(markup).toContain("does not predict this scenario");
   expect(markup).not.toContain("javascript:");
 });

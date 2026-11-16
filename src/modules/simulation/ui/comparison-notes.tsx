@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useAtlas } from "@/modules/atlas/ui/atlas-provider";
+import { useLocale, useT, type Text } from "@/shared/i18n/locale";
 import { gravityLabels } from "@/modules/atlas/domain/experiment";
 import { useSimulation } from "../application/simulation-provider";
 import {
@@ -10,15 +11,17 @@ import {
   nearestTrials,
 } from "../domain/comparison";
 
-const observedLabels = {
-  ignition: "Ignición registrada",
-  extinction: "Extinción registrada",
-  unknown: "Resultado no determinado",
+const observedLabels: Record<"ignition" | "extinction" | "unknown", Text> = {
+  ignition: { en: "Ignition recorded", es: "Ignición registrada" },
+  extinction: { en: "Extinction recorded", es: "Extinción registrada" },
+  unknown: { en: "Outcome undetermined", es: "Resultado no determinado" },
 };
 
 export function ComparisonNotes() {
   const { experiments, highlightExperiments, dispatch } = useAtlas();
   const { state, load } = useSimulation();
+  const locale = useLocale();
+  const t = useT();
   const base = state.scenarios.A;
   const nearest = useMemo(
     () =>
@@ -29,50 +32,66 @@ export function ComparisonNotes() {
     [experiments, base],
   );
   return (
-    <section className="comparison-notes" aria-label="Lectura comparativa">
+    <section
+      className="comparison-notes"
+      aria-label={t("Comparative reading", "Lectura comparativa")}
+    >
       <details className="nearest-trials evidence-paper">
-        <summary>Ensayos y fuentes · contrastar con datos reales</summary>
+        <summary>
+          {t(
+            "Trials and sources · check against real data",
+            "Ensayos y fuentes · contrastar con datos reales",
+          )}
+        </summary>
         <p>
-          Hasta tres por gravedad, del mismo material; proximidad por presión / 16 psi y O₂ / 32
-          puntos porcentuales. No implica equivalencia física ni predice este
-          escenario.
+          {t(
+            "Up to three per gravity, same material; closeness by pressure / 16 psi and O₂ / 32 percentage points. It implies no physical equivalence and does not predict this scenario.",
+            "Hasta tres por gravedad, del mismo material; proximidad por presión / 16 psi y O₂ / 32 puntos porcentuales. No implica equivalencia física ni predice este escenario.",
+          )}
         </p>
         {experiments.length > 0 &&
           experiments.every((trial) => trial.provenance === "demo") && (
             <p className="evidence-empty">
-              Catálogo de demostración: los datos sintéticos no cuentan como
-              ensayos reales.
+              {t(
+                "Demo catalog: synthetic data do not count as real trials.",
+                "Catálogo de demostración: los datos sintéticos no cuentan como ensayos reales.",
+              )}
             </p>
           )}
         {nearest.map(({ gravity, trials }) => (
           <section
             key={gravity}
-            aria-label={`Ensayos ${gravityNames[gravity]}`}
+            aria-label={t(
+              `${gravityNames[gravity].en} trials`,
+              `Ensayos ${gravityNames[gravity].es}`,
+            )}
           >
             <h3>
-              {gravityNames[gravity]} · {gravityLabels[gravity]}
+              {gravityNames[gravity][locale]} · {gravityLabels[gravity]}
             </h3>
             {trials.length === 0 ? (
               <p className="evidence-empty">
-                Sin ensayos reales del mismo material y gravedad en el catálogo
-                cargado.
+                {t(
+                  "No real trials of the same material and gravity in the loaded catalog.",
+                  "Sin ensayos reales del mismo material y gravedad en el catálogo cargado.",
+                )}
               </p>
             ) : (
               trials.map((trial) => (
                 <article className="nearest-trial" key={trial.id}>
                   <div>
                     <strong>
-                      {trial.id} · {observedLabels[trial.outcome]}
+                      {trial.id} · {observedLabels[trial.outcome][locale]}
                     </strong>
                     <p>
                       {trial.pressure.toFixed(2)} psi ·{" "}
                       {trial.oxygen.toFixed(2)} % O₂
                     </p>
                     <p>
-                      Diferencia:{" "}
+                      {t("Difference:", "Diferencia:")}{" "}
                       {Math.abs(trial.pressure - base.pressure).toFixed(2)} psi
-                      · {Math.abs(trial.oxygen - base.oxygen).toFixed(2)} puntos
-                      de O₂
+                      · {Math.abs(trial.oxygen - base.oxygen).toFixed(2)}{" "}
+                      {t("O₂ points", "puntos de O₂")}
                     </p>
                   </div>
                   <div className="trial-actions">
@@ -83,17 +102,22 @@ export function ComparisonNotes() {
                         highlightExperiments([trial.id]);
                       }}
                     >
-                      Ver en el mapa
+                      {t("View on the map", "Ver en el mapa")}
                     </button>
                     <button
                       className="restore-scenario"
                       onClick={() => load([trial])}
                     >
-                      Cargar {trial.id}
+                      {t("Load", "Cargar")} {trial.id}
                     </button>
                   </div>
                   <details className="trial-sources">
-                    <summary>Fuente y condiciones observadas</summary>
+                    <summary>
+                      {t(
+                        "Source and observed conditions",
+                        "Fuente y condiciones observadas",
+                      )}
+                    </summary>
                     {trial.sources
                       .filter((source) => !source.demo)
                       .map((source, index) => (
@@ -108,7 +132,7 @@ export function ComparisonNotes() {
                               target="_blank"
                               rel="noreferrer"
                             >
-                              Consultar fuente
+                              {t("Open source", "Consultar fuente")}
                             </a>
                           )}
                         </blockquote>

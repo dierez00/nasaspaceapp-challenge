@@ -114,7 +114,7 @@ export class PsiApiExperimentRepository implements ExperimentRepository {
   async list(signal?: AbortSignal) {
     const response = await fetch(this.url, { signal, cache: "no-store" });
     if (!response.ok)
-      throw new Error("No fue posible cargar los experimentos de NASA PSI.");
+      throw new Error("Could not load the NASA PSI experiments.");
     const records = psiExperimentSchema.array().parse(await response.json());
     const { experiments, omitted } = toAtlasExperiments(records);
     this.omitted = omitted;

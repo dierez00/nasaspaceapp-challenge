@@ -92,7 +92,7 @@ describe("copilot contracts", () => {
       { type: "ExperimentCard", experimentId: "DEMO-001" },
       { type: "BadCard" },
       { type: "SourceList", sources: [] },
-    ].map(validateBlock);
+    ].map((value) => validateBlock(value));
     const fallback = validateBlock({
       type: "BadCard",
       sources: [...demoExperiments[0].sources, { bad: true }],
@@ -180,7 +180,7 @@ describe("SSE transport", () => {
     await expect(async () => {
       for await (const event of new HttpCopilotGateway().query(query))
         void event;
-    }).rejects.toThrow("antes de completar");
+    }).rejects.toThrow("before the answer was complete");
     fetchMock.mockRestore();
   });
   it("surfaces server errors and aborts a stalled read", async () => {
@@ -282,7 +282,7 @@ describe("NASA PSI adapter", () => {
       if (event.type === "ui-block") blocks.push(validateBlock(event.block));
     }
     const brief = blocks.find((block) => block.type === "EvidenceBrief");
-    expect(brief?.verdict).toContain("Ningún ensayo con sólidos supera el 30 %");
+    expect(brief?.verdict).toContain("No solid-fuel trial exceeds 30 % O₂");
     expect(brief?.evidence?.experimentIds).toEqual(["PSI-1"]);
     expect(brief?.gap).toMatchObject({ o2PercentMin: 30.01, gravity: null });
   });
@@ -383,9 +383,26 @@ describe("FastAPI /query translation", () => {
     expect(
       backendQuestion({
         ...query,
+        locale: "es",
         text: "¿Arde?",
         context: { pressure: 8.2, oxygen: 34, gravity: "lunar" },
-      }).q,
-    ).toBe("¿Arde? (punto del mapa: 8.2 psi, 34.0% O₂, gravedad lunar)");
+      }),
+    ).toEqual({
+      q: "¿Arde? (punto del mapa: 8.2 psi, 34.0% O₂, gravedad lunar)",
+      lang: "es",
+    });
+  });
+
+  it("asks the backend for English by default", () => {
+    expect(
+      backendQuestion({
+        ...query,
+        text: "Does it burn?",
+        context: { pressure: 8.2, oxygen: 34, gravity: "lunar" },
+      }),
+    ).toEqual({
+      q: "Does it burn? (map point: 8.2 psi, 34.0% O₂, lunar gravity)",
+      lang: "en",
+    });
   });
 });

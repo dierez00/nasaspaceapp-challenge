@@ -165,6 +165,6 @@ export function AtlasProvider({
 }
 export function useAtlas() {
   const context = useContext(Context);
-  if (!context) throw new Error("AtlasProvider requerido");
+  if (!context) throw new Error("AtlasProvider is required");
   return context;
 }

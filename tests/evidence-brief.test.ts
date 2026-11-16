@@ -260,23 +260,31 @@ describe("translateBackendStream", () => {
 
 describe("humanized tables", () => {
   it("labels columns, with units and metric suffixes", () => {
-    expect(columnLabel("o2_percent_promedio")).toBe("O₂ promedio (%)");
-    expect(columnLabel("pressure_kpa_min")).toBe("Presión mín. (kPa)");
-    expect(columnLabel("pressure_kpa_max")).toBe("Presión máx. (kPa)");
-    expect(columnLabel("gravity_environment")).toBe("Gravedad");
-    expect(columnLabel("spread_rate_mm_s")).toBe("Propagación (mm/s)");
-    expect(columnLabel("campo_nuevo_raro")).toBe("Campo nuevo raro");
+    expect(columnLabel("o2_percent_promedio", "es")).toBe("O₂ promedio (%)");
+    expect(columnLabel("pressure_kpa_min", "es")).toBe("Presión mín. (kPa)");
+    expect(columnLabel("pressure_kpa_max", "es")).toBe("Presión máx. (kPa)");
+    expect(columnLabel("gravity_environment", "es")).toBe("Gravedad");
+    expect(columnLabel("spread_rate_mm_s", "es")).toBe("Propagación (mm/s)");
+    expect(columnLabel("campo_nuevo_raro", "es")).toBe("Campo nuevo raro");
+    expect(columnLabel("o2_percent_promedio")).toBe("O₂ avg. (%)");
+    expect(columnLabel("pressure_kpa_min")).toBe("Pressure min. (kPa)");
   });
 
   it("translates values and rounds long decimals for display only", () => {
-    expect(formatCell("gravity_environment", "microgravity")).toBe(
+    expect(formatCell("gravity_environment", "microgravity", "es")).toBe(
       "Microgravedad",
     );
-    expect(formatCell("outcome", "no_sustained_burn")).toBe("Se autoextinguió");
-    expect(formatCell("o2_basis", "oxidizer_stream")).toBe(
+    expect(formatCell("gravity_environment", "microgravity")).toBe(
+      "Microgravity",
+    );
+    expect(formatCell("outcome", "no_sustained_burn", "es")).toBe(
+      "Se autoextinguió",
+    );
+    expect(formatCell("o2_basis", "oxidizer_stream", "es")).toBe(
       "Corriente de oxidante",
     );
-    expect(formatCell("needs_review", true)).toBe("Sí");
+    expect(formatCell("needs_review", true, "es")).toBe("Sí");
+    expect(formatCell("needs_review", true)).toBe("Yes");
     expect(formatCell("material", null)).toBe("—");
     expect(formatCell("material", "PMMA (polímero)")).toBe("PMMA (polímero)");
     expect(formatCell("o2_percent_promedio", 21.0304)).toBe("21.03");
@@ -341,7 +349,8 @@ describe("units and gap text", () => {
     expect(formatRange(30, null, "%")).toBe("≥ 30 %");
     expect(formatRange(null, 29.99, "%")).toBe("< 30 %");
     expect(formatRange(20, 40, "%")).toBe("20–40 %");
-    expect(formatRange(30.01, 50, "%")).toBe("> 30 y ≤ 50 %");
+    expect(formatRange(30.01, 50, "%", 1, "es")).toBe("> 30 y ≤ 50 %");
+    expect(formatRange(30.01, 50, "%")).toBe("> 30 and ≤ 50 %");
     expect(formatRange(null, null, "%")).toBeNull();
   });
 
@@ -354,10 +363,15 @@ describe("units and gap text", () => {
     gravity: "lunar",
   };
   it("lists pressure in kPa and psi", () => {
-    expect(gapFacts(gap)).toEqual([
+    expect(gapFacts(gap, "es")).toEqual([
       { label: "Oxígeno", value: "> 30 %" },
       { label: "Presión", value: "≥ 34.5 kPa · ≥ 5 psi" },
       { label: "Gravedad", value: "Gravedad lunar" },
+    ]);
+    expect(gapFacts(gap)).toEqual([
+      { label: "Oxygen", value: "> 30 %" },
+      { label: "Pressure", value: "≥ 34.5 kPa · ≥ 5 psi" },
+      { label: "Gravity", value: "Lunar gravity" },
     ]);
   });
 
@@ -407,6 +421,7 @@ describe("next steps", () => {
         material: "pmma",
       }),
       ["Nomex", "PMMA (polímero)"],
+      "es",
     );
     expect(patch).toEqual({
       pressure: 10,
@@ -418,6 +433,9 @@ describe("next steps", () => {
       "Laboratorio con 10 psi · 35 % O₂ · µg · PMMA (polímero).",
     );
     expect(notes).toEqual([]);
+    expect(labParamsFromStep(step({ o2Percent: 35 }), [], "en").summary).toBe(
+      "Lab set to 35 % O₂.",
+    );
   });
   it("maps lunar and normal gravity", () => {
     expect(labParamsFromStep(step({ gravity: "lunar" })).patch.gravity).toBe(
@@ -436,6 +454,7 @@ describe("next steps", () => {
         material: "Titanio",
       }),
       ["PMMA"],
+      "es",
     );
     expect(patch).toEqual({ pressure: 16, oxygen: 18 });
     expect(notes).toHaveLength(4);
@@ -458,6 +477,7 @@ describe("next steps", () => {
         gravity: null,
       },
       step({ kind: "propose_experiment", gravity: "lunar", material: "PMMA" }),
+      "es",
     );
     expect(proposal.conditions).toEqual([
       "Oxígeno: > 30 %",
@@ -506,6 +526,7 @@ describe("export", () => {
         sourceFiles: ["a.pdf", "b.csv"],
       },
       new Date(Date.UTC(2026, 10, 15)),
+      "es",
     );
     expect(text).toBe(
       "NASA Physical Sciences Informatics (PSI). (s. f.). Ensayos consultados. Consultado en Atlas del fuego lunar el 15 de noviembre de 2026. Experimentos: PSI-26, PSI-99. Archivos fuente: a.pdf; b.csv.",
@@ -514,8 +535,15 @@ describe("export", () => {
       citationText(
         { evidence: null, sourceFiles: [] },
         new Date(Date.UTC(2026, 0, 1)),
+        "es",
       ),
     ).toContain("1 de enero de 2026");
+    expect(
+      citationText(
+        { evidence: null, sourceFiles: [] },
+        new Date(Date.UTC(2026, 0, 1)),
+      ),
+    ).toContain("Retrieved from Lunar Fire Atlas on January 1, 2026");
   });
 });
 
@@ -540,13 +568,16 @@ describe("lead and progress copy", () => {
     ).toMatch(/158/);
   });
   it("describes progress in user terms, never naming agents", () => {
-    expect(progressCopy("consultando_datos", 708)).toBe(
+    expect(progressCopy("consultando_datos", 708, "es")).toBe(
       "Consultando 708 ensayos",
     );
-    expect(progressCopy("buscando_fuentes")).toBe(
+    expect(progressCopy("buscando_fuentes", undefined, "es")).toBe(
       "Leyendo los informes de NASA PSI",
     );
-    expect(progressCopy("componiendo")).toBe("Redactando la ficha");
+    expect(progressCopy("componiendo", undefined, "es")).toBe(
+      "Redactando la ficha",
+    );
+    expect(progressCopy("consultando_datos", 708)).toBe("Querying 708 trials");
   });
 });
 

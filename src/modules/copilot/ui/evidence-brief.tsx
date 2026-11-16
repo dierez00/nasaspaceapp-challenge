@@ -4,8 +4,8 @@ import { useAtlas } from "@/modules/atlas/ui/atlas-provider";
 import { useSimulation } from "@/modules/simulation/application/simulation-provider";
 import {
   atlasGravity,
-  audienceHeadings,
-  audienceLabels,
+  audienceHeading,
+  audienceLabel,
   audiences,
   citationText,
   compactColumns,
@@ -20,6 +20,7 @@ import {
   type EvidenceBriefBlock,
 } from "../domain/brief";
 import { setAudience, useAudience } from "./audience-store";
+import { useLocale, useT } from "@/shared/i18n/locale";
 import { EvidenceTable } from "./evidence-table";
 import { Prose } from "./prose";
 import "./brief.css";
@@ -50,6 +51,8 @@ function downloadCsv(name: string, csv: string) {
 export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
   const id = useId();
   const audience = useAudience();
+  const locale = useLocale();
+  const t = useT();
   const { dispatch, experiments, highlightExperiments, showGap } = useAtlas();
   const { simulate } = useSimulation();
   const [notice, setNotice] = useState<string[]>([]);
@@ -63,7 +66,7 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
         ...experiments.map((e) => e.material),
         "PMMA",
         "Nomex",
-        "Algodón",
+        "Cotton",
       ]),
     ],
     [experiments],
@@ -84,7 +87,7 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
 
   function showGapOnMap() {
     if (!gap) return;
-    showGap({ label: gapMapLabel(gap), region });
+    showGap({ label: gapMapLabel(gap, locale), region });
     const gravity = atlasGravity(gap.gravity);
     if (gravity) dispatch({ type: "gravity", gravity });
   }
@@ -92,7 +95,11 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
     setNotice([]);
     setProposal(null);
     if (step.kind === "simulate") {
-      const { patch, summary, notes } = labParamsFromStep(step, materials);
+      const { patch, summary, notes } = labParamsFromStep(
+        step,
+        materials,
+        locale,
+      );
       simulate(patch);
       dispatch({ type: "view", view: "lab" });
       dispatch({ type: "tab", tab: "camera" });
@@ -102,7 +109,7 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
         type: "gravity",
         gravity: atlasGravity(step.gravity) ?? "all",
       });
-      if (gap) showGap({ label: gapMapLabel(gap), region });
+      if (gap) showGap({ label: gapMapLabel(gap, locale), region });
       else dispatch({ type: "view", view: "map" });
       if (!gap) dispatch({ type: "tab", tab: "camera" });
     } else {
@@ -115,21 +122,27 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
     setCopied(ok ? key : `${key}-failed`);
     setTimeout(() => setCopied(""), 2400);
   }
-  const proposalDraft = proposal ? experimentProposal(gap, proposal) : null;
+  const proposalDraft = proposal
+    ? experimentProposal(gap, proposal, locale)
+    : null;
+  const facts = gap ? gapFacts(gap, locale) : [];
 
   return (
     <article className="brief" aria-labelledby={`${id}-verdict`}>
       <header className="brief-verdict">
-        <span className="label">Veredicto</span>
+        <span className="label">{t("Verdict", "Veredicto")}</span>
         <h3 id={`${id}-verdict`}>{block.verdict}</h3>
         {block.lead && <p className="brief-lead">{block.lead}</p>}
       </header>
 
-      <section className="brief-lens" aria-label="Lectura según tu perfil">
+      <section
+        className="brief-lens"
+        aria-label={t("Reading for your profile", "Lectura según tu perfil")}
+      >
         <div
           className="lens-switch"
           role="group"
-          aria-label="Leer la ficha como"
+          aria-label={t("Read the brief as", "Leer la ficha como")}
         >
           {audiences.map((item) => (
             <button
@@ -138,12 +151,12 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
               aria-pressed={audience === item}
               onClick={() => setAudience(item)}
             >
-              {audienceLabels[item]}
+              {audienceLabel(item, locale)}
             </button>
           ))}
         </div>
         <p className="lens-text">
-          <strong>{audienceHeadings[audience]}. </strong>
+          <strong>{audienceHeading(audience, locale)}. </strong>
           {block.lenses[audience]}
         </p>
       </section>
@@ -151,10 +164,12 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
       {evidence && (
         <section className="brief-section" aria-labelledby={`${id}-evidence`}>
           <div className="brief-section-head">
-            <h4 id={`${id}-evidence`}>Evidencia</h4>
+            <h4 id={`${id}-evidence`}>{t("Evidence", "Evidencia")}</h4>
             <span>
               {evidence.rows.length}{" "}
-              {evidence.rows.length === 1 ? "fila" : "filas"}
+              {evidence.rows.length === 1
+                ? t("row", "fila")
+                : t("rows", "filas")}
             </span>
           </div>
           <p className="brief-caption">{evidence.title}</p>
@@ -167,8 +182,10 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
           />
           {hiddenColumns > 0 && (
             <p className="brief-fineprint">
-              Se muestran {columnsShown.length} de {evidence.columns.length}{" "}
-              columnas. La lectura de investigador las muestra todas.
+              {t(
+                `Showing ${columnsShown.length} of ${evidence.columns.length} columns. The researcher reading shows them all.`,
+                `Se muestran ${columnsShown.length} de ${evidence.columns.length} columnas. La lectura de investigador las muestra todas.`,
+              )}
             </p>
           )}
           <div className="brief-actions">
@@ -178,7 +195,7 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
                 className="brief-button"
                 onClick={() => highlightExperiments(evidence.experimentIds)}
               >
-                Ver en el mapa
+                {t("Show on the map", "Ver en el mapa")}
                 <span className="brief-count">
                   {evidence.experimentIds.length}
                 </span>
@@ -190,27 +207,37 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
                   type="button"
                   className="brief-button"
                   onClick={() =>
-                    downloadCsv("atlas-evidencia.csv", evidenceCsv(evidence))
+                    downloadCsv(
+                      t("atlas-evidence.csv", "atlas-evidencia.csv"),
+                      evidenceCsv(evidence),
+                    )
                   }
                 >
-                  Descargar CSV
+                  {t("Download CSV", "Descargar CSV")}
                 </button>
                 <button
                   type="button"
                   className="brief-button"
                   onClick={() =>
-                    void copy("cite", citationText(block, new Date()))
+                    void copy("cite", citationText(block, new Date(), locale))
                   }
                 >
-                  Copiar cita
+                  {t("Copy citation", "Copiar cita")}
                 </button>
               </>
             )}
           </div>
           <p className="brief-fineprint" role="status">
-            {copied === "cite" && "Cita copiada al portapapeles."}
+            {copied === "cite" &&
+              t(
+                "Citation copied to the clipboard.",
+                "Cita copiada al portapapeles.",
+              )}
             {copied === "cite-failed" &&
-              "No se pudo copiar. Tu navegador bloqueó el portapapeles."}
+              t(
+                "Couldn't copy. Your browser blocked the clipboard.",
+                "No se pudo copiar. Tu navegador bloqueó el portapapeles.",
+              )}
           </p>
         </section>
       )}
@@ -218,12 +245,12 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
       {gap && (
         <section className="brief-section" aria-labelledby={`${id}-gap`}>
           <div className="brief-section-head">
-            <h4 id={`${id}-gap`}>Hueco</h4>
+            <h4 id={`${id}-gap`}>{t("Gap", "Hueco")}</h4>
           </div>
           <p className="brief-gap">{gap.description}</p>
-          {gapFacts(gap).length > 0 && (
+          {facts.length > 0 && (
             <dl className="gap-facts">
-              {gapFacts(gap).map((fact) => (
+              {facts.map((fact) => (
                 <div key={fact.label}>
                   <dt>{fact.label}</dt>
                   <dd>{fact.value}</dd>
@@ -237,7 +264,7 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
               className="brief-button"
               onClick={showGapOnMap}
             >
-              Ver hueco en el mapa
+              {t("Show gap on the map", "Ver hueco en el mapa")}
             </button>
           </div>
         </section>
@@ -247,7 +274,9 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
         <section className="brief-section" aria-labelledby={`${id}-next`}>
           <div className="brief-section-head">
             <h4 id={`${id}-next`}>
-              {nextSteps.length === 1 ? "Siguiente paso" : "Siguientes pasos"}
+              {nextSteps.length === 1
+                ? t("Next step", "Siguiente paso")
+                : t("Next steps", "Siguientes pasos")}
             </h4>
           </div>
           <ul className="next-steps">
@@ -259,7 +288,7 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
                   </span>
                   <span className="step-copy">
                     <strong>{step.label}</strong>
-                    <small>{stepHint(step, materials)}</small>
+                    <small>{stepHint(step, materials, locale)}</small>
                   </span>
                 </button>
               </li>
@@ -275,20 +304,27 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
           {proposal && proposalDraft && (
             <div className="proposal">
               <h5 ref={proposalHeading} tabIndex={-1}>
-                Propuesta de experimento
+                {t("Experiment proposal", "Propuesta de experimento")}
               </h5>
               <p className="proposal-title">{proposalDraft.title}</p>
-              <p className="label">Condiciones a probar</p>
+              <p className="label">
+                {t("Conditions to test", "Condiciones a probar")}
+              </p>
               <ul>
                 {proposalDraft.conditions.length ? (
                   proposalDraft.conditions.map((line) => (
                     <li key={line}>{line}</li>
                   ))
                 ) : (
-                  <li>Por definir con el equipo.</li>
+                  <li>
+                    {t(
+                      "To be defined with the team.",
+                      "Por definir con el equipo.",
+                    )}
+                  </li>
                 )}
               </ul>
-              <p className="label">Qué medir</p>
+              <p className="label">{t("What to measure", "Qué medir")}</p>
               <ul>
                 {proposalDraft.measure.map((line) => (
                   <li key={line}>{line}</li>
@@ -300,20 +336,27 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
                   className="brief-button"
                   onClick={() => void copy("proposal", proposalDraft.text)}
                 >
-                  Copiar propuesta
+                  {t("Copy proposal", "Copiar propuesta")}
                 </button>
                 <button
                   type="button"
                   className="brief-button brief-button-quiet"
                   onClick={() => setProposal(null)}
                 >
-                  Cerrar
+                  {t("Close", "Cerrar")}
                 </button>
               </div>
               <p className="brief-fineprint" role="status">
-                {copied === "proposal" && "Propuesta copiada al portapapeles."}
+                {copied === "proposal" &&
+                  t(
+                    "Proposal copied to the clipboard.",
+                    "Propuesta copiada al portapapeles.",
+                  )}
                 {copied === "proposal-failed" &&
-                  "No se pudo copiar. Selecciona el texto manualmente."}
+                  t(
+                    "Couldn't copy. Select the text manually.",
+                    "No se pudo copiar. Selecciona el texto manualmente.",
+                  )}
               </p>
             </div>
           )}
@@ -322,7 +365,7 @@ export function EvidenceBrief({ block }: { block: EvidenceBriefBlock }) {
 
       {block.analysis && (
         <details className="brief-analysis">
-          <summary>Análisis completo</summary>
+          <summary>{t("Full analysis", "Análisis completo")}</summary>
           <Prose markdown={block.analysis} />
         </details>
       )}

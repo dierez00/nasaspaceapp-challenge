@@ -20,6 +20,8 @@ export const querySchema = z
       })
       .strict()
       .optional(),
+    /** Interface language for front-built answers (demo, guided). Never sent to FastAPI. */
+    locale: z.enum(["en", "es"]).optional(),
   })
   .strict();
 export type Query = z.infer<typeof querySchema>;
@@ -98,7 +100,10 @@ export const eventSchema = z.discriminatedUnion("type", [
   }),
 ]);
 export type CopilotEvent = z.infer<typeof eventSchema>;
-export function validateBlock(value: unknown): UIBlock {
+export function validateBlock(
+  value: unknown,
+  locale: "en" | "es" = "en",
+): UIBlock {
   const result = blockSchema.safeParse(value);
   const references =
     typeof value === "object" &&
@@ -115,7 +120,9 @@ export function validateBlock(value: unknown): UIBlock {
     : {
         type: "FallbackCard",
         markdown:
-          "**Respuesta incompleta.** No se pudo validar este bloque. Puedes volver a intentarlo; las demás evidencias siguen disponibles.",
+          locale === "en"
+            ? "**Incomplete answer.** This block could not be validated. You can try again; the rest of the evidence is still available."
+            : "**Respuesta incompleta.** No se pudo validar este bloque. Puedes volver a intentarlo; las demás evidencias siguen disponibles.",
         sources: references,
       };
 }

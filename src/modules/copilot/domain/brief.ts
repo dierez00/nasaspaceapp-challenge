@@ -5,6 +5,8 @@ import {
   PRESSURE_DOMAIN,
   type GapRegion,
 } from "@/modules/atlas/domain/overlays";
+// Type-only: this module also runs on the server (backend stream translation).
+import type { Locale, Text } from "@/shared/i18n/locale";
 
 /**
  * Evidence brief: what the data shows, the evidence, the gap and what to do
@@ -13,6 +15,10 @@ import {
  */
 
 export const KPA_PER_PSI = 6.89476;
+
+/** English or Spanish by locale. English is the default. */
+const tx = (locale: Locale, en: string, es: string) =>
+  locale === "en" ? en : es;
 
 export type Cell = string | number | boolean | null;
 export const cellSchema = z.union([
@@ -31,16 +37,26 @@ export type BriefGravity = z.infer<typeof briefGravitySchema>;
 
 export const audiences = ["student", "teacher", "researcher"] as const;
 export type Audience = (typeof audiences)[number];
+export const audienceLabelText: Record<Audience, Text> = {
+  student: { en: "Student", es: "Estudiante" },
+  teacher: { en: "Teacher", es: "Docente" },
+  researcher: { en: "Researcher", es: "Investigador" },
+};
+export const audienceLabel = (audience: Audience, locale: Locale = "en") =>
+  audienceLabelText[audience][locale];
+/** @deprecated Spanish only; use `audienceLabel(audience, locale)`. */
 export const audienceLabels: Record<Audience, string> = {
-  student: "Estudiante",
-  teacher: "Docente",
-  researcher: "Investigador",
+  student: audienceLabelText.student.es,
+  teacher: audienceLabelText.teacher.es,
+  researcher: audienceLabelText.researcher.es,
 };
-export const audienceHeadings: Record<Audience, string> = {
-  student: "Para entenderlo",
-  teacher: "Para el aula",
-  researcher: "Para la investigación",
+const audienceHeadingText: Record<Audience, Text> = {
+  student: { en: "To understand it", es: "Para entenderlo" },
+  teacher: { en: "For the classroom", es: "Para el aula" },
+  researcher: { en: "For research", es: "Para la investigación" },
 };
+export const audienceHeading = (audience: Audience, locale: Locale = "en") =>
+  audienceHeadingText[audience][locale];
 
 export const briefEvidenceSchema = z
   .object({
@@ -115,41 +131,52 @@ export function formatNumber(value: number) {
 
 /* ---------- Column and value labels ---------- */
 
-const baseLabels: Record<string, { name: string; unit?: string }> = {
-  experiment_id: { name: "Experimento" },
-  test_id: { name: "Ensayo" },
-  point_type: { name: "Tipo de punto" },
-  limit_type: { name: "Tipo de límite" },
-  material: { name: "Material" },
-  material_class: { name: "Clase de material" },
-  thickness_mm: { name: "Espesor", unit: "mm" },
-  o2_percent: { name: "O₂", unit: "%" },
-  o2_basis: { name: "Base del O₂" },
-  o2_status: { name: "Estado del O₂" },
-  pressure_kpa: { name: "Presión", unit: "kPa" },
-  pressure_status: { name: "Estado de la presión" },
-  gravity_environment: { name: "Gravedad" },
-  gravity_g: { name: "Gravedad", unit: "g" },
-  flow_velocity_cm_s: { name: "Velocidad del flujo", unit: "cm/s" },
-  flow_direction: { name: "Dirección del flujo" },
-  outcome: { name: "Resultado" },
-  burn_length_cm: { name: "Longitud quemada", unit: "cm" },
-  spread_rate_mm_s: { name: "Propagación", unit: "mm/s" },
-  confidence: { name: "Confianza" },
-  needs_review: { name: "Requiere revisión" },
-  ensayos: { name: "Ensayos" },
-  experimentos: { name: "Experimentos" },
+const baseLabels: Record<string, { name: Text; unit?: string }> = {
+  experiment_id: { name: { en: "Experiment", es: "Experimento" } },
+  test_id: { name: { en: "Trial", es: "Ensayo" } },
+  point_type: { name: { en: "Point type", es: "Tipo de punto" } },
+  limit_type: { name: { en: "Limit type", es: "Tipo de límite" } },
+  material: { name: { en: "Material", es: "Material" } },
+  material_class: { name: { en: "Material class", es: "Clase de material" } },
+  thickness_mm: { name: { en: "Thickness", es: "Espesor" }, unit: "mm" },
+  o2_percent: { name: { en: "O₂", es: "O₂" }, unit: "%" },
+  o2_basis: { name: { en: "O₂ basis", es: "Base del O₂" } },
+  o2_status: { name: { en: "O₂ status", es: "Estado del O₂" } },
+  pressure_kpa: { name: { en: "Pressure", es: "Presión" }, unit: "kPa" },
+  pressure_status: {
+    name: { en: "Pressure status", es: "Estado de la presión" },
+  },
+  gravity_environment: { name: { en: "Gravity", es: "Gravedad" } },
+  gravity_g: { name: { en: "Gravity", es: "Gravedad" }, unit: "g" },
+  flow_velocity_cm_s: {
+    name: { en: "Flow velocity", es: "Velocidad del flujo" },
+    unit: "cm/s",
+  },
+  flow_direction: { name: { en: "Flow direction", es: "Dirección del flujo" } },
+  outcome: { name: { en: "Outcome", es: "Resultado" } },
+  burn_length_cm: {
+    name: { en: "Burn length", es: "Longitud quemada" },
+    unit: "cm",
+  },
+  spread_rate_mm_s: {
+    name: { en: "Spread rate", es: "Propagación" },
+    unit: "mm/s",
+  },
+  confidence: { name: { en: "Confidence", es: "Confianza" } },
+  needs_review: { name: { en: "Needs review", es: "Requiere revisión" } },
+  ensayos: { name: { en: "Trials", es: "Ensayos" } },
+  experimentos: { name: { en: "Experiments", es: "Experimentos" } },
 };
-const metricSuffixes: Record<string, string> = {
-  promedio: "promedio",
-  min: "mín.",
-  max: "máx.",
+const metricSuffixes: Record<string, Text> = {
+  promedio: { en: "avg.", es: "promedio" },
+  min: { en: "min.", es: "mín." },
+  max: { en: "max.", es: "máx." },
 };
 
 function splitMetric(key: string) {
   const match = /^(.*)_(promedio|min|max)$/.exec(key);
   return match && match[1] in baseLabels
-    ? { base: match[1], suffix: metricSuffixes[match[2]] }
+    ? { base: match[1], suffix: metricSuffixes[match[2]] as Text | null }
     : { base: key, suffix: null };
 }
 
@@ -158,70 +185,88 @@ function sentence(text: string) {
   return spaced.charAt(0).toUpperCase() + spaced.slice(1);
 }
 
-/** `o2_percent_promedio` becomes "O₂ promedio (%)". Unknown keys are made readable, never dropped. */
-export function columnLabel(key: string) {
+/** `o2_percent_promedio` becomes "O₂ avg. (%)" ("O₂ promedio (%)" in Spanish). Unknown keys are made readable, never dropped. */
+export function columnLabel(key: string, locale: Locale = "en") {
   const { base, suffix } = splitMetric(key);
   const known = baseLabels[base];
   if (!known) return sentence(key);
-  return [known.name, suffix, known.unit ? `(${known.unit})` : null]
+  return [
+    known.name[locale],
+    suffix?.[locale],
+    known.unit ? `(${known.unit})` : null,
+  ]
     .filter(Boolean)
     .join(" ");
 }
 
-const valueLabels: Record<string, Record<string, string>> = {
+const valueLabels: Record<string, Record<string, Text>> = {
   gravity_environment: {
-    microgravity: "Microgravedad",
-    lunar: "Lunar",
-    martian: "Marciana",
-    partial: "Parcial",
-    normal: "Normal (1 g)",
+    microgravity: { en: "Microgravity", es: "Microgravedad" },
+    lunar: { en: "Lunar", es: "Lunar" },
+    martian: { en: "Martian", es: "Marciana" },
+    partial: { en: "Partial", es: "Parcial" },
+    normal: { en: "Normal (1 g)", es: "Normal (1 g)" },
   },
   outcome: {
-    no_ignition: "Sin ignición",
-    no_sustained_burn: "Se autoextinguió",
-    partial_burn: "Combustión parcial",
-    complete_burn: "Combustión completa",
+    no_ignition: { en: "No ignition", es: "Sin ignición" },
+    no_sustained_burn: { en: "Self-extinguished", es: "Se autoextinguió" },
+    partial_burn: { en: "Partial burn", es: "Combustión parcial" },
+    complete_burn: { en: "Complete burn", es: "Combustión completa" },
   },
   o2_basis: {
-    ambient: "Atmósfera",
-    oxidizer_stream: "Corriente de oxidante",
+    ambient: { en: "Atmosphere", es: "Atmósfera" },
+    oxidizer_stream: { en: "Oxidizer stream", es: "Corriente de oxidante" },
   },
   material_class: {
-    polymer: "Polímero",
-    fabric: "Tela",
-    composite: "Compuesto",
-    metal: "Metal",
-    liquid: "Líquido",
-    gas: "Gas",
-    other: "Otro",
+    polymer: { en: "Polymer", es: "Polímero" },
+    fabric: { en: "Fabric", es: "Tela" },
+    composite: { en: "Composite", es: "Compuesto" },
+    metal: { en: "Metal", es: "Metal" },
+    liquid: { en: "Liquid", es: "Líquido" },
+    gas: { en: "Gas", es: "Gas" },
+    other: { en: "Other", es: "Otro" },
   },
-  point_type: { test: "Ensayo", limit: "Límite" },
+  point_type: {
+    test: { en: "Trial", es: "Ensayo" },
+    limit: { en: "Limit", es: "Límite" },
+  },
   limit_type: {
-    radiative_extinction: "Extinción radiativa",
-    blowoff: "Soplado",
-    quenching: "Apagado por enfriamiento",
-    minimum_oxygen: "O₂ mínimo",
+    radiative_extinction: {
+      en: "Radiative extinction",
+      es: "Extinción radiativa",
+    },
+    blowoff: { en: "Blowoff", es: "Soplado" },
+    quenching: { en: "Quenching", es: "Apagado por enfriamiento" },
+    minimum_oxygen: { en: "Minimum O₂", es: "O₂ mínimo" },
   },
   o2_status: statusLabels(),
   pressure_status: statusLabels(),
   flow_direction: {
-    concurrent: "Concurrente",
-    opposed: "Opuesto",
-    quiescent: "En reposo",
-    mixed: "Mixto",
+    concurrent: { en: "Concurrent", es: "Concurrente" },
+    opposed: { en: "Opposed", es: "Opuesto" },
+    quiescent: { en: "Quiescent", es: "En reposo" },
+    mixed: { en: "Mixed", es: "Mixto" },
   },
-  confidence: { high: "Alta", medium: "Media", low: "Baja" },
+  confidence: {
+    high: { en: "High", es: "Alta" },
+    medium: { en: "Medium", es: "Media" },
+    low: { en: "Low", es: "Baja" },
+  },
 };
-function statusLabels() {
-  return { reported: "Reportado", derived: "Derivado", assumed: "Supuesto" };
+function statusLabels(): Record<string, Text> {
+  return {
+    reported: { en: "Reported", es: "Reportado" },
+    derived: { en: "Derived", es: "Derivado" },
+    assumed: { en: "Assumed", es: "Supuesto" },
+  };
 }
 
 /** Value as shown in a table. Raw values stay in the data for CSV and sorting. */
-export function formatCell(key: string, value: Cell) {
+export function formatCell(key: string, value: Cell, locale: Locale = "en") {
   if (value === null || value === undefined) return "—";
-  if (typeof value === "boolean") return value ? "Sí" : "No";
+  if (typeof value === "boolean") return value ? tx(locale, "Yes", "Sí") : "No";
   if (typeof value === "number") return formatNumber(value);
-  return valueLabels[splitMetric(key).base]?.[value] ?? value;
+  return valueLabels[splitMetric(key).base]?.[value]?.[locale] ?? value;
 }
 
 export function isNumericColumn(rows: Cell[][], index: number) {
@@ -240,7 +285,7 @@ export function sortRows(rows: Cell[][], index: number, direction: 1 | -1) {
     const order =
       typeof x === "number" && typeof y === "number"
         ? x - y
-        : String(x).localeCompare(String(y), "es", { numeric: true });
+        : String(x).localeCompare(String(y), "es", { numeric: true }); // locale-independent order
     return order * direction;
   });
 }
@@ -271,13 +316,14 @@ export function compactColumns(columns: string[]) {
 
 /* ---------- Gap ---------- */
 
-const gravityNames: Record<BriefGravity, string> = {
-  microgravity: "microgravedad",
-  lunar: "gravedad lunar",
-  martian: "gravedad marciana",
-  normal: "gravedad normal (1 g)",
+const gravityNames: Record<BriefGravity, Text> = {
+  microgravity: { en: "microgravity", es: "microgravedad" },
+  lunar: { en: "lunar gravity", es: "gravedad lunar" },
+  martian: { en: "Martian gravity", es: "gravedad marciana" },
+  normal: { en: "normal gravity (1 g)", es: "gravedad normal (1 g)" },
 };
-export const gravityName = (gravity: BriefGravity) => gravityNames[gravity];
+export const gravityName = (gravity: BriefGravity, locale: Locale = "en") =>
+  gravityNames[gravity][locale];
 
 /** The backend mirrors an open bound as x.01 (min) or x.99 (max): "> 30" is sent as 30.01. */
 function boundKind(value: number, side: "min" | "max") {
@@ -289,12 +335,13 @@ function boundKind(value: number, side: "min" | "max") {
   return { value: cents / 100, strict: false };
 }
 
-/** "> 30 %", "≥ 4.4 psi", "20–40 %", "> 30 y ≤ 50 %". Null when no bound. */
+/** "> 30 %", "≥ 4.4 psi", "20–40 %", "> 30 and ≤ 50 %" ("y" in Spanish). Null when no bound. */
 export function formatRange(
   min: number | null,
   max: number | null,
   unit: string,
   digits = 1,
+  locale: Locale = "en",
 ) {
   const lo = min === null ? null : boundKind(min, "min");
   const hi = max === null ? null : boundKind(max, "max");
@@ -302,7 +349,7 @@ export function formatRange(
   if (lo && hi) {
     if (!lo.strict && !hi.strict)
       return `${n(lo.value)}–${n(hi.value)} ${unit}`;
-    return `${lo.strict ? ">" : "≥"} ${n(lo.value)} y ${hi.strict ? "<" : "≤"} ${n(hi.value)} ${unit}`;
+    return `${lo.strict ? ">" : "≥"} ${n(lo.value)} ${tx(locale, "and", "y")} ${hi.strict ? "<" : "≤"} ${n(hi.value)} ${unit}`;
   }
   if (lo) return `${lo.strict ? ">" : "≥"} ${n(lo.value)} ${unit}`;
   if (hi) return `${hi.strict ? "<" : "≤"} ${n(hi.value)} ${unit}`;
@@ -312,23 +359,34 @@ export function formatRange(
 export type GapFact = { label: string; value: string };
 
 /** Human-readable bounds of a gap; pressure is shown in kPa and in psi, the map's unit. */
-export function gapFacts(gap: BriefGap): GapFact[] {
+export function gapFacts(gap: BriefGap, locale: Locale = "en"): GapFact[] {
   const facts: GapFact[] = [];
-  const o2 = formatRange(gap.o2PercentMin, gap.o2PercentMax, "%");
-  if (o2) facts.push({ label: "Oxígeno", value: o2 });
-  const kpa = formatRange(gap.pressureKpaMin, gap.pressureKpaMax, "kPa");
+  const o2 = formatRange(gap.o2PercentMin, gap.o2PercentMax, "%", 1, locale);
+  if (o2) facts.push({ label: tx(locale, "Oxygen", "Oxígeno"), value: o2 });
+  const kpa = formatRange(
+    gap.pressureKpaMin,
+    gap.pressureKpaMax,
+    "kPa",
+    1,
+    locale,
+  );
   if (kpa) {
     const psi = formatRange(
       gap.pressureKpaMin === null ? null : kpaToPsi(gap.pressureKpaMin),
       gap.pressureKpaMax === null ? null : kpaToPsi(gap.pressureKpaMax),
       "psi",
+      1,
+      locale,
     );
-    facts.push({ label: "Presión", value: psi ? `${kpa} · ${psi}` : kpa });
+    facts.push({
+      label: tx(locale, "Pressure", "Presión"),
+      value: psi ? `${kpa} · ${psi}` : kpa,
+    });
   }
   if (gap.gravity)
     facts.push({
-      label: "Gravedad",
-      value: capitalize(gravityNames[gap.gravity]),
+      label: tx(locale, "Gravity", "Gravedad"),
+      value: capitalize(gravityNames[gap.gravity][locale]),
     });
   return facts;
 }
@@ -361,8 +419,11 @@ export function gapRegion(gap: BriefGap): GapRegion | null {
   };
 }
 
-export function gapMapLabel(gap: BriefGap) {
-  return gap.gravity ? `Hueco · ${gravityNames[gap.gravity]}` : "Hueco";
+export function gapMapLabel(gap: BriefGap, locale: Locale = "en") {
+  const gapWord = tx(locale, "Gap", "Hueco");
+  return gap.gravity
+    ? `${gapWord} · ${gravityNames[gap.gravity][locale]}`
+    : gapWord;
 }
 
 /** Atlas gravity of a backend gravity; Mars has no counterpart in the map or the lab. */
@@ -420,6 +481,7 @@ const gravityTitle: Record<Gravity, string> = {
 export function labParamsFromStep(
   step: Pick<BriefStep, "pressureKpa" | "o2Percent" | "gravity" | "material">,
   materials: string[] = [],
+  locale: Locale = "en",
 ): LabParams {
   const patch: LabParams["patch"] = {};
   const notes: string[] = [];
@@ -431,7 +493,11 @@ export function labParamsFromStep(
     parts.push(`${trimNumber(clamped, 1)} psi`);
     if (clamped !== psi)
       notes.push(
-        "La presión queda fuera del rango del laboratorio (0–16 psi); se ajustó al límite.",
+        tx(
+          locale,
+          "The pressure is outside the lab's range (0–16 psi); it was set to the limit.",
+          "La presión queda fuera del rango del laboratorio (0–16 psi); se ajustó al límite.",
+        ),
       );
   }
   if (step.o2Percent !== null) {
@@ -440,7 +506,11 @@ export function labParamsFromStep(
     parts.push(`${trimNumber(clamped, 1)} % O₂`);
     if (clamped !== step.o2Percent)
       notes.push(
-        "El oxígeno queda fuera del rango del laboratorio (18–50 %); se ajustó al límite.",
+        tx(
+          locale,
+          "The oxygen is outside the lab's range (18–50 %); it was set to the limit.",
+          "El oxígeno queda fuera del rango del laboratorio (18–50 %); se ajustó al límite.",
+        ),
       );
   }
   const gravity = atlasGravity(step.gravity);
@@ -449,7 +519,11 @@ export function labParamsFromStep(
     parts.push(gravityTitle[gravity]);
   } else if (step.gravity === "martian")
     notes.push(
-      "El laboratorio no simula gravedad marciana (0.38 g); se conservó la gravedad actual.",
+      tx(
+        locale,
+        "The lab does not simulate Martian gravity (0.38 g); the current gravity was kept.",
+        "El laboratorio no simula gravedad marciana (0.38 g); se conservó la gravedad actual.",
+      ),
     );
   if (step.material) {
     const match = matchMaterial(step.material, materials);
@@ -458,28 +532,51 @@ export function labParamsFromStep(
       parts.push(match);
     } else
       notes.push(
-        `El material «${step.material}» no está en el laboratorio; se conservó el actual.`,
+        tx(
+          locale,
+          `The material “${step.material}” is not in the lab; the current one was kept.`,
+          `El material «${step.material}» no está en el laboratorio; se conservó el actual.`,
+        ),
       );
   }
   return {
     patch,
     notes,
     summary: parts.length
-      ? `Laboratorio con ${parts.join(" · ")}.`
-      : "Laboratorio abierto con las condiciones actuales.",
+      ? tx(
+          locale,
+          `Lab set to ${parts.join(" · ")}.`,
+          `Laboratorio con ${parts.join(" · ")}.`,
+        )
+      : tx(
+          locale,
+          "Lab opened with the current conditions.",
+          "Laboratorio abierto con las condiciones actuales.",
+        ),
   };
 }
 
 /** One-line description of the conditions a step applies, shown under its label. */
-export function stepHint(step: BriefStep, materials: string[] = []) {
+export function stepHint(
+  step: BriefStep,
+  materials: string[] = [],
+  locale: Locale = "en",
+) {
   if (step.kind === "explore_map")
     return step.gravity
-      ? `Mapa filtrado a ${gravityName(step.gravity)}`
-      : "Abre el mapa de evidencias";
-  const { summary } = labParamsFromStep(step, materials);
+      ? tx(
+          locale,
+          `Map filtered to ${gravityName(step.gravity, "en")}`,
+          `Mapa filtrado a ${gravityName(step.gravity, "es")}`,
+        )
+      : tx(locale, "Open the evidence map", "Abre el mapa de evidencias");
+  const { summary } = labParamsFromStep(step, materials, locale);
   return step.kind === "simulate"
-    ? summary.replace(/^Laboratorio con /, "Laboratorio: ").replace(/\.$/, "")
-    : "Condiciones y qué medir";
+    ? summary
+        .replace(/^Lab set to /, "Lab: ")
+        .replace(/^Laboratorio con /, "Laboratorio: ")
+        .replace(/\.$/, "")
+    : tx(locale, "Conditions and what to measure", "Condiciones y qué medir");
 }
 
 /* ---------- Experiment proposal ---------- */
@@ -494,37 +591,48 @@ export type Proposal = {
 export function experimentProposal(
   gap: BriefGap | null,
   step: BriefStep | null,
+  locale: Locale = "en",
 ): Proposal {
   const conditions = gap
-    ? gapFacts(gap).map((f) => `${f.label}: ${f.value}`)
+    ? gapFacts(gap, locale).map((f) => `${f.label}: ${f.value}`)
     : [];
   if (step?.o2Percent != null && !gap?.o2PercentMin && !gap?.o2PercentMax)
-    conditions.push(`Oxígeno: ${trimNumber(step.o2Percent, 1)} %`);
+    conditions.push(
+      `${tx(locale, "Oxygen", "Oxígeno")}: ${trimNumber(step.o2Percent, 1)} %`,
+    );
   if (step?.pressureKpa != null && !gap?.pressureKpaMin && !gap?.pressureKpaMax)
     conditions.push(
-      `Presión: ${trimNumber(step.pressureKpa, 1)} kPa · ${trimNumber(kpaToPsi(step.pressureKpa), 1)} psi`,
+      `${tx(locale, "Pressure", "Presión")}: ${trimNumber(step.pressureKpa, 1)} kPa · ${trimNumber(kpaToPsi(step.pressureKpa), 1)} psi`,
     );
   if (step?.gravity && !gap?.gravity)
-    conditions.push(`Gravedad: ${capitalize(gravityNames[step.gravity])}`);
+    conditions.push(
+      `${tx(locale, "Gravity", "Gravedad")}: ${capitalize(gravityNames[step.gravity][locale])}`,
+    );
   if (step?.material) conditions.push(`Material: ${step.material}`);
-  const measure = [
-    "Si la llama se enciende y si se sostiene o se apaga",
-    "Velocidad de propagación (mm/s)",
-    "Longitud quemada (cm) y forma de la llama",
-  ];
-  const title = gap
-    ? gap.description
-    : (step?.label ?? "Propuesta de experimento");
+  const measure =
+    locale === "en"
+      ? [
+          "Whether the flame ignites, and whether it sustains or goes out",
+          "Spread rate (mm/s)",
+          "Burn length (cm) and flame shape",
+        ]
+      : [
+          "Si la llama se enciende y si se sostiene o se apaga",
+          "Velocidad de propagación (mm/s)",
+          "Longitud quemada (cm) y forma de la llama",
+        ];
+  const heading = tx(locale, "Experiment proposal", "Propuesta de experimento");
+  const title = gap ? gap.description : (step?.label ?? heading);
   const text = [
-    "Propuesta de experimento",
+    heading,
     title,
     "",
-    "Condiciones a probar",
+    tx(locale, "Conditions to test", "Condiciones a probar"),
     ...(conditions.length
       ? conditions.map((c) => `- ${c}`)
-      : ["- Por definir"]),
+      : [`- ${tx(locale, "To be defined", "Por definir")}`]),
     "",
-    "Qué medir",
+    tx(locale, "What to measure", "Qué medir"),
     ...measure.map((m) => `- ${m}`),
   ].join("\n");
   return { title, conditions, measure, text };
@@ -562,7 +670,23 @@ const months = [
   "noviembre",
   "diciembre",
 ];
-export function longDate(date: Date) {
+const monthsEn = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+export function longDate(date: Date, locale: Locale = "en") {
+  if (locale === "en")
+    return `${monthsEn[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`;
   return `${date.getUTCDate()} de ${months[date.getUTCMonth()]} de ${date.getUTCFullYear()}`;
 }
 
@@ -570,18 +694,27 @@ export function longDate(date: Date) {
 export function citationText(
   brief: Pick<EvidenceBriefBlock, "evidence" | "sourceFiles">,
   accessed: Date,
+  locale: Locale = "en",
 ) {
-  const title = brief.evidence?.title ?? "Consulta al Atlas";
+  const en = locale === "en";
+  const title =
+    brief.evidence?.title ?? (en ? "Atlas query" : "Consulta al Atlas");
   const ids = brief.evidence?.experimentIds ?? [];
   const synthetic = ids.length > 0 && ids.every((id) => id.startsWith("DEMO-"));
   const dataset = synthetic
-    ? "Atlas del fuego lunar. Catálogo de demostración (datos sintéticos)"
+    ? en
+      ? "Lunar Fire Atlas. Demonstration catalog (synthetic data)"
+      : "Atlas del fuego lunar. Catálogo de demostración (datos sintéticos)"
     : "NASA Physical Sciences Informatics (PSI)";
   return [
-    `${dataset}. (s. f.). ${title}. Consultado en Atlas del fuego lunar el ${longDate(accessed)}.`,
-    ids.length ? `Experimentos: ${ids.join(", ")}.` : null,
+    en
+      ? `${dataset}. (n.d.). ${title}. Retrieved from Lunar Fire Atlas on ${longDate(accessed, locale)}.`
+      : `${dataset}. (s. f.). ${title}. Consultado en Atlas del fuego lunar el ${longDate(accessed, locale)}.`,
+    ids.length
+      ? `${en ? "Experiments" : "Experimentos"}: ${ids.join(", ")}.`
+      : null,
     brief.sourceFiles.length
-      ? `Archivos fuente: ${brief.sourceFiles.join("; ")}.`
+      ? `${en ? "Source files" : "Archivos fuente"}: ${brief.sourceFiles.join("; ")}.`
       : null,
   ]
     .filter(Boolean)
@@ -626,19 +759,39 @@ export const progressSteps = [
 ] as const;
 
 /** User-facing description of a backend step; never names an agent. */
-export function progressCopy(step: ProgressStep, trialCount?: number) {
+export function progressCopy(
+  step: ProgressStep,
+  trialCount?: number,
+  locale: Locale = "en",
+) {
   switch (step) {
     case "cache":
-      return "Recuperando una respuesta guardada";
+      return tx(
+        locale,
+        "Retrieving a saved answer",
+        "Recuperando una respuesta guardada",
+      );
     case "clasificando":
-      return "Entendiendo la pregunta";
+      return tx(
+        locale,
+        "Understanding the question",
+        "Entendiendo la pregunta",
+      );
     case "consultando_datos":
       return trialCount
-        ? `Consultando ${trialCount} ensayos`
-        : "Consultando los ensayos";
+        ? tx(
+            locale,
+            `Querying ${trialCount} trials`,
+            `Consultando ${trialCount} ensayos`,
+          )
+        : tx(locale, "Querying the trials", "Consultando los ensayos");
     case "buscando_fuentes":
-      return "Leyendo los informes de NASA PSI";
+      return tx(
+        locale,
+        "Reading the NASA PSI reports",
+        "Leyendo los informes de NASA PSI",
+      );
     case "componiendo":
-      return "Redactando la ficha";
+      return tx(locale, "Writing the brief", "Redactando la ficha");
   }
 }

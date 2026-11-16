@@ -40,11 +40,15 @@ The `backend` branch ships a `Dockerfile` and `railway.json`: Railway builds the
    | `AZURE_OPENAI_API_KEY`          | Resource key                                                    |
    | `AZURE_OPENAI_BASE_URL`         | Azure v1 API URL, `https://<resource>.openai.azure.com/openai/v1/` |
    | `AZURE_OPENAI_DEPLOYMENT`       | Deployment name, used by the classifier and all agents          |
-   | `AZURE_OPENAI_REASONING_EFFORT` | Optional `none`, `minimal`, `low`, `medium` or `high` for every agent; unset uses `none` for the classifier and `AGENT_EFFORT` (default `low`) for the rest. Sent on every call (Responses API), so use a reasoning deployment |
+   | `AZURE_OPENAI_REASONING_EFFORT` | Optional `none`, `minimal`, `low`, `medium`, `high`, `xhigh` or `max` for every agent; each deployment accepts only some (`gpt-6.1-sol` rejects `none`). Unset uses `low` for the classifier and `AGENT_EFFORT` (default `low`) for the rest. Sent on every call (Responses API), so use a reasoning deployment |
 
    Alternative to `AZURE_OPENAI_BASE_URL`: set `AZURE_OPENAI_ENDPOINT` (`https://<resource>.openai.azure.com`) and `AZURE_OPENAI_API_VERSION` (a version your deployment supports). `CLASSIFIER_MODEL` and `AGENT_MODEL` override the deployment per agent when set to Azure deployment names.
 
    The API refuses to start if the key, the URL (or endpoint plus API version) or the deployment is missing. The answer cache does not tell providers apart: clear `data/query_cache.json` (or set `QUERY_CACHE_ENABLED=0`) when you switch.
+
+   Reasoning deployments are slower than the 20 s default budget of the analyst and the researcher: set `AGENT_TIMEOUT_S` to about `40`. Keep the whole request under the frontend limits (the Next.js route has `maxDuration = 150` and a 120 s upstream timeout): classifier 8 s + agents + composer 40 s, with one composer retry.
+
+   If the logs show `429` ("exceeded token rate limit"), the analyst and the researcher are hitting the deployment's quota when they run in parallel. The client already retries up to 3 times with backoff; the real fix is raising the deployment's tokens-per-minute quota in Azure.
 
    Railway injects `PORT`. All other variables have defaults (see `.env.example` on the `backend` branch).
 

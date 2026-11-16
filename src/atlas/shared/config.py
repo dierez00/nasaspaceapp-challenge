@@ -2,7 +2,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import SecretStr
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -38,9 +38,11 @@ class Settings(BaseSettings):
     azure_openai_api_version: str | None = None
     # Default deployment for the classifier and the agents when CLASSIFIER_MODEL / AGENT_MODEL are not set.
     azure_openai_deployment: str | None = None
-    # Overrides the reasoning effort of every agent; unset uses "none" for the classifier and
-    # agent_effort for the others.
-    azure_openai_reasoning_effort: Literal["none", "minimal", "low", "medium", "high"] | None = None
+    # Overrides the reasoning effort of every agent; unset uses "low" for the classifier and
+    # agent_effort for the others. Which values a deployment accepts depends on the model.
+    azure_openai_reasoning_effort: Literal["none", "minimal", "low", "medium", "high", "xhigh", "max"] | None = None
+    # Time budget of the analyst and the researcher (each runs in parallel); reasoning models need more.
+    agent_timeout_s: float = Field(default=20.0, gt=0)
     query_cache_enabled: bool = True
     query_cache_file: Path = Path("data/query_cache.json")
 

@@ -188,7 +188,7 @@ def test_reasoning_effort_per_agent_and_override():
     asyncio.run(forced.classify("q"))
     asyncio.run(forced.composer("p"))
 
-    assert [r["reasoning"]["effort"] for r in client.requests] == ["none", "medium"]
+    assert [r["reasoning"]["effort"] for r in client.requests] == ["low", "medium"]
     assert [r["reasoning"]["effort"] for r in overridden.requests] == ["minimal", "minimal"]
 
 
@@ -351,3 +351,41 @@ def test_azure_client_uses_the_configured_endpoint_and_version():
     assert isinstance(client, openai.AsyncAzureOpenAI)
     assert str(client.base_url).startswith("https://example.openai.azure.com/")
     assert client._api_version == "2024-10-21"  # noqa: SLF001
+
+
+def test_clients_retry_rate_limits_a_bounded_number_of_times():
+    legacy = build_azure_client(settings())
+    v1 = build_azure_client(settings(azure_openai_base_url="https://example.openai.azure.com/openai/v1/"))
+
+    assert legacy.max_retries == v1.max_retries == 3
+
+
+def test_high_effort_values_are_accepted_and_sent():
+    assert settings(azure_openai_reasoning_effort="xhigh").azure_openai_reasoning_effort == "xhigh"
+    client = FakeClient(completion(json.dumps({"tipo": "huecos", "necesita_datos": True, "necesita_fuentes": False})))
+
+    asyncio.run(agents(client, azure_openai_reasoning_effort="max").classify("q"))
+
+    assert client.requests[0]["reasoning"] == {"effort": "max"}
+
+
+def test_agent_timeout_is_configurable_and_reaches_the_pipeline(monkeypatch):
+    import atlas.query.api.router as router_module
+    from fastapi.testclient import TestClient
+
+    seen = []
+
+    async def fake_answer(question, agents, **kwargs):
+        seen.append(kwargs["timeouts"])
+        return
+        yield
+
+    monkeypatch.setattr(router_module, "answer", fake_answer)
+    assert settings().agent_timeout_s == 20.0
+    for config, expected in ((settings(), 20.0), (settings(agent_timeout_s=40), 40.0)):
+        with TestClient(create_app(settings=config.model_copy(update={"agents_mock": True}))) as client:
+            client.post("/query", json={"q": "q"})
+
+    assert [t.agent for t in seen] == [20.0, 40.0]
+    with pytest.raises(ValueError):
+        settings(agent_timeout_s=0)

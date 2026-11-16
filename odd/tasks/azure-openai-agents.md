@@ -47,6 +47,7 @@ The cloud environment provides an Azure OpenAI API key for a GPT deployment. The
 
 - T4 (follow-up): `AZURE_OPENAI_BASE_URL` (v1 API via `AsyncOpenAI`, no api version) and `AZURE_OPENAI_DEPLOYMENT` fallback for Claude-looking model names; endpoint+version path kept. Minimal setup: provider + key + base URL + deployment. 241 passed, 3 skipped; docs updated. Supersedes the "API version required" decision above.
 - T5: Chat Completions replaced by the Responses API for all Azure agents (gpt-6.1-sol rejects function tools with reasoning in Chat Completions). Effort: override setting, else `none` classifier / `agent_effort` others. 246 passed, 3 skipped. Unverified offline: real Responses payload shape against Azure (`include=reasoning.encrypted_content`, `text.format` non-strict) and `model_dump(exclude_none=True)` round-trip of reasoning items.
+- T7 (production fixes, on top of origin/backend `2edae4f` with PR #3): classifier effort default `low` (`none` is rejected by gpt-6.1-sol; xhigh/max now accepted); `AGENT_TIMEOUT_S` (`agent_timeout_s`, default 20) wired through the router into `Timeouts`; Azure clients use `max_retries=3` for 429 (real fix: raise TPM quota); CI collection error fixed with `pythonpath = ["."]` in pytest config.
 
 ## Next step
 Read-only review of the three commits, then the user decides push, PR and chain strategy (forecast exceeded: ~890 authored lines in total, mostly tests).

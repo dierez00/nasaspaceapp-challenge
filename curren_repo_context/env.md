@@ -22,10 +22,11 @@ Se leen en `src/atlas/shared/config.py` (`Settings`, desde `.env` o el entorno; 
 | `AZURE_OPENAI_DEPLOYMENT` | — | Con `azure_openai`: despliegue del clasificador y los agentes; sustituye a `CLASSIFIER_MODEL` / `AGENT_MODEL` mientras conserven los valores de Claude |
 | `AZURE_OPENAI_ENDPOINT` | — | Alternativa a la URL base: URL del recurso, `https://<recurso>.openai.azure.com`; exige `AZURE_OPENAI_API_VERSION` |
 | `AZURE_OPENAI_API_VERSION` | — | Alternativa a la URL base: versión de la API de Azure OpenAI, sin valor por defecto |
-| `AZURE_OPENAI_REASONING_EFFORT` | — | `none`, `minimal`, `low`, `medium` o `high`, para todos los agentes; sin definir, el clasificador usa `none` y los demás `AGENT_EFFORT`. Se envía siempre en la API Responses, así que el despliegue debe ser de razonamiento |
+| `AZURE_OPENAI_REASONING_EFFORT` | — | `none`, `minimal`, `low`, `medium`, `high`, `xhigh` o `max`, para todos los agentes; cada despliegue acepta solo algunos (el `gpt-6.1-sol` rechaza `none`). Sin definir, el clasificador usa `low` y los demás `AGENT_EFFORT`. Se envía siempre en la API Responses, así que el despliegue debe ser de razonamiento |
 | `CLASSIFIER_MODEL` | `claude-haiku-5-5` | Modelo del clasificador; con `azure_openai`, nombre del despliegue (opcional si defines `AZURE_OPENAI_DEPLOYMENT`) |
 | `AGENT_MODEL` | `claude-opus-5-5` | Modelo del analista, el investigador y el compositor; con `azure_openai`, nombre del despliegue (opcional si defines `AZURE_OPENAI_DEPLOYMENT`) |
 | `AGENT_EFFORT` | `low` | `low`, `medium` o `high`, para todos los agentes; con `azure_openai` es el esfuerzo de razonamiento de analista, investigador y compositor |
+| `AGENT_TIMEOUT_S` | `20` | Segundos que puede tardar cada uno de analista e investigador (corren en paralelo); con despliegues de razonamiento conviene ~40. El total (clasificador 8 s + agentes + compositor 40 s, con un reintento) debe quedar bajo los 120 s del timeout hacia la API y los 150 s de `maxDuration` de la ruta de Next.js |
 | `QUERY_CACHE_ENABLED` | `1` | Caché de respuestas en archivo |
 | `QUERY_CACHE_FILE` | `data/query_cache.json` | Ruta de la caché; súbelo a Git para llevar al demo respuestas ya generadas |
 

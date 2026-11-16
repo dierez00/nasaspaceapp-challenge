@@ -11,6 +11,9 @@ from atlas.agents.infrastructure.agent_run import AgentRun, AgentRunError
 from atlas.agents.infrastructure.tool_spec import ToolSpec
 from atlas.shared.config import Settings
 
+# The SDK retries 429 and 5xx with exponential backoff (and Retry-After); the query timeouts bound the total.
+MAX_RETRIES = 3
+
 
 class ResponsesAgentRunner(Protocol):
     async def __call__(
@@ -33,11 +36,12 @@ def build_azure_client(settings: Settings) -> openai.AsyncOpenAI:
     assert settings.azure_openai_api_key is not None
     api_key = settings.azure_openai_api_key.get_secret_value()
     if settings.azure_openai_base_url:
-        return openai.AsyncOpenAI(base_url=settings.azure_openai_base_url, api_key=api_key)
+        return openai.AsyncOpenAI(base_url=settings.azure_openai_base_url, api_key=api_key, max_retries=MAX_RETRIES)
     return openai.AsyncAzureOpenAI(
         azure_endpoint=settings.azure_openai_endpoint,
         api_key=api_key,
         api_version=settings.azure_openai_api_version,
+        max_retries=MAX_RETRIES,
     )
 
 

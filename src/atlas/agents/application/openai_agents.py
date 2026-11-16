@@ -39,7 +39,7 @@ class OpenAIAgents:
             self._settings.azure_classifier_deployment(),
             question,
             max_turns=1,
-            effort="none",  # trivial task with a short time budget
+            effort="low",  # trivial task with a short time budget
             response_schema=("Classification", Classification.model_json_schema()),
         )
         return Classification.model_validate(structured_output(run.structured, run.text))

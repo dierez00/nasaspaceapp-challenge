@@ -13,6 +13,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from atlas.agents.domain.events import Event
 from atlas.agents.domain.lang import DEFAULT_LANG, Lang
+from atlas.agents.application.run_query import Timeouts
 from atlas.query.application.answer import answer
 
 router = APIRouter(prefix="/query", tags=["query"])
@@ -50,6 +51,7 @@ def _stream(question: str, request: Request, lang: Lang = DEFAULT_LANG) -> Strea
         state.agents,
         composer_mode=state.composer_mode,
         cache=state.query_cache,
+        timeouts=Timeouts(agent=state.settings.agent_timeout_s),
         lang=lang,
     )
     return StreamingResponse(

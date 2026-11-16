@@ -38,9 +38,9 @@ class Settings(BaseSettings):
     azure_openai_api_version: str | None = None
     # Default deployment for the classifier and the agents when CLASSIFIER_MODEL / AGENT_MODEL are not set.
     azure_openai_deployment: str | None = None
-    # Only sent when set, and only on calls without tools (those always send "none"):
-    # non-reasoning deployments reject reasoning_effort.
-    azure_openai_reasoning_effort: Literal["low", "medium", "high"] | None = None
+    # Overrides the reasoning effort of every agent; unset uses "none" for the classifier and
+    # agent_effort for the others.
+    azure_openai_reasoning_effort: Literal["none", "minimal", "low", "medium", "high"] | None = None
     query_cache_enabled: bool = True
     query_cache_file: Path = Path("data/query_cache.json")
 

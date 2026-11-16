@@ -1,5 +1,5 @@
 """Azure OpenAI agents: same Agents protocol and return shapes as ClaudeAgents,
-each call a Chat Completions loop against the configured deployments."""
+each call a Responses API loop against the configured deployments."""
 
 from typing import Any
 
@@ -11,7 +11,7 @@ from atlas.agents.domain.classification import Classification
 from atlas.agents.domain.ui import UIPayload
 from atlas.agents.infrastructure.analyst_spec import build_analyst_spec
 from atlas.agents.infrastructure.experiment_source import load_from_postgres
-from atlas.agents.infrastructure.openai_runner import ChatAgentRunner, run_chat_agent
+from atlas.agents.infrastructure.openai_runner import ResponsesAgentRunner, run_responses_agent
 from atlas.agents.infrastructure.researcher_spec import SearchFn, add_refs, build_researcher_spec
 from atlas.experiments.domain.experiment import Experiment
 from atlas.shared.config import Settings
@@ -24,7 +24,7 @@ class OpenAIAgents:
         pool: AsyncConnectionPool,
         search: SearchFn,
         client: Any,
-        runner: ChatAgentRunner = run_chat_agent,
+        runner: ResponsesAgentRunner = run_responses_agent,
     ) -> None:
         self._settings = settings
         self._pool = pool
@@ -38,6 +38,7 @@ class OpenAIAgents:
             self._settings.azure_classifier_deployment(),
             question,
             max_turns=1,
+            effort="none",  # trivial task with a short time budget
             response_schema=("Classification", Classification.model_json_schema()),
         )
         return Classification.model_validate(structured_output(run.structured, run.text))
@@ -82,14 +83,14 @@ class OpenAIAgents:
         )
         return structured_output(run.structured, run.text)
 
-    async def _call(self, prompt_name: str, model: str, prompt: str, **kwargs: Any):
+    async def _call(self, prompt_name: str, model: str, prompt: str, effort: str | None = None, **kwargs: Any):
         schema = kwargs.pop("response_schema", None)
         return await self._run(
             self._client,
             model=model,
             system_prompt=options.load_prompt(prompt_name),
             prompt=prompt,
-            reasoning_effort=self._settings.azure_openai_reasoning_effort,
+            reasoning_effort=self._settings.azure_openai_reasoning_effort or effort or self._settings.agent_effort,
             response_schema=(schema[0], options._strict_schema(schema[1])) if schema else None,
             **kwargs,
         )

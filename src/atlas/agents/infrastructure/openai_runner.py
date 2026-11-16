@@ -1,4 +1,4 @@
-"""Runs one agent on an Azure OpenAI deployment with a Chat Completions tool loop and
+"""Runs one agent on an Azure OpenAI deployment with a Responses API tool loop and
 returns the same AgentRun as the Claude runner. Tools are the provider-neutral ToolSpecs."""
 
 import json
@@ -11,9 +11,8 @@ from atlas.agents.infrastructure.agent_run import AgentRun, AgentRunError
 from atlas.agents.infrastructure.tool_spec import ToolSpec
 from atlas.shared.config import Settings
 
-TOOLS_REASONING_EFFORT = "none"
 
-class ChatAgentRunner(Protocol):
+class ResponsesAgentRunner(Protocol):
     async def __call__(
         self,
         client: Any,
@@ -24,7 +23,7 @@ class ChatAgentRunner(Protocol):
         max_turns: int,
         tools: Sequence[ToolSpec] = (),
         response_schema: tuple[str, dict[str, Any]] | None = None,
-        reasoning_effort: str | None = None,
+        reasoning_effort: str,
     ) -> AgentRun: ...
 
 
@@ -42,79 +41,69 @@ def build_azure_client(settings: Settings) -> openai.AsyncOpenAI:
     )
 
 
-async def run_chat_agent(
+async def run_responses_agent(
     client: Any,
     *,
     model: str,
     system_prompt: str,
     prompt: str,
     max_turns: int,
+    reasoning_effort: str,
     tools: Sequence[ToolSpec] = (),
     response_schema: tuple[str, dict[str, Any]] | None = None,
-    reasoning_effort: str | None = None,
 ) -> AgentRun:
-    """One completion per turn; tool calls are executed and answered until the model replies
-    without any. `model` is the Azure deployment name. Tool calls on the last turn exhaust it."""
-    messages: list[dict[str, Any]] = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": prompt},
-    ]
-    request: dict[str, Any] = {"model": model}
+    """One response per turn; function calls are executed and answered until the model replies
+    without any. `model` is the Azure deployment name. Tool calls on the last turn exhaust it.
+    Stateless: nothing is stored server-side, so every request resends the whole conversation,
+    including the encrypted reasoning items the model needs to continue after a tool call."""
+    items: list[Any] = [{"role": "user", "content": prompt}]
+    request: dict[str, Any] = {
+        "model": model,
+        "instructions": system_prompt,
+        "reasoning": {"effort": reasoning_effort},
+        "store": False,
+        "include": ["reasoning.encrypted_content"],
+    }
     if tools:
         request["tools"] = [_function_tool(spec) for spec in tools]
     if response_schema is not None:
         name, schema = response_schema
-        request["response_format"] = {
-            "type": "json_schema",
-            "json_schema": {"name": name, "schema": schema, "strict": False},
-        }
-    # Reasoning deployments (gpt-6.1-sol) reason by default and reject function tools in
-    # Chat Completions unless reasoning_effort is explicitly "none".
-    effort = TOOLS_REASONING_EFFORT if tools else reasoning_effort
-    if effort is not None:
-        request["reasoning_effort"] = effort
+        request["text"] = {"format": {"type": "json_schema", "name": name, "schema": schema, "strict": False}}
     by_name = {spec.name: spec for spec in tools}
 
     for _ in range(max_turns):
         try:
-            completion = await client.chat.completions.create(messages=messages, **request)
+            response = await client.responses.create(input=items, **request)
         except openai.OpenAIError as exc:
             raise AgentRunError(f"Azure OpenAI: {type(exc).__name__}: {exc}") from exc
-        if not completion.choices:
-            raise AgentRunError("Azure OpenAI no devolvió respuestas")
-        message = completion.choices[0].message
-        calls = [call for call in message.tool_calls or [] if call.type == "function"]
+        _check_status(response)
+        calls = [item for item in response.output if item.type == "function_call"]
         if not calls:
-            if not message.content:
+            if not response.output_text:
                 raise AgentRunError("el agente terminó sin respuesta")
-            return AgentRun(message.content, None, None)
-        messages.append(_assistant_message(message.content, calls))
+            return AgentRun(response.output_text, None, None)
+        items.extend(_to_input(item) for item in response.output)
         for call in calls:
-            text = await _run_tool(by_name.get(call.function.name), call.function.name, call.function.arguments)
-            messages.append({"role": "tool", "tool_call_id": call.id, "content": text})
+            text = await _run_tool(by_name.get(call.name), call.name, call.arguments)
+            items.append({"type": "function_call_output", "call_id": call.call_id, "output": text})
     raise AgentRunError(f"el agente agotó los {max_turns} turnos")
 
 
+def _check_status(response: Any) -> None:
+    if response.error is not None:
+        raise AgentRunError(f"Azure OpenAI: {response.error.message}")
+    if response.status in ("failed", "incomplete", "cancelled"):
+        details = response.incomplete_details
+        reason = details.reason if details is not None else None
+        raise AgentRunError(f"Azure OpenAI: respuesta {response.status}" + (f" ({reason})" if reason else ""))
+
+
+def _to_input(item: Any) -> Any:
+    return item.model_dump(exclude_none=True) if hasattr(item, "model_dump") else item
+
+
 def _function_tool(spec: ToolSpec) -> dict[str, Any]:
-    return {
-        "type": "function",
-        "function": {"name": spec.name, "description": spec.description, "parameters": spec.input_schema},
-    }
-
-
-def _assistant_message(content: str | None, calls: list[Any]) -> dict[str, Any]:
-    return {
-        "role": "assistant",
-        "content": content,
-        "tool_calls": [
-            {
-                "id": call.id,
-                "type": "function",
-                "function": {"name": call.function.name, "arguments": call.function.arguments},
-            }
-            for call in calls
-        ],
-    }
+    return {"type": "function", "name": spec.name, "description": spec.description, "parameters": spec.input_schema}
 
 
 async def _run_tool(spec: ToolSpec | None, name: str, raw_arguments: str | None) -> str:

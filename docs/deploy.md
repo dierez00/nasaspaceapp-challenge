@@ -40,7 +40,7 @@ The `backend` branch ships a `Dockerfile` and `railway.json`: Railway builds the
    | `AZURE_OPENAI_API_KEY`          | Resource key                                                    |
    | `AZURE_OPENAI_BASE_URL`         | Azure v1 API URL, `https://<resource>.openai.azure.com/openai/v1/` |
    | `AZURE_OPENAI_DEPLOYMENT`       | Deployment name, used by the classifier and all agents          |
-   | `AZURE_OPENAI_REASONING_EFFORT` | Optional `low`, `medium` or `high` for calls without tools (tool calls send `none`); reasoning deployments only |
+   | `AZURE_OPENAI_REASONING_EFFORT` | Optional `none`, `minimal`, `low`, `medium` or `high` for every agent; unset uses `none` for the classifier and `AGENT_EFFORT` (default `low`) for the rest. Sent on every call (Responses API), so use a reasoning deployment |
 
    Alternative to `AZURE_OPENAI_BASE_URL`: set `AZURE_OPENAI_ENDPOINT` (`https://<resource>.openai.azure.com`) and `AZURE_OPENAI_API_VERSION` (a version your deployment supports). `CLASSIFIER_MODEL` and `AGENT_MODEL` override the deployment per agent when set to Azure deployment names.
 

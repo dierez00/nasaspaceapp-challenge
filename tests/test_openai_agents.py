@@ -34,26 +34,44 @@ def settings(**overrides) -> Settings:
     return Settings(_env_file=None, database_url=OFFLINE_DB, **{**AZURE, **overrides})
 
 
-def tool_call(name: str, arguments: Any, call_id: str = "call_1") -> SimpleNamespace:
+class Item(SimpleNamespace):
+    """Response output item with the one SDK method the runner relies on."""
+
+    def model_dump(self, exclude_none: bool = False) -> dict[str, Any]:
+        return {k: v for k, v in vars(self).items() if v is not None or not exclude_none}
+
+
+def tool_call(name: str, arguments: Any, call_id: str = "call_1") -> Item:
     raw = arguments if isinstance(arguments, str) else json.dumps(arguments)
-    return SimpleNamespace(id=call_id, type="function", function=SimpleNamespace(name=name, arguments=raw))
+    return Item(type="function_call", call_id=call_id, name=name, arguments=raw)
 
 
-def completion(content: str | None = None, calls: list | None = None) -> SimpleNamespace:
-    message = SimpleNamespace(content=content, tool_calls=calls or None)
-    return SimpleNamespace(choices=[SimpleNamespace(message=message)])
+def reasoning(item_id: str = "rs_1") -> Item:
+    return Item(type="reasoning", id=item_id, encrypted_content="opaque", summary=[])
+
+
+def completion(
+    text: str | None = None, calls: list | None = None, status: str = "completed", error: Any = None, reason: Any = None
+) -> SimpleNamespace:
+    return SimpleNamespace(
+        output=[reasoning(), *(calls or [])],
+        output_text=text or "",
+        status=status,
+        error=error,
+        incomplete_details=SimpleNamespace(reason=reason) if reason else None,
+    )
 
 
 class FakeClient:
-    """Replays scripted completions (or raises scripted errors) and records every request."""
+    """Replays scripted responses (or raises scripted errors) and records every request."""
 
     def __init__(self, *script: Any) -> None:
         self.script = list(script)
         self.requests: list[dict[str, Any]] = []
-        self.chat = SimpleNamespace(completions=SimpleNamespace(create=self._create))
+        self.responses = SimpleNamespace(create=self._create)
 
     async def _create(self, **kwargs: Any) -> Any:
-        self.requests.append({**kwargs, "messages": list(kwargs["messages"])})
+        self.requests.append({**kwargs, "input": list(kwargs["input"])})
         step = self.script.pop(0)
         if isinstance(step, Exception):
             raise step
@@ -86,13 +104,15 @@ def test_analyst_tool_round_trip_logs_queries(monkeypatch):
     assert [q["filtros"] for q in result["consultas"]] == [{"agrupar_por": ["experiment_id"]}]
     first, second = client.requests
     assert first["model"] == "gpt-deployment"
-    assert first["messages"][0]["role"] == "system" and first["messages"][1]["role"] == "user"
-    assert first["tools"][0]["function"]["name"] == "consultar_ensayos"
-    assert "response_format" not in first and first["reasoning_effort"] == "none"
-    assistant, tool = second["messages"][2:]
-    assert assistant["tool_calls"][0]["id"] == "call_1"
-    assert tool["role"] == "tool" and tool["tool_call_id"] == "call_1"
-    assert json.loads(tool["content"])["columns"][0] == "experiment_id"
+    assert first["instructions"] and first["input"] == [{"role": "user", "content": "¿Qué hay?\n\n(Tipo de consulta: general)"}]
+    assert first["tools"][0]["type"] == "function" and first["tools"][0]["name"] == "consultar_ensayos"
+    assert "text" not in first and first["reasoning"] == {"effort": "low"}
+    assert first["store"] is False and first["include"] == ["reasoning.encrypted_content"]
+    _, reasoning_item, call, output = second["input"]
+    assert reasoning_item["type"] == "reasoning" and reasoning_item["encrypted_content"] == "opaque"
+    assert call["type"] == "function_call" and call["call_id"] == "call_1"
+    assert output["type"] == "function_call_output" and output["call_id"] == "call_1"
+    assert json.loads(output["output"])["columns"][0] == "experiment_id"
 
 
 def test_researcher_round_trip_numbers_the_sources():
@@ -105,7 +125,7 @@ def test_researcher_round_trip_numbers_the_sources():
 
     assert result["respuesta"] == "Ver [1]."
     assert [s["ref"] for s in result["fuentes"]] == [1]
-    assert json.loads(client.requests[1]["messages"][-1]["content"])[0]["ref"] == 1
+    assert json.loads(client.requests[1]["input"][-1]["output"])[0]["ref"] == 1
 
 
 def test_direct_researcher_mode_skips_the_model():
@@ -135,10 +155,9 @@ def test_classifier_parses_structured_output_in_one_turn():
 
     assert classification.tipo == "huecos"
     request = client.requests[0]
-    assert request["model"] == "gpt-mini-deployment" and request["reasoning_effort"] == "low"
-    assert request["response_format"]["type"] == "json_schema"
-    assert request["response_format"]["json_schema"]["name"] == "Classification"
-    assert request["response_format"]["json_schema"]["strict"] is False
+    assert request["model"] == "gpt-mini-deployment" and request["reasoning"] == {"effort": "low"}
+    fmt = request["text"]["format"]
+    assert fmt["type"] == "json_schema" and fmt["name"] == "Classification" and fmt["strict"] is False
     assert "tools" not in request
 
 
@@ -152,8 +171,39 @@ def test_composer_returns_the_parsed_payload():
     client = FakeClient(completion(json.dumps(ui)))
 
     assert asyncio.run(agents(client).composer("prompt")) == ui
-    assert client.requests[0]["response_format"]["json_schema"]["name"] == "UIPayload"
-    assert "discriminator" not in json.dumps(client.requests[0]["response_format"])
+    assert client.requests[0]["text"]["format"]["name"] == "UIPayload"
+    assert "discriminator" not in json.dumps(client.requests[0]["text"])
+
+
+def test_reasoning_effort_per_agent_and_override():
+    payload = json.dumps({"tipo": "huecos", "necesita_datos": True, "necesita_fuentes": False})
+    ui = json.dumps({"summary": "x", "components": []})
+    client = FakeClient(completion(payload), completion(ui))
+    default = agents(client, agent_effort="medium")
+
+    asyncio.run(default.classify("q"))
+    asyncio.run(default.composer("p"))
+    overridden = FakeClient(completion(payload), completion(ui))
+    forced = agents(overridden, agent_effort="medium", azure_openai_reasoning_effort="minimal")
+    asyncio.run(forced.classify("q"))
+    asyncio.run(forced.composer("p"))
+
+    assert [r["reasoning"]["effort"] for r in client.requests] == ["none", "medium"]
+    assert [r["reasoning"]["effort"] for r in overridden.requests] == ["minimal", "minimal"]
+
+
+@pytest.mark.parametrize(
+    ("response", "expected"),
+    [
+        (completion(status="incomplete", reason="max_output_tokens"), "incomplete.*max_output_tokens"),
+        (completion(status="failed", error=SimpleNamespace(message="server_error")), "server_error"),
+        (completion(status="failed"), "failed"),
+        (completion(), "sin respuesta"),
+    ],
+)
+def test_unusable_responses_raise(response, expected):
+    with pytest.raises(AgentRunError, match=expected):
+        asyncio.run(agents(FakeClient(response)).composer("p"))
 
 
 @pytest.mark.parametrize(
@@ -170,7 +220,7 @@ def test_bad_tool_calls_go_back_to_the_model_as_text(call, expected):
     result = asyncio.run(agents(client).researcher("q", DEFAULT_CLASSIFICATION))
 
     assert result["respuesta"] == "Listo." and result["fuentes"] == []
-    assert expected in client.requests[1]["messages"][-1]["content"]
+    assert expected in client.requests[1]["input"][-1]["output"]
 
 
 def test_api_errors_become_agent_run_errors():

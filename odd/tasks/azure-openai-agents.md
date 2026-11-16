@@ -17,7 +17,7 @@ The cloud environment provides an Azure OpenAI API key for a GPT deployment. The
 - Azure settings: `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_API_KEY` (secret), `AZURE_OPENAI_API_VERSION`, optional `AZURE_OPENAI_REASONING_EFFORT`. `CLASSIFIER_MODEL` / `AGENT_MODEL` hold the Azure deployment names when the provider is `azure_openai`.
 - Client: `openai.AsyncAzureOpenAI(azure_endpoint, api_key, api_version)`; `model=<deployment>` (source: openai-python README and `src/openai/lib/azure.py`).
 - Tools are defined once as provider-neutral specs (name, description, JSON schema, async handler returning text + error flag); thin adapters expose them as Claude in-process MCP tools or as OpenAI function tools.
-- OpenAI agents: Chat Completions tool-calling loop bounded by the same max-turn limits; structured outputs (classifier, composer) via `response_format` `json_schema` (non-strict; Pydantic still validates).
+- OpenAI agents (revised in T5: Responses API, stateless, `store=False` with encrypted reasoning items resent): tool-calling loop bounded by the same max-turn limits; structured outputs (classifier, composer) via `text.format` `json_schema` (non-strict; Pydantic still validates).
 
 ## Execution
 - Route: delegated direct, one sequential writer; no SDD.
@@ -46,6 +46,7 @@ The cloud environment provides an Azure OpenAI API key for a GPT deployment. The
 - Open risks: `reasoning_effort` is rejected by non-reasoning deployments (sent only when set); `response_format` json_schema needs an `api_version` that supports it; no live Azure call was made.
 
 - T4 (follow-up): `AZURE_OPENAI_BASE_URL` (v1 API via `AsyncOpenAI`, no api version) and `AZURE_OPENAI_DEPLOYMENT` fallback for Claude-looking model names; endpoint+version path kept. Minimal setup: provider + key + base URL + deployment. 241 passed, 3 skipped; docs updated. Supersedes the "API version required" decision above.
+- T5: Chat Completions replaced by the Responses API for all Azure agents (gpt-6.1-sol rejects function tools with reasoning in Chat Completions). Effort: override setting, else `none` classifier / `agent_effort` others. 246 passed, 3 skipped. Unverified offline: real Responses payload shape against Azure (`include=reasoning.encrypted_content`, `text.format` non-strict) and `model_dump(exclude_none=True)` round-trip of reasoning items.
 
 ## Next step
 Read-only review of the three commits, then the user decides push, PR and chain strategy (forecast exceeded: ~890 authored lines in total, mostly tests).

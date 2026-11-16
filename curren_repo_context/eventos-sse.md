@@ -2,12 +2,13 @@
 
 | Método | Ruta | Cuerpo / parámetros | Para |
 | --- | --- | --- | --- |
-| `POST` | `/query` | `{"q": "..."}` (1-500 caracteres, no solo espacios) | `fetch` con lectura del stream |
-| `GET` | `/query?q=...` | mismas reglas | `EventSource` |
+| `POST` | `/query` | `{"q": "...", "lang": "es" \| "en"}` (`q` de 1-500 caracteres, no solo espacios; `lang` opcional, `es` por defecto) | `fetch` con lectura del stream |
+| `GET` | `/query?q=...&lang=en` | mismas reglas | `EventSource` |
 
 - **Errores de entrada:** se responden con HTTP 422 antes de abrir el stream.
 - **Respuesta:** `text/event-stream` con `Cache-Control: no-cache` y `X-Accel-Buffering: no`.
 - **Formato:** cada evento es `event: <nombre>\ndata: <json>\n\n`.
+- **Idioma (`lang`):** todo el texto que lee el usuario sale en ese idioma: lo que escribe el compositor, el brief y la UI por reglas, los títulos y avisos de respaldo, y el `error` genérico. Las tablas, las citas literales y los ids no se traducen. Con `en`, el analista y el investigador reciben una nota de idioma al final de la pregunta (`atlas/agents/domain/lang.py`) y el prompt del compositor lleva una sección "Idioma de la respuesta".
 
 ## Eventos
 

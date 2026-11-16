@@ -1,5 +1,8 @@
 """JSON file cache of UI answers for the demo questions: {"v2|" + normalized question: {question, summary, components}}.
 
+English answers live under {"v2|en|" + normalized question}; Spanish keys have no language part, so
+the answers cached before the language existed are still served.
+
 The key carries a contract version: bump CACHE_VERSION whenever the UI contract or the tone
 changes so older entries are never served. `get` also validates the entry against UIPayload;
 an entry that does not validate is a miss.
@@ -17,6 +20,7 @@ from typing import Any
 
 from pydantic import ValidationError
 
+from atlas.agents.domain.lang import DEFAULT_LANG, Lang
 from atlas.agents.domain.ui import UIPayload
 
 log = logging.getLogger(__name__)
@@ -34,8 +38,10 @@ def normalize(question: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
-def _key(question: str) -> str:
-    return f"{CACHE_VERSION}|{normalize(question)}"
+def _key(question: str, lang: Lang = DEFAULT_LANG) -> str:
+    if lang == "es":
+        return f"{CACHE_VERSION}|{normalize(question)}"
+    return f"{CACHE_VERSION}|{lang}|{normalize(question)}"
 
 
 class FileQueryCache:
@@ -43,8 +49,8 @@ class FileQueryCache:
         self._path = path
         self._entries: dict[str, dict[str, Any]] = self._read()
 
-    def get(self, question: str) -> dict[str, Any] | None:
-        entry = self._entries.get(_key(question))
+    def get(self, question: str, lang: Lang = DEFAULT_LANG) -> dict[str, Any] | None:
+        entry = self._entries.get(_key(question, lang))
         if not isinstance(entry, dict) or "summary" not in entry or "components" not in entry:
             return None
         ui = {"summary": entry["summary"], "components": entry["components"]}
@@ -55,8 +61,8 @@ class FileQueryCache:
             return None
         return ui
 
-    def put(self, question: str, ui: dict[str, Any]) -> None:
-        self._entries[_key(question)] = {
+    def put(self, question: str, ui: dict[str, Any], lang: Lang = DEFAULT_LANG) -> None:
+        self._entries[_key(question, lang)] = {
             "question": question,
             "summary": ui["summary"],
             "components": ui["components"],

@@ -8,6 +8,7 @@ from psycopg_pool import AsyncConnectionPool
 from atlas.agents.application import options
 from atlas.agents.application.agents_common import DIRECT_SEARCH_K, structured_output, with_kind
 from atlas.agents.domain.classification import Classification
+from atlas.agents.domain.lang import without_note
 from atlas.agents.domain.ui import UIPayload
 from atlas.agents.infrastructure.analyst_spec import build_analyst_spec
 from atlas.agents.infrastructure.experiment_source import load_from_postgres
@@ -61,7 +62,7 @@ class OpenAIAgents:
     async def researcher(self, question: str, classification: Classification) -> dict[str, Any]:
         sources: list[dict[str, Any]] = []
         if self._settings.investigador_mode == "direct":
-            add_refs(sources, await self._search(question, DIRECT_SEARCH_K))
+            add_refs(sources, await self._search(without_note(question), DIRECT_SEARCH_K))
             return {"respuesta": None, "fuentes": sources}
         spec = build_researcher_spec(self._search, sources)
         run = await self._call(

@@ -12,7 +12,7 @@
 6. **Cálculos del analista.** Puede filtrar, agrupar, sacar promedio, mínimo y máximo, y calcular la correlación de Pearson entre dos campos. Otros cálculos, como regresiones o percentiles, habría que agregarlos a `FiltroEnsayos`.
 7. **Búsqueda.** El investigador usa `search_documents` del rol 2 con reranker cuando hay `VOYAGE_API_KEY`. Como los resultados no traen id, la herramienta les asigna un `ref` para las citas.
 8. **Caché:**
-   - la clave es `v2|` más la pregunta normalizada (minúsculas, sin acentos ni puntuación); subir `CACHE_VERSION` en `file_cache.py` invalida todo lo anterior, y una entrada que no valida contra `UIPayload` cuenta como fallo de caché;
+   - la clave es `v2|` más la pregunta normalizada (minúsculas, sin acentos ni puntuación); las respuestas en inglés usan `v2|en|`, así que cada idioma tiene su propia entrada y las claves en español no cambiaron; subir `CACHE_VERSION` en `file_cache.py` invalida todo lo anterior, y una entrada que no valida contra `UIPayload` cuenta como fallo de caché;
    - no expira;
    - solo guarda respuestas del compositor LLM sin errores de agentes.
 9. **Contrato de UI.** Los componentes `text`, `table`, `gap_map`, `citations`, `notice` y `brief` (versión 1) son una propuesta, no el contrato congelado. El `brief` es aditivo y el front lo detecta con `brief_version` en el evento `ui`.
@@ -35,10 +35,11 @@
 El navegador nunca llama a FastAPI: habla con rutas de Next.js, que llaman al backend en el servidor (`ATLAS_API_URL`). Detalle en `docs/atlas-frontend.md` de `main`, sección "Conectar FastAPI".
 
 - **`GET /experiments`** (`ATLAS_DATA_MODE=remote`): cada `ExperimentTest` se vuelve un punto del mapa con id `PSI-n/<test_id>`, presión en psi y la fuente. Los puntos fuera del dominio del mapa (0–16 psi, 18–50 % O₂) se omiten: hoy 407 de 1,115.
-- **`POST /query`** (`ATLAS_QUERY_MODE=remote`): se envía `{"q": pregunta + punto del mapa}` (máximo 500 caracteres). No se usa `EventSource`; se lee el stream con `fetch` y se traduce:
+- **`POST /query`** (`ATLAS_QUERY_MODE=remote`): se envía `{"q": pregunta + punto del mapa, "lang": idioma del selector EN | ES}` (máximo 500 caracteres; el front usa `en` por defecto). No se usa `EventSource`; se lee el stream con `fetch` y se traduce:
   - `status.step`: `clasificando` y `consultando_datos` → analista; `buscando_fuentes` → física; `componiendo` → sintetizador. `cache` no se muestra.
   - `ui`: `summary` y cada `text` van al texto. `table` → tarjeta con lista (máximo 8 filas). `gap_map` → límites de gravedad y hasta 3 tarjetas de experimento. `citations` → lista de fuentes. `notice` → tarjeta de aviso. Un componente desconocido se ignora.
   - `error` → error del copiloto. Si el stream termina sin `ui` ni `error`, el front muestra un error.
+- **Idioma.** La interfaz arranca en inglés y el botón EN | ES (guardado en `localStorage` como `atlas:locale`) cambia todo el texto propio del front, incluidos los nombres de materiales del catálogo demo (en inglés, como los de PSI). El texto que llega del backend sale en el `lang` enviado; las tablas, citas y nombres de materiales de PSI no se traducen.
 - Si cambian los nombres de eventos, de pasos o de componentes, hay que actualizar `src/modules/copilot/infra/backend-query.ts` en `main`.
 | Equipo | Lista de preguntas del demo para precalentar `data/query_cache.json` | Demo sin depender de la latencia |
 | Equipo | `CLAUDE_CODE_OAUTH_TOKEN` y `VOYAGE_API_KEY` en el `.env` de quien haga la demo, y Postgres con `atlas-load` y `atlas-index` ya ejecutados | Modo real |

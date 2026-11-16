@@ -6,7 +6,7 @@
 
 ```jsonc
 {
-  "summary": "1-2 frases en español",
+  "summary": "1-2 frases en el idioma de `lang` (inglés en el front por defecto)",
   "components": [ /* 1 a 7 componentes; se distinguen por "type" */ ]
 }
 ```

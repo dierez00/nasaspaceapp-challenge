@@ -20,7 +20,7 @@ docker compose up -d db          # Postgres 17 + pgvector en localhost:5433
   - Filtros opcionales de `GET /experiments`, con límites inclusivos: `min_o2_percent`, `max_o2_percent`, `min_pressure_kpa`, `max_pressure_kpa` y `exclude_assumed=true` (descarta puntos con O₂ o presión supuestos). Cada experimento conserva solo sus `tests` que cumplen y se omiten los que quedan sin ninguno; un rango invertido responde 422.
   - Ejemplo, hábitat lunar (34 % O₂, 56.5 kPa en `data/reference/conditions.json`): `GET /experiments?min_o2_percent=30&max_pressure_kpa=70.3` devuelve PSI-159 (18 puntos) y PSI-20 (13 puntos a 34 % y 56.5 kPa, presión supuesta según su objetivo 1); con `exclude_assumed=true` queda solo PSI-159. Los puntos con `o2_basis=oxidizer_stream` quedan fuera del filtro atmosférico: su O₂ corresponde al quemador, no al aire de la cámara.
 - `GET /coverage`: cobertura del mapa y brechas frente a condiciones de misión
-- `POST /query` (`{"q": "..."}`) y `GET /query?q=...` (EventSource): respuesta de los agentes en streaming SSE con eventos `status`, `ui` y `error`
+- `POST /query` (`{"q": "...", "lang": "es" | "en"}`) y `GET /query?q=...&lang=...` (EventSource): respuesta de los agentes en streaming SSE con eventos `status`, `ui` y `error`
 
 ## Búsqueda (RAG)
 

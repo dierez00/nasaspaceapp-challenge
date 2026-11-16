@@ -32,7 +32,7 @@ ui{summary, components, ms}
 ```
 
 - Si algo inesperado rompe el flujo, se emite un solo `error{message}` genérico; el detalle va al log.
-- Solo se guardan en caché las respuestas armadas por el compositor LLM sin errores de agentes.
+- Solo se guardan en caché las respuestas armadas por el compositor LLM sin errores de agentes. La caché separa los idiomas (`lang`).
 
 ## 4. Anclaje a los datos
 

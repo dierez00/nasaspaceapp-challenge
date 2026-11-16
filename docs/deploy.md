@@ -32,6 +32,19 @@ The `backend` branch ships a `Dockerfile` and `railway.json`: Railway builds the
    | `CLAUDE_CODE_OAUTH_TOKEN` | Claude Code token for the agents          |
    | `AGENTS_MOCK`             | `0`; `1` answers without Claude or Voyage |
 
+   To run the agents on a GPT deployment in Azure OpenAI instead of Claude, set `LLM_PROVIDER=azure_openai` and drop `CLAUDE_CODE_OAUTH_TOKEN`:
+
+   | Variable                        | Value                                                              |
+   | ------------------------------- | ------------------------------------------------------------------ |
+   | `LLM_PROVIDER`                  | `azure_openai` (default `claude`)                                  |
+   | `AZURE_OPENAI_ENDPOINT`         | Resource URL, `https://<resource>.openai.azure.com`                |
+   | `AZURE_OPENAI_API_KEY`          | Resource key                                                       |
+   | `AZURE_OPENAI_API_VERSION`      | Azure OpenAI API version supported by your deployment              |
+   | `CLASSIFIER_MODEL`, `AGENT_MODEL` | Azure **deployment names** (the defaults are Claude models)      |
+   | `AZURE_OPENAI_REASONING_EFFORT` | Optional `low`, `medium` or `high`; reasoning deployments only     |
+
+   The API refuses to start if any of these is missing. The answer cache does not tell providers apart: clear `data/query_cache.json` (or set `QUERY_CACHE_ENABLED=0`) when you switch.
+
    Railway injects `PORT`. All other variables have defaults (see `.env.example` on the `backend` branch).
 
 3. Under _Settings → Networking_, generate a public domain.

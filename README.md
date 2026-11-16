@@ -11,7 +11,7 @@ The full project overview and the interface (3D laboratory, evidence map and cop
 | Trial catalog with O₂ and pressure filters | `GET /experiments` | No |
 | Evidence coverage and gaps against mission conditions | `GET /coverage` | No |
 | Semantic search with citations | `POST /search` | Embeddings and reranking |
-| Streaming answers to questions | `POST /query` | Claude agents |
+| Streaming answers to questions | `POST /query` | Claude agents (or Azure OpenAI) |
 | Service and database status | `GET /health` | No |
 
 Interactive documentation at `/docs` (OpenAPI).
@@ -30,7 +30,7 @@ Interactive documentation at `/docs` (OpenAPI).
    | Researcher (Claude + Voyage) | Retrieves chunks, reranks them with `rerank-2.5` and cites experiment, file and section |
    | Composer (Claude) | Builds the answer the interface renders |
 
-   The analyst and researcher run in parallel, and progress streams over SSE.
+   The analyst and researcher run in parallel, and progress streams over SSE. The agents use Claude by default; setting `LLM_PROVIDER=azure_openai` runs them on a GPT deployment in Azure OpenAI instead (variables in `docs/deploy.md`).
 5. **Verification without AI.** Before answering, every table, citation, experiment and figure is checked against what the tools actually returned. Anything that does not match is dropped, and if the agents fail or time out, the answer is built from fixed rules.
 
 **In one sentence:** the AI understands the question, decides what to look up and explains it; the numbers and sources always come from NASA PSI data.

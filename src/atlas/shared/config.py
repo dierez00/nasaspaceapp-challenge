@@ -29,29 +29,52 @@ class Settings(BaseSettings):
     agent_model: str = "claude-opus-5-5"
     agent_effort: Literal["low", "medium", "high"] = "low"
     # LLM provider for the /query agents. With azure_openai, classifier_model and agent_model are
-    # Azure deployment names, and the endpoint, API key and API version are required.
+    # Azure deployment names, and the API key and either the base URL or endpoint plus API version are required.
     llm_provider: Literal["claude", "azure_openai"] = "claude"
+    # Azure v1 API (".../openai/v1/", no api-version): when set, endpoint and api version are not needed.
+    azure_openai_base_url: str | None = None
     azure_openai_endpoint: str | None = None
     azure_openai_api_key: SecretStr | None = None
     azure_openai_api_version: str | None = None
+    # Default deployment for the classifier and the agents when CLASSIFIER_MODEL / AGENT_MODEL are not set.
+    azure_openai_deployment: str | None = None
     # Only sent when set: non-reasoning deployments reject reasoning_effort.
     azure_openai_reasoning_effort: Literal["low", "medium", "high"] | None = None
     query_cache_enabled: bool = True
     query_cache_file: Path = Path("data/query_cache.json")
 
+    def azure_classifier_deployment(self) -> str:
+        return self._azure_deployment(self.classifier_model)
+
+    def azure_agent_deployment(self) -> str:
+        return self._azure_deployment(self.agent_model)
+
+    def _azure_deployment(self, model: str) -> str:
+        """A Claude model name (the default) is not a deployment: AZURE_OPENAI_DEPLOYMENT replaces it."""
+        if model.startswith("claude") and self.azure_openai_deployment:
+            return self.azure_openai_deployment
+        return model
+
     def azure_openai_problems(self) -> list[str]:
         """Names of the variables the azure_openai provider cannot start without (never their values)."""
-        problems = [
-            name
-            for name, value in (
-                ("AZURE_OPENAI_ENDPOINT", self.azure_openai_endpoint),
-                ("AZURE_OPENAI_API_KEY", self.azure_openai_api_key),
-                ("AZURE_OPENAI_API_VERSION", self.azure_openai_api_version),
+        problems = []
+        if not self.azure_openai_api_key:
+            problems.append("AZURE_OPENAI_API_KEY")
+        if not self.azure_openai_base_url:
+            problems += [
+                name
+                for name, value in (
+                    ("AZURE_OPENAI_ENDPOINT", self.azure_openai_endpoint),
+                    ("AZURE_OPENAI_API_VERSION", self.azure_openai_api_version),
+                )
+                if not value
+            ]
+            if not self.azure_openai_endpoint or not self.azure_openai_api_version:
+                problems.append("(or AZURE_OPENAI_BASE_URL instead of endpoint and API version)")
+        if self.azure_classifier_deployment().startswith("claude") or self.azure_agent_deployment().startswith("claude"):
+            problems.append(
+                "AZURE_OPENAI_DEPLOYMENT (or CLASSIFIER_MODEL and AGENT_MODEL as Azure deployment names, not Claude models)"
             )
-            if not value
-        ]
-        if self.classifier_model.startswith("claude") or self.agent_model.startswith("claude"):
-            problems.append("CLASSIFIER_MODEL and AGENT_MODEL (must be Azure deployment names, not Claude models)")
         return problems
 
 

@@ -35,7 +35,7 @@ class OpenAIAgents:
     async def classify(self, question: str) -> Classification:
         run = await self._call(
             "classifier",
-            self._settings.classifier_model,
+            self._settings.azure_classifier_deployment(),
             question,
             max_turns=1,
             response_schema=("Classification", Classification.model_json_schema()),
@@ -47,7 +47,7 @@ class OpenAIAgents:
         spec = build_analyst_spec(self._load_experiments, queries)
         run = await self._call(
             "analyst",
-            self._settings.agent_model,
+            self._settings.azure_agent_deployment(),
             with_kind(question, classification),
             max_turns=options.ANALYST_MAX_TURNS,
             tools=[spec],
@@ -65,7 +65,7 @@ class OpenAIAgents:
         spec = build_researcher_spec(self._search, sources)
         run = await self._call(
             "researcher",
-            self._settings.agent_model,
+            self._settings.azure_agent_deployment(),
             with_kind(question, classification),
             max_turns=options.RESEARCHER_MAX_TURNS,
             tools=[spec],
@@ -75,7 +75,7 @@ class OpenAIAgents:
     async def composer(self, prompt: str) -> Any:
         run = await self._call(
             "composer",
-            self._settings.agent_model,
+            self._settings.azure_agent_deployment(),
             prompt,
             max_turns=options.COMPOSER_MAX_TURNS,
             response_schema=("UIPayload", UIPayload.model_json_schema()),

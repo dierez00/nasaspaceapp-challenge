@@ -45,5 +45,7 @@ The cloud environment provides an Azure OpenAI API key for a GPT deployment. The
 - Decisions: `AZURE_OPENAI_API_VERSION` is required (no default, not verifiable offline); startup also refuses Claude-looking `CLASSIFIER_MODEL`/`AGENT_MODEL`. Query cache key deliberately unchanged (shipped demo cache is keyed `v2|question` and a test pins that); the docs tell to clear it when switching providers.
 - Open risks: `reasoning_effort` is rejected by non-reasoning deployments (sent only when set); `response_format` json_schema needs an `api_version` that supports it; no live Azure call was made.
 
+- T4 (follow-up): `AZURE_OPENAI_BASE_URL` (v1 API via `AsyncOpenAI`, no api version) and `AZURE_OPENAI_DEPLOYMENT` fallback for Claude-looking model names; endpoint+version path kept. Minimal setup: provider + key + base URL + deployment. 241 passed, 3 skipped; docs updated. Supersedes the "API version required" decision above.
+
 ## Next step
 Read-only review of the three commits, then the user decides push, PR and chain strategy (forecast exceeded: ~890 authored lines in total, mostly tests).

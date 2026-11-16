@@ -210,18 +210,74 @@ def test_azure_settings_come_from_env(monkeypatch):
 def test_missing_azure_variables_are_named_without_values():
     config = settings(azure_openai_endpoint=None, azure_openai_api_key=None, azure_openai_api_version=None)
 
-    assert config.azure_openai_problems() == [
-        "AZURE_OPENAI_ENDPOINT",
+    assert config.azure_openai_problems()[:3] == [
         "AZURE_OPENAI_API_KEY",
+        "AZURE_OPENAI_ENDPOINT",
         "AZURE_OPENAI_API_VERSION",
     ]
     assert settings().azure_openai_problems() == []
 
 
+def test_base_url_needs_only_the_key_and_a_deployment():
+    config = settings(
+        azure_openai_base_url="https://example.openai.azure.com/openai/v1/",
+        azure_openai_endpoint=None,
+        azure_openai_api_version=None,
+        azure_openai_deployment="gpt-deployment",
+        classifier_model="claude-haiku-5-5",
+        agent_model="claude-opus-5-5",
+    )
+
+    assert config.azure_openai_problems() == []
+    assert settings(azure_openai_base_url="https://x/openai/v1/", azure_openai_api_key=None).azure_openai_problems() == [
+        "AZURE_OPENAI_API_KEY"
+    ]
+
+
+def test_without_base_url_the_endpoint_and_version_are_required_and_named():
+    problems = settings(azure_openai_endpoint=None, azure_openai_api_version=None).azure_openai_problems()
+
+    assert problems[:2] == ["AZURE_OPENAI_ENDPOINT", "AZURE_OPENAI_API_VERSION"]
+    assert "AZURE_OPENAI_BASE_URL" in problems[2] and "test-key" not in " ".join(problems)
+
+
+def test_deployment_replaces_claude_defaults_but_not_explicit_names():
+    default = Settings(_env_file=None, azure_openai_deployment="gpt-deployment")
+    explicit = settings(azure_openai_deployment="gpt-deployment", classifier_model="gpt-mini-deployment")
+
+    assert (default.azure_classifier_deployment(), default.azure_agent_deployment()) == ("gpt-deployment",) * 2
+    assert explicit.azure_classifier_deployment() == "gpt-mini-deployment"
+    assert explicit.azure_agent_deployment() == "gpt-deployment"
+
+
+def test_agents_send_the_deployment_fallback_as_the_model():
+    config = Settings(_env_file=None, database_url=OFFLINE_DB, **{**AZURE, "azure_openai_deployment": "gpt-d"})
+    config = config.model_copy(update={"classifier_model": "claude-haiku-5-5", "agent_model": "claude-opus-5-5"})
+    payload = {"tipo": "huecos", "necesita_datos": True, "necesita_fuentes": False}
+    client = FakeClient(completion(json.dumps(payload)), completion(json.dumps({"summary": "x", "components": []})))
+    openai_agents = OpenAIAgents(config, None, _no_search, client)  # type: ignore[arg-type]
+
+    asyncio.run(openai_agents.classify("q"))
+    asyncio.run(openai_agents.composer("p"))
+
+    assert [r["model"] for r in client.requests] == ["gpt-d", "gpt-d"]
+
+
+def test_base_url_builds_the_v1_client_without_an_api_version():
+    config = settings(
+        azure_openai_base_url="https://example.openai.azure.com/openai/v1/", azure_openai_api_version=None
+    )
+
+    client = build_azure_client(config)
+
+    assert type(client) is openai.AsyncOpenAI
+    assert str(client.base_url) == "https://example.openai.azure.com/openai/v1/"
+
+
 def test_claude_model_names_are_not_azure_deployments():
     problems = settings(agent_model="claude-opus-5-5").azure_openai_problems()
 
-    assert len(problems) == 1 and "CLASSIFIER_MODEL" in problems[0]
+    assert len(problems) == 1 and "AZURE_OPENAI_DEPLOYMENT" in problems[0]
 
 
 def test_startup_fails_fast_when_azure_is_not_configured():
@@ -242,5 +298,6 @@ def test_startup_builds_the_azure_agents_and_mock_mode_wins():
 def test_azure_client_uses_the_configured_endpoint_and_version():
     client = build_azure_client(settings())
 
+    assert isinstance(client, openai.AsyncAzureOpenAI)
     assert str(client.base_url).startswith("https://example.openai.azure.com/")
     assert client._api_version == "2024-10-21"  # noqa: SLF001

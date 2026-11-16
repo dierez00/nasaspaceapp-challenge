@@ -27,12 +27,16 @@ class ChatAgentRunner(Protocol):
     ) -> AgentRun: ...
 
 
-def build_azure_client(settings: Settings) -> openai.AsyncAzureOpenAI:
-    """Callers check `settings.azure_openai_problems()` first."""
+def build_azure_client(settings: Settings) -> openai.AsyncOpenAI:
+    """Callers check `settings.azure_openai_problems()` first. A base URL selects Azure's v1 API
+    (no api-version); otherwise the classic endpoint + api-version client."""
     assert settings.azure_openai_api_key is not None
+    api_key = settings.azure_openai_api_key.get_secret_value()
+    if settings.azure_openai_base_url:
+        return openai.AsyncOpenAI(base_url=settings.azure_openai_base_url, api_key=api_key)
     return openai.AsyncAzureOpenAI(
         azure_endpoint=settings.azure_openai_endpoint,
-        api_key=settings.azure_openai_api_key.get_secret_value(),
+        api_key=api_key,
         api_version=settings.azure_openai_api_version,
     )
 

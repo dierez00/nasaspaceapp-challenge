@@ -34,16 +34,17 @@ The `backend` branch ships a `Dockerfile` and `railway.json`: Railway builds the
 
    To run the agents on a GPT deployment in Azure OpenAI instead of Claude, set `LLM_PROVIDER=azure_openai` and drop `CLAUDE_CODE_OAUTH_TOKEN`:
 
-   | Variable                        | Value                                                              |
-   | ------------------------------- | ------------------------------------------------------------------ |
-   | `LLM_PROVIDER`                  | `azure_openai` (default `claude`)                                  |
-   | `AZURE_OPENAI_ENDPOINT`         | Resource URL, `https://<resource>.openai.azure.com`                |
-   | `AZURE_OPENAI_API_KEY`          | Resource key                                                       |
-   | `AZURE_OPENAI_API_VERSION`      | Azure OpenAI API version supported by your deployment              |
-   | `CLASSIFIER_MODEL`, `AGENT_MODEL` | Azure **deployment names** (the defaults are Claude models)      |
-   | `AZURE_OPENAI_REASONING_EFFORT` | Optional `low`, `medium` or `high`; reasoning deployments only     |
+   | Variable                        | Value                                                           |
+   | ------------------------------- | --------------------------------------------------------------- |
+   | `LLM_PROVIDER`                  | `azure_openai` (default `claude`)                               |
+   | `AZURE_OPENAI_API_KEY`          | Resource key                                                    |
+   | `AZURE_OPENAI_BASE_URL`         | Azure v1 API URL, `https://<resource>.openai.azure.com/openai/v1/` |
+   | `AZURE_OPENAI_DEPLOYMENT`       | Deployment name, used by the classifier and all agents          |
+   | `AZURE_OPENAI_REASONING_EFFORT` | Optional `low`, `medium` or `high`; reasoning deployments only  |
 
-   The API refuses to start if any of these is missing. The answer cache does not tell providers apart: clear `data/query_cache.json` (or set `QUERY_CACHE_ENABLED=0`) when you switch.
+   Alternative to `AZURE_OPENAI_BASE_URL`: set `AZURE_OPENAI_ENDPOINT` (`https://<resource>.openai.azure.com`) and `AZURE_OPENAI_API_VERSION` (a version your deployment supports). `CLASSIFIER_MODEL` and `AGENT_MODEL` override the deployment per agent when set to Azure deployment names.
+
+   The API refuses to start if the key, the URL (or endpoint plus API version) or the deployment is missing. The answer cache does not tell providers apart: clear `data/query_cache.json` (or set `QUERY_CACHE_ENABLED=0`) when you switch.
 
    Railway injects `PORT`. All other variables have defaults (see `.env.example` on the `backend` branch).
 

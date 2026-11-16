@@ -1,20 +1,10 @@
 """Runs one agent as an independent ClaudeSDKClient and returns its final result."""
 
-from dataclasses import dataclass
-from typing import Any, Protocol
+from typing import Protocol
 
 from claude_agent_sdk import ClaudeAgentOptions, ClaudeSDKClient, ResultMessage
 
-
-class AgentRunError(RuntimeError):
-    pass
-
-
-@dataclass(frozen=True)
-class AgentRun:
-    text: str | None
-    structured: Any
-    cost_usd: float | None
+from atlas.agents.infrastructure.agent_run import AgentRun, AgentRunError
 
 
 class AgentRunner(Protocol):

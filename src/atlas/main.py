@@ -5,7 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from atlas.agents.application.claude_agents import ClaudeAgents
 from atlas.agents.application.mock_agents import MockAgents
+from atlas.agents.application.openai_agents import OpenAIAgents
 from atlas.agents.infrastructure.document_search import DocumentSearch
+from atlas.agents.infrastructure.openai_runner import build_azure_client
 from atlas.coverage.api.router import router as coverage_router
 from atlas.experiments.api.router import router as experiments_router
 from atlas.query.api.router import router as query_router
@@ -76,7 +78,13 @@ def _configure_query(
         app.state.query_cache = None
         return
     search = DocumentSearch(pool, embedder, reranker, settings.rerank_candidates)
-    app.state.agents = ClaudeAgents(settings, pool, search)
+    if settings.llm_provider == "azure_openai":
+        problems = settings.azure_openai_problems()
+        if problems:
+            raise RuntimeError("LLM_PROVIDER=azure_openai needs these variables: " + ", ".join(problems))
+        app.state.agents = OpenAIAgents(settings, pool, search, build_azure_client(settings))
+    else:
+        app.state.agents = ClaudeAgents(settings, pool, search)
     app.state.composer_mode = settings.compositor_mode
     app.state.query_cache = FileQueryCache(settings.query_cache_file) if settings.query_cache_enabled else None
 

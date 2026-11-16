@@ -1,20 +1,18 @@
 """Real agents: each call is an independent ClaudeSDKClient with its own options."""
 
-import json
 from typing import Any
 
 from psycopg_pool import AsyncConnectionPool
 
 from atlas.agents.application import options
+from atlas.agents.application.agents_common import DIRECT_SEARCH_K, structured_output, with_kind
 from atlas.agents.domain.classification import Classification
 from atlas.agents.infrastructure.analyst_tools import build_analyst_server
-from atlas.agents.infrastructure.claude_runner import AgentRunError, AgentRunner, run_agent
+from atlas.agents.infrastructure.claude_runner import AgentRunner, run_agent
 from atlas.agents.infrastructure.researcher_tools import SearchFn, add_refs, build_researcher_server
 from atlas.agents.infrastructure.experiment_source import load_from_postgres
 from atlas.experiments.domain.experiment import Experiment
 from atlas.shared.config import Settings
-
-DIRECT_SEARCH_K = 5
 
 
 class ClaudeAgents:
@@ -32,12 +30,12 @@ class ClaudeAgents:
 
     async def classify(self, question: str) -> Classification:
         run = await self._run(options.classifier_options(self._settings), question)
-        return Classification.model_validate(_structured(run.structured, run.text))
+        return Classification.model_validate(structured_output(run.structured, run.text))
 
     async def analyst(self, question: str, classification: Classification) -> dict[str, Any]:
         queries: list[dict[str, Any]] = []
         server = build_analyst_server(self._load_experiments, queries)
-        run = await self._run(options.analyst_options(self._settings, server), _with_kind(question, classification))
+        run = await self._run(options.analyst_options(self._settings, server), with_kind(question, classification))
         return {"respuesta": run.text, "consultas": queries}
 
     async def _load_experiments(self) -> list[Experiment]:
@@ -50,22 +48,9 @@ class ClaudeAgents:
             return {"respuesta": None, "fuentes": sources}
         sources: list[dict[str, Any]] = []
         server = build_researcher_server(self._search, sources)
-        run = await self._run(options.researcher_options(self._settings, server), _with_kind(question, classification))
+        run = await self._run(options.researcher_options(self._settings, server), with_kind(question, classification))
         return {"respuesta": run.text, "fuentes": sources}
 
     async def composer(self, prompt: str) -> Any:
         run = await self._run(options.composer_options(self._settings), prompt)
-        return _structured(run.structured, run.text)
-
-
-def _with_kind(question: str, classification: Classification) -> str:
-    return f"{question}\n\n(Tipo de consulta: {classification.tipo})"
-
-
-def _structured(structured: Any, text: str | None) -> Any:
-    if structured is not None:
-        return structured
-    try:
-        return json.loads(text or "")
-    except json.JSONDecodeError as exc:
-        raise AgentRunError("el agente no devolvió JSON estructurado") from exc
+        return structured_output(run.structured, run.text)

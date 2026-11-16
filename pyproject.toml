@@ -32,6 +32,8 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# Tests import each other as `tests.<module>`; CI runs the bare `pytest` entry point.
+pythonpath = ["."]
 
 [tool.setuptools.package-data]
 "atlas.agents.application" = ["prompts/*.md"]

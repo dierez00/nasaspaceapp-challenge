@@ -7,6 +7,7 @@ from psycopg_pool import AsyncConnectionPool
 from atlas.agents.application import options
 from atlas.agents.application.agents_common import DIRECT_SEARCH_K, structured_output, with_kind
 from atlas.agents.domain.classification import Classification
+from atlas.agents.domain.lang import without_note
 from atlas.agents.infrastructure.analyst_tools import build_analyst_server
 from atlas.agents.infrastructure.claude_runner import AgentRunner, run_agent
 from atlas.agents.infrastructure.researcher_tools import SearchFn, add_refs, build_researcher_server
@@ -44,7 +45,7 @@ class ClaudeAgents:
     async def researcher(self, question: str, classification: Classification) -> dict[str, Any]:
         if self._settings.investigador_mode == "direct":
             sources: list[dict[str, Any]] = []
-            add_refs(sources, await self._search(question, DIRECT_SEARCH_K))
+            add_refs(sources, await self._search(without_note(question), DIRECT_SEARCH_K))
             return {"respuesta": None, "fuentes": sources}
         sources: list[dict[str, Any]] = []
         server = build_researcher_server(self._search, sources)

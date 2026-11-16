@@ -9,6 +9,7 @@ import re
 from typing import Any
 
 from atlas.agents.domain.classification import Classification
+from atlas.agents.domain.lang import DEFAULT_LANG, Lang
 from atlas.agents.domain.ui import (
     BriefComponent,
     BriefEvidence,
@@ -19,20 +20,35 @@ from atlas.agents.domain.ui import (
 
 MAX_STEPS = 3
 EVIDENCE_TITLE = "Ensayos consultados"
+EVIDENCE_TITLES: dict[Lang, str] = {"es": EVIDENCE_TITLE, "en": "Trials queried"}
 BRIEF_GRAVITIES = ("microgravity", "lunar", "martian", "normal")
-_GRAVITY_LABEL = {
-    "microgravity": "microgravedad",
-    "lunar": "gravedad lunar",
-    "martian": "gravedad marciana",
-    "normal": "gravedad normal",
+_GRAVITY_LABELS: dict[Lang, dict[str, str]] = {
+    "es": {
+        "microgravity": "microgravedad",
+        "lunar": "gravedad lunar",
+        "martian": "gravedad marciana",
+        "normal": "gravedad normal",
+    },
+    "en": {
+        "microgravity": "microgravity",
+        "lunar": "lunar gravity",
+        "martian": "Martian gravity",
+        "normal": "normal gravity",
+    },
 }
 _GRAVITY_WORDS = (
     ("microgravity", ("microgravedad", "microgravity")),
-    ("lunar", ("lunar", "luna")),
-    ("martian", ("marciana", "marte", "martian")),
+    ("lunar", ("lunar", "luna", "moon")),
+    ("martian", ("marciana", "marte", "martian", "mars")),
 )
-_MIN_WORDS = r"(?:m[aá]s de|mayor(?:es)? (?:a|que|de)|por encima de|al menos|>=|≥|>)"
-_MAX_WORDS = r"(?:menos de|menor(?:es)? (?:a|que|de)|por debajo de|como m[aá]ximo|<=|≤|<)"
+_MIN_WORDS = (
+    r"(?:m[aá]s de|mayor(?:es)? (?:a|que|de)|por encima de|al menos"
+    r"|more than|greater than|above|over|at least|>=|≥|>)"
+)
+_MAX_WORDS = (
+    r"(?:menos de|menor(?:es)? (?:a|que|de)|por debajo de|como m[aá]ximo"
+    r"|less than|lower than|below|under|at most|up to|<=|≤|<)"
+)
 _NUMBER = r"(\d+(?:[.,]\d+)?)"
 _O2_MIN = re.compile(rf"{_MIN_WORDS}\s*{_NUMBER}\s*%")
 _O2_MAX = re.compile(rf"{_MAX_WORDS}\s*{_NUMBER}\s*%")
@@ -41,11 +57,17 @@ _PRESSURE_MAX = re.compile(rf"{_MAX_WORDS}\s*{_NUMBER}\s*kpa", re.IGNORECASE)
 _O2_TOPIC = re.compile(r"o2|o₂|ox[ií]geno|oxygen", re.IGNORECASE)
 
 
-def compute_gap(question: str, queries: list[dict[str, Any]]) -> BriefGap | None:
-    return compute_gap_ex(question, queries)[0]
+def _gravity_label(gravity: str, lang: Lang) -> str:
+    return _GRAVITY_LABELS[lang].get(gravity, gravity)
 
 
-def compute_gap_ex(question: str, queries: list[dict[str, Any]]) -> tuple[BriefGap | None, bool]:
+def compute_gap(question: str, queries: list[dict[str, Any]], lang: Lang = DEFAULT_LANG) -> BriefGap | None:
+    return compute_gap_ex(question, queries, lang)[0]
+
+
+def compute_gap_ex(
+    question: str, queries: list[dict[str, Any]], lang: Lang = DEFAULT_LANG
+) -> tuple[BriefGap | None, bool]:
     """Returns the gap and whether it comes from a query that found no tests.
 
     Gap region from the recorded query filters (or the question), with a plain description.
@@ -57,19 +79,30 @@ def compute_gap_ex(question: str, queries: list[dict[str, Any]]) -> tuple[BriefG
     for query in reversed(filtered):
         bounds, gravity = _region(question, query)
         if query.get("total") == 0 and (any(v is not None for v in bounds.values()) or gravity):
-            condition = _describe_condition(bounds)
-            where = f" en {_GRAVITY_LABEL[gravity]}" if gravity else ""
-            what = f" con {condition}" if condition else " con esas condiciones"
-            return BriefGap(description=f"No hay ensayos registrados{what}{where}.", gravity=gravity, **bounds), True
+            condition = _describe_condition(bounds, lang)
+            if lang == "en":
+                where = f" in {_gravity_label(gravity, lang)}" if gravity else ""
+                what = f" with {condition}" if condition else " under those conditions"
+                description = f"No trials recorded{what}{where}."
+            else:
+                where = f" en {_gravity_label(gravity, lang)}" if gravity else ""
+                what = f" con {condition}" if condition else " con esas condiciones"
+                description = f"No hay ensayos registrados{what}{where}."
+            return BriefGap(description=description, gravity=gravity, **bounds), True
 
     last = filtered[-1] if filtered else None
     missing = _missing_gravity(last)
     if last is None or missing is None:
         return None, False
     bounds, _ = _region(question, last)
-    condition = _describe_condition(bounds)
-    what = f" con {condition}" if condition else " con estas condiciones"
-    return BriefGap(description=f"No hay ensayos en {_GRAVITY_LABEL[missing]}{what}.", gravity=missing, **bounds), False
+    condition = _describe_condition(bounds, lang)
+    if lang == "en":
+        what = f" with {condition}" if condition else " under these conditions"
+        description = f"No trials in {_gravity_label(missing, lang)}{what}."
+    else:
+        what = f" con {condition}" if condition else " con estas condiciones"
+        description = f"No hay ensayos en {_gravity_label(missing, lang)}{what}."
+    return BriefGap(description=description, gravity=missing, **bounds), False
 
 
 def _region(question: str, query: dict[str, Any]) -> tuple[dict[str, float | None], str | None]:
@@ -92,31 +125,63 @@ def gap_numbers(gap: BriefGap | None) -> list[float]:
     return [v for v in values if v is not None]
 
 
+_VERDICTS: dict[Lang, dict[str, str]] = {
+    "es": {
+        "empty": "El Atlas no tiene ensayos con esas condiciones.",
+        "gap": "{finding}; lo que queda fuera de estas condiciones es el hueco.",
+        "sources": "Los informes de NASA PSI explican este tema y los fragmentos citados lo respaldan.",
+        "nothing": "El Atlas no tiene datos ni documentos que respondan a esta pregunta.",
+    },
+    "en": {
+        "empty": "The Atlas has no trials under those conditions.",
+        "gap": "{finding}; what lies outside these conditions is the gap.",
+        "sources": "NASA PSI reports explain this topic and the cited excerpts support it.",
+        "nothing": "The Atlas has no data or documents that answer this question.",
+    },
+}
+
+
 def default_verdict(
-    classification: Classification, queries: list[dict[str, Any]], has_sources: bool, empty_region: bool = False
+    classification: Classification,
+    queries: list[dict[str, Any]],
+    has_sources: bool,
+    empty_region: bool = False,
+    lang: Lang = DEFAULT_LANG,
 ) -> str:
+    texts = _VERDICTS[lang]
     if empty_region:
-        return "El Atlas no tiene ensayos con esas condiciones."
+        return texts["empty"]
     with_rows = [q for q in queries if q.get("total") is not None]
     if with_rows:
         last = with_rows[-1]
         total = last["total"]
         if total == 0:
-            return "El Atlas no tiene ensayos con esas condiciones."
-        finding = _finding(last)
+            return texts["empty"]
+        finding = _finding(last, lang)
         if classification.tipo == "huecos":
-            return f"{finding}; lo que queda fuera de estas condiciones es el hueco."
+            return texts["gap"].format(finding=finding)
         return f"{finding}."
     if has_sources:
-        return "Los informes de NASA PSI explican este tema y los fragmentos citados lo respaldan."
-    return "El Atlas no tiene datos ni documentos que respondan a esta pregunta."
+        return texts["sources"]
+    return texts["nothing"]
 
 
-def _finding(query: dict[str, Any]) -> str:
+def _noun(count: Any, lang: Lang) -> str:
+    if lang == "en":
+        return "trial" if count == 1 else "trials"
+    return "ensayo" if count == 1 else "ensayos"
+
+
+def _finding(query: dict[str, Any], lang: Lang = DEFAULT_LANG) -> str:
     """Professor-style finding with figures that are recorded cells or the recorded total."""
+    en = lang == "en"
     filters = query.get("filtros") or {}
     material = filters.get("material") if isinstance(filters.get("material"), str) else None
-    subject = f"Para {material} hay" if material else "En el Atlas hay"
+    if en:
+        subject = f"For {material}, the Atlas has" if material else "The Atlas has"
+    else:
+        subject = f"Para {material} hay" if material else "En el Atlas hay"
+    at = " in " if en else " en "
     columns = query.get("columns") or []
     rows = query.get("rows") or []
     total = query["total"]
@@ -124,38 +189,47 @@ def _finding(query: dict[str, Any]) -> str:
     if "ensayos" in columns and "gravity_environment" in columns and 0 < len(rows) <= 3:
         gi, ci = columns.index("gravity_environment"), columns.index("ensayos")
         parts = [
-            (f"{r[ci]} {'ensayo' if r[ci] == 1 else 'ensayos'} en " if i == 0 else f"{r[ci]} en ")
-            + _GRAVITY_LABEL.get(r[gi], str(r[gi]))
+            (f"{r[ci]} {_noun(r[ci], lang)}{at}" if i == 0 else f"{r[ci]}{at}")
+            + _gravity_label(str(r[gi]), lang)
             for i, r in enumerate(rows)
             if isinstance(r[ci], int) and isinstance(r[gi], str)
         ]
         if parts:
-            return f"{subject} {_join(parts)}"
+            return f"{subject} {_join(parts, lang)}"
 
     if "ensayos" in columns and rows:
         count = rows[0][columns.index("ensayos")]
         if len(rows) == 1 and isinstance(count, int):
-            return f"{subject} {count} {'ensayo' if count == 1 else 'ensayos'}"
+            return f"{subject} {count} {_noun(count, lang)}"
+        if en:
+            return f"{subject} trials in {total} groups of the data"
         return f"{subject} ensayos en {total} grupos de los datos"
 
     complete = not query.get("truncated") and len(rows) == total and "ensayos" not in columns
-    noun = "ensayo" if total == 1 else "ensayos"
-    text = f"{subject} {total} {noun}"
+    text = f"{subject} {total} {_noun(total, lang)}"
     if not complete or not rows:
         return text
     regimes = _column_values(columns, rows, "gravity_environment")
     if regimes and all(isinstance(v, str) for v in regimes):
-        text += " en " + _join([_GRAVITY_LABEL.get(v, v) for v in regimes])
+        text += at + _join([_gravity_label(v, lang) for v in regimes], lang)
     ranges = []
-    for column, name, unit in (("o2_percent", "O₂", " %"), ("pressure_kpa", "presión", " kPa")):
+    pressure = "pressure" if en else "presión"
+    for column, name, unit in (("o2_percent", "O₂", " %"), ("pressure_kpa", pressure, " kPa")):
         numbers = [v for v in _column_values(columns, rows, column, unique=False) if isinstance(v, (int, float))]
         if numbers:
             low, high = min(numbers), max(numbers)
-            ranges.append(
-                f"{name} de {_fmt(low)}{unit}" if low == high else f"{name} entre {_fmt(low)} y {_fmt(high)}{unit}"
-            )
+            if en:
+                ranges.append(
+                    f"{name} of {_fmt(low)}{unit}"
+                    if low == high
+                    else f"{name} between {_fmt(low)} and {_fmt(high)}{unit}"
+                )
+            else:
+                ranges.append(
+                    f"{name} de {_fmt(low)}{unit}" if low == high else f"{name} entre {_fmt(low)} y {_fmt(high)}{unit}"
+                )
     if ranges:
-        text += ", con " + " y ".join(ranges)
+        text += (", with " if en else ", con ") + (" and " if en else " y ").join(ranges)
     return text
 
 
@@ -169,8 +243,9 @@ def _column_values(columns: list[str], rows: list[list[Any]], name: str, unique:
     return list(dict.fromkeys(values))
 
 
-def _join(parts: list[str]) -> str:
-    return parts[0] if len(parts) == 1 else ", ".join(parts[:-1]) + " y " + parts[-1]
+def _join(parts: list[str], lang: Lang = DEFAULT_LANG) -> str:
+    last = " and " if lang == "en" else " y "
+    return parts[0] if len(parts) == 1 else ", ".join(parts[:-1]) + last + parts[-1]
 
 
 _TOKEN = re.compile(r"\w+", re.UNICODE)
@@ -187,9 +262,9 @@ def near_duplicate(first: str, second: str) -> bool:
 
 _GRAVITY_MENTIONS = (
     ("microgravity", r"microgravedad|microgravity"),
-    ("lunar", r"gravedad lunar|lunar|luna"),
-    ("martian", r"gravedad marciana|marciana|marte|martian"),
-    ("normal", r"gravedad normal|gravedad terrestre|terrestre"),
+    ("lunar", r"gravedad lunar|lunar|luna|moon"),
+    ("martian", r"gravedad marciana|marciana|marte|martian|mars"),
+    ("normal", r"gravedad normal|gravedad terrestre|terrestre|normal gravity|earth gravity|terrestrial"),
 )
 
 
@@ -200,14 +275,14 @@ def conflicts_with_gravity(text: str, gravity: str | None) -> bool:
     return bool(mentioned - {gravity})
 
 
-def default_evidence(queries: list[dict[str, Any]]) -> BriefEvidence | None:
+def default_evidence(queries: list[dict[str, Any]], lang: Lang = DEFAULT_LANG) -> BriefEvidence | None:
     """The last recorded table, copied as is."""
     tables = [q for q in queries if q.get("columns") and q.get("rows")]
     if not tables:
         return None
     last = tables[-1]
     return BriefEvidence(
-        title=EVIDENCE_TITLE,
+        title=EVIDENCE_TITLES[lang],
         columns=last["columns"],
         rows=last["rows"],
         experiment_ids=experiment_ids(last["columns"], last["rows"]),
@@ -226,35 +301,59 @@ def experiment_ids(columns: list[str], rows: list[list[Any]]) -> list[str]:
     return sorted(found)
 
 
-def default_steps(gap: BriefGap | None, has_data: bool) -> list[BriefStep]:
+def default_steps(gap: BriefGap | None, has_data: bool, lang: Lang = DEFAULT_LANG) -> list[BriefStep]:
     steps: list[BriefStep] = []
     if gap is not None or has_data:
-        steps.append(default_step("simulate", gap))
+        steps.append(default_step("simulate", gap, lang))
     if gap is not None:
-        steps.append(default_step("propose_experiment", gap))
-    steps.append(default_step("explore_map", gap))
+        steps.append(default_step("propose_experiment", gap, lang))
+    steps.append(default_step("explore_map", gap, lang))
     return steps[:MAX_STEPS]
 
 
-_STEP_LABELS = {
-    "simulate": "Simular este escenario en el laboratorio",
-    "propose_experiment": "Proponer un ensayo en esa región",
-    "explore_map": "Ver estas condiciones en el mapa",
+_STEP_LABELS: dict[Lang, dict[str, str]] = {
+    "es": {
+        "simulate": "Simular este escenario en el laboratorio",
+        "propose_experiment": "Proponer un ensayo en esa región",
+        "explore_map": "Ver estas condiciones en el mapa",
+    },
+    "en": {
+        "simulate": "Simulate this scenario in the lab",
+        "propose_experiment": "Propose a trial in that region",
+        "explore_map": "See these conditions on the map",
+    },
 }
 
 
-def default_step(kind: str, gap: BriefGap | None) -> BriefStep:
+def default_step(kind: str, gap: BriefGap | None, lang: Lang = DEFAULT_LANG) -> BriefStep:
     params: dict[str, Any] = {"pressure_kpa": None, "o2_percent": None, "gravity": None, "material": None}
     if gap is not None and kind != "explore_map":
         params["pressure_kpa"] = _first(gap.pressure_kpa_min, gap.pressure_kpa_max)
         params["o2_percent"] = _first(gap.o2_percent_min, gap.o2_percent_max)
         params["gravity"] = gap.gravity
-    return BriefStep(kind=kind, label=_STEP_LABELS[kind], **params)  # type: ignore[arg-type]
+    return BriefStep(kind=kind, label=_STEP_LABELS[lang][kind], **params)  # type: ignore[arg-type]
 
 
-def default_lenses(gap: BriefGap | None, total: int | None) -> BriefLenses:
-    scope = f" ({_records(total)})" if isinstance(total, int) and total > 0 else ""
-    where = f" en {_GRAVITY_LABEL[gap.gravity]}" if gap is not None and gap.gravity else ""
+def default_lenses(gap: BriefGap | None, total: int | None, lang: Lang = DEFAULT_LANG) -> BriefLenses:
+    scope = f" ({_records(total, lang)})" if isinstance(total, int) and total > 0 else ""
+    if lang == "en":
+        where = f" in {_gravity_label(gap.gravity, lang)}" if gap is not None and gap.gravity else ""
+        return BriefLenses(
+            student=(
+                "A flame depends on oxygen, pressure and gravity: without gravity hot air does not rise "
+                f"and the flame behaves differently. Think: what would happen{where or ' with less oxygen'}?"
+            ),
+            teacher=(
+                f"Activity: state a hypothesis about these conditions{where}. Change a single variable "
+                "(oxygen, pressure or gravity) in the simulator and watch whether the flame holds, changes shape "
+                "or goes out."
+            ),
+            researcher=(
+                f"Check the O₂ and pressure ranges in the data{scope}, the O₂ basis (atmosphere or oxidizer "
+                "stream) and the trials flagged for review, and compare them with the cited sources."
+            ),
+        )
+    where = f" en {_gravity_label(gap.gravity, lang)}" if gap is not None and gap.gravity else ""
     return BriefLenses(
         student=(
             "La llama depende del oxígeno, de la presión y de la gravedad: sin gravedad el aire caliente no sube "
@@ -273,20 +372,24 @@ def default_lenses(gap: BriefGap | None, total: int | None) -> BriefLenses:
 
 
 def build_rules_brief(
-    classification: Classification, queries: list[dict[str, Any]], has_sources: bool, question: str
+    classification: Classification,
+    queries: list[dict[str, Any]],
+    has_sources: bool,
+    question: str,
+    lang: Lang = DEFAULT_LANG,
 ) -> BriefComponent:
     queries = [q for q in queries if q.get("columns")]
-    gap, empty = compute_gap_ex(question, queries)
-    evidence = default_evidence(queries)
+    gap, empty = compute_gap_ex(question, queries, lang)
+    evidence = default_evidence(queries, lang)
     totals = [q["total"] for q in queries if isinstance(q.get("total"), int)]
     total = totals[-1] if totals else None
     return BriefComponent(
         type="brief",
-        verdict=default_verdict(classification, queries, has_sources, empty),
+        verdict=default_verdict(classification, queries, has_sources, empty, lang),
         evidence=evidence,
         gap=gap,
-        next_steps=default_steps(gap, evidence is not None),
-        lenses=default_lenses(gap, total),
+        next_steps=default_steps(gap, evidence is not None, lang),
+        lenses=default_lenses(gap, total, lang),
     )
 
 
@@ -305,14 +408,23 @@ def _match(pattern: re.Pattern[str], text: str) -> float | None:
     return float(found.group(1).replace(",", ".")) if found else None
 
 
-def _describe_condition(bounds: dict[str, float | None]) -> str:
+def _describe_condition(bounds: dict[str, float | None], lang: Lang = DEFAULT_LANG) -> str:
+    pressure = "pressure" if lang == "en" else "presión"
     parts = []
-    parts.extend(_range("O₂", " %", bounds["o2_percent_min"], bounds["o2_percent_max"]))
-    parts.extend(_range("presión", " kPa", bounds["pressure_kpa_min"], bounds["pressure_kpa_max"]))
-    return " y ".join(parts)
+    parts.extend(_range("O₂", " %", bounds["o2_percent_min"], bounds["o2_percent_max"], lang))
+    parts.extend(_range(pressure, " kPa", bounds["pressure_kpa_min"], bounds["pressure_kpa_max"], lang))
+    return (" and " if lang == "en" else " y ").join(parts)
 
 
-def _range(name: str, unit: str, low: float | None, high: float | None) -> list[str]:
+def _range(name: str, unit: str, low: float | None, high: float | None, lang: Lang = DEFAULT_LANG) -> list[str]:
+    if lang == "en":
+        if low is not None and high is not None:
+            return [f"{name} between {_fmt(low)} and {_fmt(high)}{unit}"]
+        if low is not None:
+            return [f"{name} of at least {_fmt(low)}{unit}"]
+        if high is not None:
+            return [f"{name} up to {_fmt(high)}{unit}"]
+        return []
     if low is not None and high is not None:
         return [f"{name} entre {_fmt(low)} y {_fmt(high)}{unit}"]
     if low is not None:
@@ -322,7 +434,9 @@ def _range(name: str, unit: str, low: float | None, high: float | None) -> list[
     return []
 
 
-def _records(total: int) -> str:
+def _records(total: int, lang: Lang = DEFAULT_LANG) -> str:
+    if lang == "en":
+        return "1 record" if total == 1 else f"{total} records"
     return "1 registro" if total == 1 else f"{total} registros"
 
 

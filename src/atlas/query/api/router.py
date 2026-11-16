@@ -12,6 +12,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from atlas.agents.domain.events import Event
+from atlas.agents.domain.lang import DEFAULT_LANG, Lang
 from atlas.query.application.answer import answer
 
 router = APIRouter(prefix="/query", tags=["query"])
@@ -24,28 +25,32 @@ class QueryRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     q: Question
+    # Language of the text the user reads; Spanish by default for older clients.
+    lang: Lang = DEFAULT_LANG
 
 
 @router.post("", response_class=StreamingResponse)
 async def post_query(body: QueryRequest, request: Request) -> StreamingResponse:
-    return _stream(body.q, request)
+    return _stream(body.q, request, body.lang)
 
 
 @router.get("", response_class=StreamingResponse)
 async def get_query(
     request: Request,
     q: Annotated[str, Query(min_length=1, max_length=MAX_QUESTION, pattern=r"\S")],
+    lang: Lang = DEFAULT_LANG,
 ) -> StreamingResponse:
-    return _stream(q, request)
+    return _stream(q, request, lang)
 
 
-def _stream(question: str, request: Request) -> StreamingResponse:
+def _stream(question: str, request: Request, lang: Lang = DEFAULT_LANG) -> StreamingResponse:
     state = request.app.state
     events = answer(
         question.strip(),
         state.agents,
         composer_mode=state.composer_mode,
         cache=state.query_cache,
+        lang=lang,
     )
     return StreamingResponse(
         _sse(events),

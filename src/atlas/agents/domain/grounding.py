@@ -28,6 +28,7 @@ from typing import Any
 from atlas.agents.domain import brief as brief_rules
 from atlas.agents.domain.classification import DEFAULT_CLASSIFICATION
 from atlas.agents.domain.labels import humanize_ui
+from atlas.agents.domain.lang import DEFAULT_LANG, Lang
 from atlas.agents.domain.ui import (
     BriefComponent,
     BriefEvidence,
@@ -47,6 +48,8 @@ MAX_COMPONENTS = 7
 
 NO_GAP_IDS_NOTE = "Sin experimentos concretos para resaltar."
 FALLBACK_TABLE_TITLE = "Ensayos consultados"
+_NO_GAP_IDS_NOTES: dict[Lang, str] = {"es": NO_GAP_IDS_NOTE, "en": "No specific experiments to highlight."}
+_FALLBACK_TABLE_TITLES: dict[Lang, str] = {"es": FALLBACK_TABLE_TITLE, "en": "Trials queried"}
 
 _PSI_ID = re.compile(r"\bPSI-(\d+)\b")
 _REF = re.compile(r"\[(\d+)\]")
@@ -57,7 +60,10 @@ _NUMBER = re.compile(r"(?<!\w)(?<![0-9][.,])[0-9]+(?:[.,][0-9]+)*")
 class Evidence:
     """Everything the tools logged for one question: what text may quote."""
 
-    def __init__(self, question: str, analyst: AgentResult, researcher: AgentResult) -> None:
+    def __init__(
+        self, question: str, analyst: AgentResult, researcher: AgentResult, lang: Lang = DEFAULT_LANG
+    ) -> None:
+        self.lang: Lang = lang
         self.queries = [q for q in (analyst or {}).get("consultas", []) if q.get("columns")]
         self.sources = [s for s in (researcher or {}).get("fuentes", []) if s.get("content")]
         self.refs = {s["ref"] for s in self.sources if isinstance(s.get("ref"), int)}
@@ -71,7 +77,7 @@ class Evidence:
             numbers.update(_numbers_in(source["content"]))
         numbers.update(_numbers_in(question))
         self.question = question
-        self.gap, self.gap_empty = brief_rules.compute_gap_ex(question, self.queries)
+        self.gap, self.gap_empty = brief_rules.compute_gap_ex(question, self.queries, lang)
         numbers.update(brief_rules.gap_numbers(self.gap))
         self.numbers = numbers
         self.words = {question.casefold()} | {c.casefold() for q in self.queries for c in _cells(q) if isinstance(c, str)}
@@ -140,7 +146,7 @@ def ground_ui(
 
     if not any(c.type != "notice" for c in components):
         return None, fixes
-    return humanize_ui(UIPayload(summary=summary, components=components)), fixes
+    return humanize_ui(UIPayload(summary=summary, components=components), evidence.lang), fixes
 
 
 def _ground_component(component: Any, evidence: Evidence) -> Any:
@@ -165,9 +171,9 @@ def _ground_brief(brief: BriefComponent, evidence: Evidence) -> BriefComponent:
     verdict = brief.verdict
     if not evidence.text_is_grounded(verdict):
         verdict = brief_rules.default_verdict(
-            DEFAULT_CLASSIFICATION, queries, bool(evidence.sources), evidence.gap_empty
+            DEFAULT_CLASSIFICATION, queries, bool(evidence.sources), evidence.gap_empty, evidence.lang
         )
-    defaults = brief_rules.default_lenses(gap, totals[-1] if totals else None)
+    defaults = brief_rules.default_lenses(gap, totals[-1] if totals else None, evidence.lang)
     lenses = brief.lenses.model_copy(
         update={
             name: text if evidence.text_is_grounded(text) else getattr(defaults, name)
@@ -213,7 +219,7 @@ def _ground_brief_gap(gap: BriefGap | None, evidence: Evidence) -> BriefGap | No
 
 
 def _ground_step(step: BriefStep, gap: BriefGap | None, evidence: Evidence) -> BriefStep:
-    base = brief_rules.default_step(step.kind, gap)
+    base = brief_rules.default_step(step.kind, gap, evidence.lang)
     label = step.label if evidence.text_is_grounded(step.label) else base.label
     figures = {
         "pressure_kpa": step.pressure_kpa if evidence.knows_number(step.pressure_kpa) else None,
@@ -225,7 +231,7 @@ def _ground_step(step: BriefStep, gap: BriefGap | None, evidence: Evidence) -> B
 
 def _ground_table(table: TableComponent, evidence: Evidence) -> TableComponent | None:
     if not evidence.text_is_grounded(table.title):
-        table = table.model_copy(update={"title": FALLBACK_TABLE_TITLE})
+        table = table.model_copy(update={"title": _FALLBACK_TABLE_TITLES[evidence.lang]})
     same_columns = [q for q in evidence.queries if q["columns"] == table.columns]
     for query in same_columns:
         logged = [list(row) for row in query.get("rows", [])]
@@ -257,7 +263,7 @@ def _ground_gap_map(gap_map: GapMapComponent, evidence: Evidence) -> GapMapCompo
     if not ids and gap_map.experiment_ids:
         ids = evidence.table_ids()
     if not ids:
-        note = note or NO_GAP_IDS_NOTE
+        note = note or _NO_GAP_IDS_NOTES[evidence.lang]
     if ids == gap_map.experiment_ids and note == gap_map.note:
         return gap_map
     return gap_map.model_copy(update={"experiment_ids": ids, "note": note})

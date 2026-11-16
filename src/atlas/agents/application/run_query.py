@@ -28,6 +28,7 @@ from atlas.agents.domain.events import (
     with_brief_version,
 )
 from atlas.agents.domain.grounding import AgentResult, Evidence, ground_ui
+from atlas.agents.domain.lang import DEFAULT_LANG, Lang, for_agents
 from atlas.agents.domain.ui import UIPayload
 from atlas.agents.domain.brief import build_rules_brief
 from atlas.agents.domain.ui_rules import build_rules_ui, rules_summary
@@ -64,8 +65,10 @@ async def run_query(
     *,
     composer_mode: ComposerMode = "agent",
     timeouts: Timeouts = Timeouts(),
+    lang: Lang = DEFAULT_LANG,
 ) -> AsyncIterator[Event]:
     started = time.monotonic()
+    agent_question = for_agents(question, lang)
 
     yield status(STEP_CLASSIFYING)
     classification = await _classify(agents, question, timeouts.classifier)
@@ -75,16 +78,18 @@ async def run_query(
     if classification.necesita_fuentes:
         yield status(STEP_RESEARCHER)
     analyst, researcher = await asyncio.gather(
-        _guarded("analista", lambda: agents.analyst(question, classification), timeouts.agent)
+        _guarded("analista", lambda: agents.analyst(agent_question, classification), timeouts.agent)
         if classification.necesita_datos
         else _skipped(),
-        _guarded("investigador", lambda: agents.researcher(question, classification), timeouts.agent)
+        _guarded("investigador", lambda: agents.researcher(agent_question, classification), timeouts.agent)
         if classification.necesita_fuentes
         else _skipped(),
     )
 
     yield status(STEP_COMPOSER)
-    ui, composed_by = await _compose(agents, question, classification, analyst, researcher, composer_mode, timeouts)
+    ui, composed_by = await _compose(
+        agents, question, classification, analyst, researcher, composer_mode, timeouts, lang
+    )
 
     failed = any(result and result.get("error") for result in (analyst, researcher))
     yield Event(
@@ -125,9 +130,10 @@ async def _compose(
     researcher: AgentResult,
     mode: ComposerMode,
     timeouts: Timeouts,
+    lang: Lang = DEFAULT_LANG,
 ) -> tuple[UIPayload, Literal["agent", "rules"]]:
     if mode == "agent":
-        base_prompt = build_composer_prompt(question, classification, analyst, researcher)
+        base_prompt = build_composer_prompt(question, classification, analyst, researcher, lang)
         prompt = base_prompt
         for attempt in (1, 2):
             try:
@@ -144,19 +150,36 @@ async def _compose(
                     f"{str(exc)[:VALIDATION_ERROR_LIMIT]}\n\nCorrige esos campos y devuelve el objeto completo."
                 )
                 continue
-            evidence = Evidence(question, analyst, researcher)
-            fallback_brief = build_rules_brief(classification, evidence.queries, bool(evidence.sources), question)
-            grounded, fixes = ground_ui(ui, evidence, rules_summary(classification), fallback_brief)
+            evidence = Evidence(question, analyst, researcher, lang)
+            fallback_brief = build_rules_brief(
+                classification, evidence.queries, bool(evidence.sources), question, lang
+            )
+            grounded, fixes = ground_ui(ui, evidence, rules_summary(classification, lang), fallback_brief)
             if fixes:
                 log.warning("composer output not grounded in the tools' data: %s", ", ".join(fixes))
             if grounded is None:
                 break
             return grounded, "agent"
-    return build_rules_ui(classification, analyst, researcher, question), "rules"
+    return build_rules_ui(classification, analyst, researcher, question, lang), "rules"
+
+
+# The composer prompt is written in Spanish; this section switches the language of every text the user reads.
+_ENGLISH_SECTION = (
+    "## Idioma de la respuesta\n\n"
+    "Inglés. Escribe en inglés natural todo el texto que lee el usuario: `summary`, `verdict`, "
+    "`gap.description`, `label`, `lenses`, `text`, `notice`, títulos y `note`. Esta indicación tiene "
+    "prioridad sobre cualquier «en español» de tus instrucciones. Usa términos llanos en inglés "
+    '("ambient", "partial burn", "oxidizer stream", "microgravity", "no ignition"). Las tablas, las citas '
+    "literales y los ids se copian tal cual, sin traducir."
+)
 
 
 def build_composer_prompt(
-    question: str, classification: Classification, analyst: AgentResult, researcher: AgentResult
+    question: str,
+    classification: Classification,
+    analyst: AgentResult,
+    researcher: AgentResult,
+    lang: Lang = DEFAULT_LANG,
 ) -> str:
     # Neutral names: the composer writes for the user and must not learn who produced what.
     sections = [
@@ -165,6 +188,8 @@ def build_composer_prompt(
         f"## Datos de ensayos\n\n{_json(_neutral(_trim_analyst(analyst)))}",
         f"## Fragmentos de informes\n\n{_json(_neutral(_trim_researcher(researcher)))}",
     ]
+    if lang == "en":
+        sections.append(_ENGLISH_SECTION)
     return "\n\n".join(sections)
 
 

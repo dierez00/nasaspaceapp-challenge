@@ -7,6 +7,7 @@ from typing import Any
 
 from atlas.agents.domain.classification import Classification, classify_by_keywords
 from atlas.agents.domain.ensayos import FiltroEnsayos, consultar
+from atlas.agents.domain.lang import asks_english
 from atlas.agents.infrastructure.experiment_source import load_from_files
 from atlas.experiments.domain.experiment import Experiment
 
@@ -28,7 +29,11 @@ class MockAgents:
         filtro = FiltroEnsayos(agrupar_por=["experiment_id", "gravity_environment", "outcome"])
         result = consultar(self._experiments, filtro)
         return {
-            "respuesta": f"El Atlas registra {result['total']} grupos de ensayos.",
+            "respuesta": (
+                f"The Atlas records {result['total']} groups of trials."
+                if asks_english(question)
+                else f"El Atlas registra {result['total']} grupos de ensayos."
+            ),
             "consultas": [{"filtros": filtro.model_dump(mode="json", exclude_defaults=True), **result}],
         }
 
@@ -45,7 +50,12 @@ class MockAgents:
             }
             for index, e in enumerate(self._experiments[:_MAX_SOURCES], start=1)
         ]
-        return {"respuesta": "Los resúmenes de los experimentos describen estas condiciones.", "fuentes": sources}
+        answer = (
+            "The experiment summaries describe these conditions."
+            if asks_english(question)
+            else "Los resúmenes de los experimentos describen estas condiciones."
+        )
+        return {"respuesta": answer, "fuentes": sources}
 
     async def composer(self, prompt: str) -> Any:
         raise NotImplementedError("AGENTS_MOCK always uses the rules composer")

@@ -20,9 +20,19 @@ class Classification(BaseModel):
 DEFAULT_CLASSIFICATION = Classification(tipo="general", necesita_datos=True, necesita_fuentes=True)
 
 _KEYWORDS: list[tuple[QueryKind, re.Pattern[str]]] = [
-    ("huecos", re.compile(r"\b(hueco|huecos|vac[ií]o|gap|gaps|sin probar|no probad|nadie ha)", re.I)),
-    ("comparar", re.compile(r"\b(compar|versus|vs\.?|diferencia|mejor|peor)", re.I)),
-    ("evidencia", re.compile(r"\b(evidencia|fuente|cita|informe|reporte|seg[uú]n|por qu[eé]|explica)", re.I)),
+    (
+        "huecos",
+        re.compile(r"\b(hueco|huecos|vac[ií]o|gap|gaps|sin probar|no probad|nadie ha|untested|unexplored)", re.I),
+    ),
+    ("comparar", re.compile(r"\b(compar|versus|vs\.?|diferencia|mejor|peor|differ|better|worse)", re.I)),
+    (
+        "evidencia",
+        re.compile(
+            r"\b(evidencia|fuente|cita|informe|reporte|seg[uú]n|por qu[eé]|explica"
+            r"|evidence|source|cite|report|according|why|explain)",
+            re.I,
+        ),
+    ),
 ]
 
 

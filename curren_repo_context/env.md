@@ -22,7 +22,7 @@ Se leen en `src/atlas/shared/config.py` (`Settings`, desde `.env` o el entorno; 
 | `AZURE_OPENAI_DEPLOYMENT` | — | Con `azure_openai`: despliegue del clasificador y los agentes; sustituye a `CLASSIFIER_MODEL` / `AGENT_MODEL` mientras conserven los valores de Claude |
 | `AZURE_OPENAI_ENDPOINT` | — | Alternativa a la URL base: URL del recurso, `https://<recurso>.openai.azure.com`; exige `AZURE_OPENAI_API_VERSION` |
 | `AZURE_OPENAI_API_VERSION` | — | Alternativa a la URL base: versión de la API de Azure OpenAI, sin valor por defecto |
-| `AZURE_OPENAI_REASONING_EFFORT` | — | `low`, `medium` o `high`; solo se envía si se define, y solo lo aceptan los despliegues de razonamiento |
+| `AZURE_OPENAI_REASONING_EFFORT` | — | `low`, `medium` o `high`; solo se envía si se define y solo en llamadas sin herramientas (las que usan herramientas mandan `none`); solo lo aceptan los despliegues de razonamiento |
 | `CLASSIFIER_MODEL` | `claude-haiku-5-5` | Modelo del clasificador; con `azure_openai`, nombre del despliegue (opcional si defines `AZURE_OPENAI_DEPLOYMENT`) |
 | `AGENT_MODEL` | `claude-opus-5-5` | Modelo del analista, el investigador y el compositor; con `azure_openai`, nombre del despliegue (opcional si defines `AZURE_OPENAI_DEPLOYMENT`) |
 | `AGENT_EFFORT` | `low` | `low`, `medium` o `high`, para todos los agentes (solo Claude) |

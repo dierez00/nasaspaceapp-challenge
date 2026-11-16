@@ -88,7 +88,7 @@ def test_analyst_tool_round_trip_logs_queries(monkeypatch):
     assert first["model"] == "gpt-deployment"
     assert first["messages"][0]["role"] == "system" and first["messages"][1]["role"] == "user"
     assert first["tools"][0]["function"]["name"] == "consultar_ensayos"
-    assert "response_format" not in first and "reasoning_effort" not in first
+    assert "response_format" not in first and first["reasoning_effort"] == "none"
     assistant, tool = second["messages"][2:]
     assert assistant["tool_calls"][0]["id"] == "call_1"
     assert tool["role"] == "tool" and tool["tool_call_id"] == "call_1"

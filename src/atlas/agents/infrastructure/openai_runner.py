@@ -11,6 +11,7 @@ from atlas.agents.infrastructure.agent_run import AgentRun, AgentRunError
 from atlas.agents.infrastructure.tool_spec import ToolSpec
 from atlas.shared.config import Settings
 
+TOOLS_REASONING_EFFORT = "none"
 
 class ChatAgentRunner(Protocol):
     async def __call__(
@@ -67,8 +68,11 @@ async def run_chat_agent(
             "type": "json_schema",
             "json_schema": {"name": name, "schema": schema, "strict": False},
         }
-    if reasoning_effort is not None:
-        request["reasoning_effort"] = reasoning_effort
+    # Reasoning deployments (gpt-6.1-sol) reason by default and reject function tools in
+    # Chat Completions unless reasoning_effort is explicitly "none".
+    effort = TOOLS_REASONING_EFFORT if tools else reasoning_effort
+    if effort is not None:
+        request["reasoning_effort"] = effort
     by_name = {spec.name: spec for spec in tools}
 
     for _ in range(max_turns):

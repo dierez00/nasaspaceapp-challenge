@@ -8,13 +8,15 @@ import type { UIBlock } from "../domain/contracts";
 import { EvidenceBrief } from "./evidence-brief";
 import { EvidenceTable } from "./evidence-table";
 import { Prose } from "./prose";
+import { useT } from "@/shared/i18n/locale";
 import "./copilot.css";
 
 export function SourceList({ sources }: { sources: Source[] }) {
+  const t = useT();
   return (
     <details className="source-list">
       <summary>
-        <span>Fuentes</span>
+        <span>{t("Sources", "Fuentes")}</span>
         <span>{sources.length} ↗</span>
       </summary>
       {sources.length ? (
@@ -22,20 +24,44 @@ export function SourceList({ sources }: { sources: Source[] }) {
           <article key={index}>
             <span className="source-kind">
               {source.code} ·{" "}
-              {source.demo ? "Referencia demostrativa" : "Fuente"}
+              {source.demo
+                ? t("Demonstration reference", "Referencia demostrativa")
+                : t("Source", "Fuente")}
             </span>
-            <strong>{source.document}</strong>
-            <small>{source.section}</small>
-            <p>{source.excerpt}</p>
+            {source.demo ? (
+              <>
+                <strong>
+                  {t("Atlas illustrative sheet", "Ficha ilustrativa del Atlas")}
+                </strong>
+                <small>{t("Test conditions", "Condiciones de prueba")}</small>
+                <p>
+                  {t(
+                    "Synthetic data for exploring the interface. It does not represent a NASA PSI trial or a combustion prediction.",
+                    "Datos sintéticos para explorar la interfaz. No representan un ensayo NASA PSI ni una predicción de combustión.",
+                  )}
+                </p>
+              </>
+            ) : (
+              <>
+                <strong>{source.document}</strong>
+                <small>{source.section}</small>
+                <p>{source.excerpt}</p>
+              </>
+            )}
             {source.url && /^https?:\/\//.test(source.url) && (
               <a href={source.url} target="_blank" rel="noreferrer">
-                Abrir documento ↗
+                {t("Open document", "Abrir documento")} ↗
               </a>
             )}
           </article>
         ))
       ) : (
-        <p>No hay fuentes disponibles para este bloque.</p>
+        <p>
+          {t(
+            "No sources available for this block.",
+            "No hay fuentes disponibles para este bloque.",
+          )}
+        </p>
       )}
     </details>
   );
@@ -43,13 +69,14 @@ export function SourceList({ sources }: { sources: Source[] }) {
 export function GravityBounds({ explanation }: { explanation: string }) {
   const { edit } = useSimulation();
   const { dispatch } = useAtlas();
+  const t = useT();
   return (
     <article className="immersive-card">
       <div className="card-kicker">
-        <span>Tres gravedades</span>
+        <span>{t("Three gravities", "Tres gravedades")}</span>
         <span>↗</span>
       </div>
-      <h3>Entra en la cámara.</h3>
+      <h3>{t("Step into the chamber.", "Entra en la cámara.")}</h3>
       <div className="immersive-orbit" aria-hidden="true">
         <span>µg</span>
         <i />
@@ -68,7 +95,7 @@ export function GravityBounds({ explanation }: { explanation: string }) {
               dispatch({ type: "tab", tab: "camera" });
             }}
           >
-            Explorar {gravityLabels[gravity]}
+            {t("Explore", "Explorar")} {gravityLabels[gravity]}
           </button>
         ))}
       </div>
@@ -81,6 +108,7 @@ function MapFocus({
   block: Extract<UIBlock, { type: "MapFocus" }>;
 }) {
   const { dispatch, highlightExperiments } = useAtlas();
+  const t = useT();
   return (
     <article className="generative-card map-focus">
       <h3>{block.title}</h3>
@@ -98,7 +126,7 @@ function MapFocus({
           else dispatch({ type: "view", view: "map" });
         }}
       >
-        Ver en el mapa
+        {t("Show on the map", "Ver en el mapa")}
       </button>
     </article>
   );
@@ -106,6 +134,7 @@ function MapFocus({
 export function BlockRenderer({ block }: { block: UIBlock }) {
   const { experiments, state } = useAtlas();
   const { load } = useSimulation();
+  const t = useT();
   if (block.type === "EvidenceBrief") return <EvidenceBrief block={block} />;
   if (block.type === "DataTable")
     return (
@@ -123,7 +152,9 @@ export function BlockRenderer({ block }: { block: UIBlock }) {
     return (
       <aside className={`notice-card is-${block.level}`}>
         <span className="label">
-          {block.level === "warning" ? "Ten en cuenta" : "Nota"}
+          {block.level === "warning"
+            ? t("Keep in mind", "Ten en cuenta")
+            : t("Note", "Nota")}
         </span>
         <p>{block.message}</p>
       </aside>
@@ -146,7 +177,10 @@ export function BlockRenderer({ block }: { block: UIBlock }) {
     if (!experiment)
       return (
         <article className="generative-card">
-          El ensayo solicitado no está disponible en este catálogo.
+          {t(
+            "The requested trial is not available in this catalog.",
+            "El ensayo solicitado no está disponible en este catálogo.",
+          )}
         </article>
       );
     return (
@@ -160,7 +194,9 @@ export function BlockRenderer({ block }: { block: UIBlock }) {
           <div className="card-kicker">
             <span>{experiment.id}</span>
             <span>
-              {experiment.provenance === "demo" ? "Demo" : "Verificado"}
+              {experiment.provenance === "demo"
+                ? "Demo"
+                : t("Verified", "Verificado")}
             </span>
           </div>
           <h3>{experiment.material}</h3>
@@ -170,15 +206,16 @@ export function BlockRenderer({ block }: { block: UIBlock }) {
             <span>{gravityLabels[experiment.gravity]}</span>
           </div>
           <p>
-            Propagación{" "}
+            {t("Spread rate", "Propagación")}{" "}
             <strong>
               {experiment.spreadRate === null
-                ? "Desconocida"
+                ? t("Unknown", "Desconocida")
                 : `${experiment.spreadRate} mm/s`}
             </strong>
           </p>
           <button className="focus-button" onClick={() => load([experiment])}>
-            ⊕ Abrir en laboratorio 3D <span>↗</span>
+            ⊕ {t("Open in the 3D lab", "Abrir en laboratorio 3D")}{" "}
+            <span>↗</span>
           </button>
         </div>
       </article>
@@ -190,10 +227,10 @@ export function BlockRenderer({ block }: { block: UIBlock }) {
   return (
     <article className="immersive-card">
       <div className="card-kicker">
-        <span>Comparación</span>
+        <span>{t("Comparison", "Comparación")}</span>
         <span>A / B</span>
       </div>
-      <h3>Dos llamas. Un mismo instante.</h3>
+      <h3>{t("Two flames. One instant.", "Dos llamas. Un mismo instante.")}</h3>
       <p>
         {samples
           .slice(0, 2)
@@ -204,20 +241,32 @@ export function BlockRenderer({ block }: { block: UIBlock }) {
           .join(" / ")}
       </p>
       <p>
-        Compara forma, propagación y extinción con controles independientes y
-        reproducción sincronizada.
+        {t(
+          "Compare shape, spread and extinction with independent controls and synchronized playback.",
+          "Compara forma, propagación y extinción con controles independientes y reproducción sincronizada.",
+        )}
       </p>
       <button
         disabled={samples.length < 2}
         onClick={() => load(samples.slice(0, 2))}
       >
-        Abrir comparación 3D <span>↗</span>
+        {t("Open 3D comparison", "Abrir comparación 3D")} <span>↗</span>
       </button>
       {samples.length < 2 && (
-        <p>No hay dos muestras disponibles en el catálogo.</p>
+        <p>
+          {t(
+            "There aren't two samples available in the catalog.",
+            "No hay dos muestras disponibles en el catálogo.",
+          )}
+        </p>
       )}
       {samples.length > 2 && (
-        <p>Se abrirán las primeras dos muestras disponibles.</p>
+        <p>
+          {t(
+            "The first two available samples will open.",
+            "Se abrirán las primeras dos muestras disponibles.",
+          )}
+        </p>
       )}
     </article>
   );

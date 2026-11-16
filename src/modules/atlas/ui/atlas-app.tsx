@@ -12,10 +12,12 @@ import { SimulationProvider } from "@/modules/simulation/application/simulation-
 import { Laboratory } from "@/modules/simulation/ui/laboratory";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { setAudience, useAudience } from "@/modules/copilot/ui/audience-store";
-import { audiences, audienceLabels } from "@/modules/copilot/domain/brief";
+import { audiences, audienceLabel } from "@/modules/copilot/domain/brief";
 import { useSimulation } from "@/modules/simulation/application/simulation-provider";
 import "./observatory.css";
 import { useExperience } from "@/shared/experience/experience-context";
+import { useLocale, useT } from "@/shared/i18n/locale";
+import { LanguageToggle } from "@/shared/i18n/language-toggle";
 
 function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
   const { state, dispatch } = useAtlas();
@@ -24,6 +26,8 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
   const { state: simulation } = useSimulation();
   const scenario = simulation.scenarios.A;
   const experience = useExperience();
+  const t = useT();
+  const locale = useLocale();
   return (
     <main
       className="atlas-app"
@@ -34,7 +38,10 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
         <Link
           className="atlas-brand"
           href="/"
-          aria-label="Atlas del fuego lunar, inicio"
+          aria-label={t(
+            "Lunar Fire Atlas, home",
+            "Atlas del fuego lunar, inicio",
+          )}
           onClick={(event) => {
             // Home is the cabin: reverse the immersion instead of reloading the route.
             if (!experience) return;
@@ -43,29 +50,30 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
           }}
         >
           <AtlasMark className="brand-mark" />
-          <span>Atlas del fuego lunar</span>
+          <span>{t("Lunar Fire Atlas", "Atlas del fuego lunar")}</span>
         </Link>
         <div
           className="workspace-tabs"
           role="tablist"
-          aria-label="Vista de exploración"
+          aria-label={t("Exploration view", "Vista de exploración")}
         >
           <button
             role="tab"
             aria-selected={state.view === "lab"}
             onClick={() => dispatch({ type: "view", view: "lab" })}
           >
-            Laboratorio
+            {t("Laboratory", "Laboratorio")}
           </button>
           <button
             role="tab"
             aria-selected={state.view === "map"}
             onClick={() => dispatch({ type: "view", view: "map" })}
           >
-            Mapa de evidencias
+            {t("Evidence map", "Mapa de evidencias")}
           </button>
         </div>
         <div className="topbar-end">
+          <LanguageToggle />
           {experience && (
             <button
               type="button"
@@ -82,27 +90,38 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
                   strokeLinejoin="round"
                 />
               </svg>
-              Volver a la cabina
+              {t("Back to the cabin", "Volver a la cabina")}
             </button>
           )}
           <span
             className="demo-indicator"
             title={
               mode === "demo"
-                ? "Los ensayos y respuestas son datos de demostración"
-                : "Ensayos cargados desde el catálogo remoto"
+                ? t(
+                    "Trials and answers are demo data",
+                    "Los ensayos y respuestas son datos de demostración",
+                  )
+                : t(
+                    "Trials loaded from the remote catalog",
+                    "Ensayos cargados desde el catálogo remoto",
+                  )
             }
           >
             <i />
-            {mode === "demo" ? "Modo demostración" : "Datos remotos"}
+            {mode === "demo"
+              ? t("Demo mode", "Modo demostración")
+              : t("Remote data", "Datos remotos")}
           </span>
         </div>
       </nav>
       <div className="workspace-context">
         <label className="workspace-lens">
-          Perspectiva
+          {t("Perspective", "Perspectiva")}
           <select
-            aria-label="Perspectiva de exploración"
+            aria-label={t(
+              "Exploration perspective",
+              "Perspectiva de exploración",
+            )}
             value={audience}
             onChange={(event) =>
               setAudience(event.target.value as typeof audience)
@@ -110,7 +129,7 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
           >
             {audiences.map((value) => (
               <option key={value} value={value}>
-                {audienceLabels[value]}
+                {audienceLabel(value, locale)}
               </option>
             ))}
           </select>
@@ -125,7 +144,10 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
               </span>
             </>
           ) : (
-            "Selecciona un ensayo para contrastar sus condiciones y fuentes."
+            t(
+              "Select a trial to compare its conditions and sources.",
+              "Selecciona un ensayo para contrastar sus condiciones y fuentes.",
+            )
           )}
         </p>
         <button
@@ -137,25 +159,26 @@ function AtlasLayout({ mode }: { mode: "demo" | "remote" }) {
             dispatch({ type: "assistant", open: !state.assistantOpen })
           }
         >
-          <AtlasMark monochrome /> Evidencia y asistente
+          <AtlasMark monochrome />{" "}
+          {t("Assistant AI", "Evidencia y asistente")}
         </button>
       </div>
-      <div className="mobile-tabs" role="group" aria-label="Panel visible">
+      <div className="mobile-tabs" role="group" aria-label={t("Visible panel", "Panel visible")}>
         <button
           aria-pressed={state.tab === "camera"}
           onClick={() => dispatch({ type: "tab", tab: "camera" })}
         >
-          Instrumento
+          {t("Instrument", "Instrumento")}
         </button>
         <button
           id="mobile-evidence-toggle"
-          aria-label="Evidencia y asistente"
+          aria-label={t("Assistant AI", "Evidencia y asistente")}
           aria-expanded={state.assistantOpen}
           aria-controls="contextual-evidence"
           aria-pressed={state.tab === "copilot"}
           onClick={() => dispatch({ type: "tab", tab: "copilot" })}
         >
-          Evidencia y asistente
+          {t("Assistant AI", "Evidencia y asistente")}
         </button>
       </div>
       <div className="atlas-split">
@@ -195,7 +218,8 @@ export function AtlasApp({
   mode: "demo" | "remote";
 }) {
   const [experiments, setExperiments] = useState(initialExperiments);
-  const [error, setError] = useState("");
+  const t = useT();
+  const [error, setError] = useState<"" | "network" | "load">("");
   const [loading, setLoading] = useState(mode === "remote");
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
@@ -206,13 +230,7 @@ export function AtlasApp({
       .then(setExperiments)
       .catch((error) => {
         if (controller.signal.aborted) return;
-        setError(
-          error instanceof TypeError
-            ? "Sin conexión con el catálogo remoto. Revisa tu red."
-            : error instanceof Error
-              ? error.message
-              : "No fue posible cargar los experimentos.",
-        );
+        setError(error instanceof TypeError ? "network" : "load");
       })
       .finally(() => {
         if (!controller.signal.aborted) setLoading(false);
@@ -226,12 +244,20 @@ export function AtlasApp({
       </SimulationProvider>
       {loading && (
         <div className="atlas-load-notice" role="status">
-          Cargando catálogo remoto…
+          {t("Loading remote catalog…", "Cargando catálogo remoto…")}
         </div>
       )}
       {error && (
         <div className="atlas-load-notice" role="alert">
-          {error}
+          {error === "network"
+            ? t(
+                "No connection to the remote catalog. Check your network.",
+                "Sin conexión con el catálogo remoto. Revisa tu red.",
+              )
+            : t(
+                "Could not load the experiments.",
+                "No fue posible cargar los experimentos.",
+              )}
           <button
             onClick={() => {
               setError("");
@@ -239,7 +265,7 @@ export function AtlasApp({
               setAttempt((value) => value + 1);
             }}
           >
-            Reintentar
+            {t("Retry", "Reintentar")}
           </button>
         </div>
       )}

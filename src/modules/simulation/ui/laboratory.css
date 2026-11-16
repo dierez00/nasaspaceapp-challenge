@@ -492,6 +492,13 @@
   display: flex;
   pointer-events: none;
 }
+/* Dragging to orbit the flame must not select text on the page. */
+.lab-window,
+.lab-window * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
 .scene-view {
   flex: 1;
   min-width: 0;

@@ -16,10 +16,14 @@ import { useAudience } from "@/modules/copilot/ui/audience-store";
 import { catalogCsv, filterCatalog } from "../domain/catalog";
 import { Flame } from "./flame";
 import { useSimulation } from "@/modules/simulation/application/simulation-provider";
+import { useLocale, useT } from "@/shared/i18n/locale";
+import { materialName } from "@/shared/i18n/materials";
 
 export function AtlasMap() {
   const { state, dispatch, experiments, clearOverlays } = useAtlas();
   const audience = useAudience();
+  const t = useT();
+  const locale = useLocale();
   const [filters, setFilters] = useState({
     material: "",
     oxygenMin: 18,
@@ -71,7 +75,9 @@ export function AtlasMap() {
   } | null>(null);
   const [overlap, setOverlap] = useState<Experiment[]>([]);
   const [manual, setManual] = useState({ pressure: "8.2", oxygen: "34" });
-  const [manualError, setManualError] = useState("");
+  const [manualError, setManualError] = useState<
+    "" | "invalid" | "out-of-zone"
+  >("");
   const [mapNotice, setMapNotice] = useState("");
   useEffect(() => {
     if (!mapNotice) return;
@@ -112,7 +118,7 @@ export function AtlasMap() {
       query: {
         version: 1,
         queryId: crypto.randomUUID(),
-        text: `¿Qué pasaría si encendemos aquí en 1/6g? ${point.pressure.toFixed(1)} psi, ${point.oxygen.toFixed(1)}% O₂`,
+        text: `${t("What would happen if we ignite here at 1/6g?", "¿Qué pasaría si encendemos aquí en 1/6g?")} ${point.pressure.toFixed(1)} psi, ${point.oxygen.toFixed(1)}% O₂`,
         context: { ...point, gravity: "lunar" },
       },
     });
@@ -132,41 +138,52 @@ export function AtlasMap() {
   return (
     <section
       className="camera-panel dark-instrument"
-      aria-label="Cámara del Atlas"
+      aria-label={t("Atlas camera", "Cámara del Atlas")}
     >
       <header className="camera-heading">
         <div>
-          <h2>Mapa de evidencias</h2>
+          <h2>{t("Evidence map", "Mapa de evidencias")}</h2>
           <p>
-            Cada llama es un ensayo real o de demostración. Toca una zona vacía
-            para preguntar qué pasaría allí.
+            {t(
+              "Each flame is a real or demo trial. Tap an empty area to ask what would happen there.",
+              "Cada llama es un ensayo real o de demostración. Toca una zona vacía para preguntar qué pasaría allí.",
+            )}
           </p>
         </div>
         <span className="map-count">
           <i className="status-dot" />
-          {displayed.length} / {experiments.length} ensayos ·{" "}
+          {displayed.length} / {experiments.length} {t("trials", "ensayos")} ·{" "}
           {experiments.some((e) => e.provenance === "verified")
             ? "NASA PSI"
             : "demo"}
         </span>
       </header>
       <details className="catalog-filters" open={audience === "researcher"}>
-        <summary>Filtros y exportación del catálogo</summary>
+        <summary>
+          {t(
+            "Catalog filters and export",
+            "Filtros y exportación del catálogo",
+          )}
+        </summary>
         <div className="catalog-filter-fields">
           <label>
             Material
             <select
-              aria-label="Filtrar material"
+              aria-label={t("Filter material", "Filtrar material")}
               value={filters.material}
               onChange={(event) =>
                 setFilters({ ...filters, material: event.target.value })
               }
             >
-              <option value="">Todos los materiales</option>
+              <option value="">
+                {t("All materials", "Todos los materiales")}
+              </option>
               {[...new Set(experiments.map((trial) => trial.material))]
                 .sort()
                 .map((material) => (
-                  <option key={material}>{material}</option>
+                  <option key={material} value={material}>
+                    {materialName(material, locale)}
+                  </option>
                 ))}
             </select>
           </label>
@@ -174,28 +191,28 @@ export function AtlasMap() {
             [
               {
                 key: "pressureMin",
-                label: "Presión mínima",
+                label: t("Minimum pressure", "Presión mínima"),
                 unit: "psi",
                 min: 0,
                 max: 16,
               },
               {
                 key: "pressureMax",
-                label: "Presión máxima",
+                label: t("Maximum pressure", "Presión máxima"),
                 unit: "psi",
                 min: 0,
                 max: 16,
               },
               {
                 key: "oxygenMin",
-                label: "Oxígeno mínimo",
+                label: t("Minimum oxygen", "Oxígeno mínimo"),
                 unit: "%",
                 min: 18,
                 max: 50,
               },
               {
                 key: "oxygenMax",
-                label: "Oxígeno máximo",
+                label: t("Maximum oxygen", "Oxígeno máximo"),
                 unit: "%",
                 min: 18,
                 max: 50,
@@ -221,7 +238,12 @@ export function AtlasMap() {
           ))}
         </div>
         {filterError && (
-          <p role="alert">El mínimo no puede superar al máximo.</p>
+          <p role="alert">
+            {t(
+              "The minimum cannot exceed the maximum.",
+              "El mínimo no puede superar al máximo.",
+            )}
+          </p>
         )}
         <div className="catalog-actions">
           <button
@@ -239,7 +261,10 @@ export function AtlasMap() {
               URL.revokeObjectURL(url);
             }}
           >
-            Exportar {filtered.length} ensayos CSV
+            {t(
+              `Export ${filtered.length} trials as CSV`,
+              `Exportar ${filtered.length} ensayos CSV`,
+            )}
           </button>
           <button
             onClick={() => {
@@ -253,11 +278,13 @@ export function AtlasMap() {
               dispatch({ type: "gravity", gravity: "all" });
             }}
           >
-            Restablecer filtros
+            {t("Reset filters", "Restablecer filtros")}
           </button>
           <span role="status">
-            {filtered.length} ensayos en tus filtros · la exportación conserva
-            procedencia y fuentes.
+            {t(
+              `${filtered.length} trials match your filters · the export keeps provenance and sources.`,
+              `${filtered.length} ensayos en tus filtros · la exportación conserva procedencia y fuentes.`,
+            )}
           </span>
         </div>
       </details>
@@ -265,18 +292,18 @@ export function AtlasMap() {
         <div
           className="overlay-banner"
           role="group"
-          aria-label="Resaltado de la ficha"
+          aria-label={t("Brief highlight", "Resaltado de la ficha")}
         >
           <p id="overlay-banner-text" role="status">
             {highlight.length > 0 &&
-              `${matchedCount} ${matchedCount === 1 ? "ensayo resaltado" : "ensayos resaltados"}`}
+              `${matchedCount} ${matchedCount === 1 ? t("trial highlighted", "ensayo resaltado") : t("trials highlighted", "ensayos resaltados")}`}
             {hiddenMatches > 0 &&
-              ` · ${hiddenMatches} ensayos de la ficha ocultos por tus filtros`}
+              ` · ${hiddenMatches} ${t("brief trials hidden by your filters", "ensayos de la ficha ocultos por tus filtros")}`}
             {outsideFilters > 0 &&
-              ` · ${outsideFilters} ensayos de la ficha fuera de tus filtros; el CSV conserva los filtros`}
+              ` · ${outsideFilters} ${t("brief trials outside your filters; the CSV keeps the filters", "ensayos de la ficha fuera de tus filtros; el CSV conserva los filtros")}`}
             {highlight.length > 0 && gap && " · "}
             {gap &&
-              `${gap.label}${gap.region ? "" : ": sin ensayos en este régimen"}`}
+              `${gap.label}${gap.region ? "" : t(": no trials in this regime", ": sin ensayos en este régimen")}`}
           </p>
           {(hiddenMatches > 0 || revealingEvidence) && (
             <button
@@ -288,8 +315,8 @@ export function AtlasMap() {
               }
             >
               {revealingEvidence
-                ? "Volver a mis filtros"
-                : "Mostrar ensayos ocultos"}
+                ? t("Back to my filters", "Volver a mis filtros")
+                : t("Show hidden trials", "Mostrar ensayos ocultos")}
             </button>
           )}
           <button
@@ -301,7 +328,7 @@ export function AtlasMap() {
               clearOverlays();
             }}
           >
-            Quitar resaltado
+            {t("Clear highlight", "Quitar resaltado")}
           </button>
           <button
             type="button"
@@ -313,7 +340,7 @@ export function AtlasMap() {
                 ?.scrollIntoView({ block: "start" });
             }}
           >
-            Volver al asistente
+            {t("Back to the assistant", "Volver al asistente")}
           </button>
         </div>
       )}
@@ -323,7 +350,7 @@ export function AtlasMap() {
           className="atlas-svg"
           viewBox={`0 0 ${w} ${h}`}
           role="group"
-          aria-label="Mapa de presión y oxígeno"
+          aria-label={t("Pressure and oxygen map", "Mapa de presión y oxígeno")}
           onPointerMove={(event) => setProbe(pointAt(event))}
           onPointerLeave={() => setProbe(null)}
           onClick={(event) => {
@@ -334,7 +361,12 @@ export function AtlasMap() {
               setMapNotice("");
               queryPoint(result.point);
             } else
-              setMapNotice("Fuera de la zona lunar · 0–10.2 psi, 30–50 % O₂");
+              setMapNotice(
+                t(
+                  "Outside the lunar zone · 0–10.2 psi, 30–50 % O₂",
+                  "Fuera de la zona lunar · 0–10.2 psi, 30–50 % O₂",
+                ),
+              );
           }}
         >
           <defs>
@@ -443,24 +475,27 @@ export function AtlasMap() {
             textAnchor="middle"
             className="axis-title"
           >
-            Presión absoluta (psi)
+            {t("Absolute pressure (psi)", "Presión absoluta (psi)")}
           </text>
           <text
             transform={`translate(14 ${(top + h - bottom) / 2}) rotate(-90)`}
             textAnchor="middle"
             className="axis-title"
           >
-            Concentración de O₂ (%)
+            {t("O₂ concentration (%)", "Concentración de O₂ (%)")}
           </text>
           <g pointerEvents="none">
             <text x={x(1)} y={y(46)} className="zone-label">
-              Zona de operación lunar
+              {t("Lunar operating zone", "Zona de operación lunar")}
             </text>
             <text x={x(1)} y={y(46) + 19} className="zone-subtitle">
               ≥ 30 % O₂ · ≤ 10.2 psi
             </text>
             <text x={x(1)} y={y(46) + 38} className="zone-note">
-              Región de consulta · no es un límite de seguridad
+              {t(
+                "Query region · not a safety limit",
+                "Región de consulta · no es un límite de seguridad",
+              )}
             </text>
             <text
               x={x(4.7)}
@@ -476,7 +511,7 @@ export function AtlasMap() {
               className="gap-label"
               textAnchor="middle"
             >
-              Un territorio por explorar
+              {t("A territory to explore", "Un territorio por explorar")}
             </text>
             <text
               x={x(4.7)}
@@ -484,7 +519,10 @@ export function AtlasMap() {
               className="gap-hint"
               textAnchor="middle"
             >
-              Toca el vacío. Formula una hipótesis.
+              {t(
+                "Tap the void. Form a hypothesis.",
+                "Toca el vacío. Formula una hipótesis.",
+              )}
             </text>
           </g>
           {groupCoordinates(displayed).map((group) => {
@@ -506,7 +544,7 @@ export function AtlasMap() {
                   data-testid={`node-${experiment.id}`}
                   role="button"
                   tabIndex={0}
-                  aria-label={`${experiment.id}, ${experiment.material}, ${experiment.oxygen}% O₂, ${experiment.pressure} psi${group.length > 1 ? `, ${group.length} ensayos coincidentes` : ""}`}
+                  aria-label={`${experiment.id}, ${materialName(experiment.material, locale)}, ${experiment.oxygen}% O₂, ${experiment.pressure} psi${group.length > 1 ? `, ${group.length} ${t("overlapping trials", "ensayos coincidentes")}` : ""}`}
                   onClick={(event) => {
                     event.stopPropagation();
                     if (group.length > 1) setOverlap(group);
@@ -526,7 +564,7 @@ export function AtlasMap() {
                 >
                   <title>
                     {[
-                      experiment.material,
+                      materialName(experiment.material, locale),
                       gravityLabels[experiment.gravity],
                       experiment.id,
                     ].join(" / ")}
@@ -626,7 +664,12 @@ export function AtlasMap() {
             <b> / </b>
             {probe.oxygen.toFixed(2)} <small>% O₂</small>
             <span>
-              {lunar ? "Región crítica · ilustrativa" : "Riesgo no estimado"}
+              {lunar
+                ? t(
+                    "Critical region · illustrative",
+                    "Región crítica · ilustrativa",
+                  )
+                : t("Risk not estimated", "Riesgo no estimado")}
             </span>
           </output>
         )}
@@ -637,7 +680,10 @@ export function AtlasMap() {
         )}
         {overlap.length > 1 && (
           <div className="overlap-menu">
-            <strong>Ensayos en esta coordenada ({overlap.length})</strong>
+            <strong>
+              {t("Trials at this coordinate", "Ensayos en esta coordenada")} (
+              {overlap.length})
+            </strong>
             {overlap.map((e) => (
               <button
                 key={e.id}
@@ -646,59 +692,69 @@ export function AtlasMap() {
                   setOverlap([]);
                 }}
               >
-                {e.id} · {e.material}
+                {e.id} · {materialName(e.material, locale)}
               </button>
             ))}
-            <button onClick={() => setOverlap([])}>Cerrar</button>
+            <button onClick={() => setOverlap([])}>
+              {t("Close", "Cerrar")}
+            </button>
           </div>
         )}
         {!experiments.length && (
           <div className="empty-map">
-            No hay ensayos disponibles. Puedes explorar coordenadas con la
-            sonda.
+            {t(
+              "No trials available. You can explore coordinates with the probe.",
+              "No hay ensayos disponibles. Puedes explorar coordenadas con la sonda.",
+            )}
           </div>
         )}
       </div>
       {displayed.length === 0 && (
         <p className="map-empty" role="status">
-          No hay ensayos con estos filtros. Restablécelos para volver al
-          catálogo completo.
+          {t(
+            "No trials match these filters. Reset them to see the full catalog.",
+            "No hay ensayos con estos filtros. Restablécelos para volver al catálogo completo.",
+          )}
         </p>
       )}
       <div className="map-legend">
         <span>
-          <i className="legend-ignition" /> Ignición propagada
+          <i className="legend-ignition" />{" "}
+          {t("Propagated ignition", "Ignición propagada")}
         </span>
         <span>
-          <i className="legend-extinction" /> Autoextinción
+          <i className="legend-extinction" />{" "}
+          {t("Self-extinction", "Autoextinción")}
         </span>
         <span>
-          <i className="legend-micro" /> Microgravedad
+          <i className="legend-micro" /> {t("Microgravity", "Microgravedad")}
         </span>
         <span>
-          <i className="legend-zone" /> Zona lunar
+          <i className="legend-zone" /> {t("Lunar zone", "Zona lunar")}
         </span>
       </div>
       <footer className="gravity-footer">
         <div className="gravity-title">
-          <span className="gravity-name">Régimen gravitacional</span>
+          <span className="gravity-name">
+            {t("Gravity regime", "Régimen gravitacional")}
+          </span>
           <span>
             {state.gravity === "lunar"
-              ? `${experiments.filter((trial) => trial.gravity === "lunar").length} ensayos lunares en el catálogo`
+              ? `${experiments.filter((trial) => trial.gravity === "lunar").length} ${t("lunar trials in the catalog", "ensayos lunares en el catálogo")}`
               : ""}
           </span>
         </div>
         <div
           className="gravity-control segmented"
           role="group"
-          aria-label="Régimen gravitacional"
+          aria-label={t("Gravity regime", "Régimen gravitacional")}
         >
           {(
             [
-              { value: "all", title: "Todas", sub: "" },
+              { value: "all", title: t("All", "Todas"), sub: "" },
               { value: "micro", title: "µg", sub: "ISS" },
-              { value: "lunar", title: "1/6g", sub: "Luna" },
-              { value: "earth", title: "1g", sub: "Tierra" },
+              { value: "lunar", title: "1/6g", sub: t("Moon", "Luna") },
+              { value: "earth", title: "1g", sub: t("Earth", "Tierra") },
             ] as const
           ).map((item) => (
             <button
@@ -715,7 +771,8 @@ export function AtlasMap() {
       </footer>
       <details className="manual-probe">
         <summary>
-          Sonda por coordenadas <span aria-hidden="true">↗</span>
+          {t("Coordinate probe", "Sonda por coordenadas")}{" "}
+          <span aria-hidden="true">↗</span>
         </summary>
         <form
           noValidate
@@ -728,11 +785,7 @@ export function AtlasMap() {
               parse(manual.oxygen),
             );
             if (!result.ok) {
-              setManualError(
-                result.reason === "invalid"
-                  ? "Ingresa valores numéricos de presión y oxígeno."
-                  : "Fuera de la zona lunar: usa 0–10.2 psi y 30–50 % O₂.",
-              );
+              setManualError(result.reason);
               return;
             }
             setManualError("");
@@ -740,9 +793,9 @@ export function AtlasMap() {
           }}
         >
           <label>
-            Presión (psi)
+            {t("Pressure (psi)", "Presión (psi)")}
             <input
-              aria-label="Presión de la sonda"
+              aria-label={t("Probe pressure", "Presión de la sonda")}
               type="number"
               step="0.1"
               min="0"
@@ -757,9 +810,9 @@ export function AtlasMap() {
             />
           </label>
           <label>
-            Oxígeno (%)
+            {t("Oxygen (%)", "Oxígeno (%)")}
             <input
-              aria-label="Oxígeno de la sonda"
+              aria-label={t("Probe oxygen", "Oxígeno de la sonda")}
               type="number"
               step="0.1"
               min="30"
@@ -773,10 +826,20 @@ export function AtlasMap() {
               }}
             />
           </label>
-          <button type="submit">Consultar punto →</button>
+          <button type="submit">
+            {t("Query point →", "Consultar punto →")}
+          </button>
           {manualError && (
             <p id="probe-error" className="probe-error" role="alert">
-              {manualError}
+              {manualError === "invalid"
+                ? t(
+                    "Enter numeric pressure and oxygen values.",
+                    "Ingresa valores numéricos de presión y oxígeno.",
+                  )
+                : t(
+                    "Outside the lunar zone: use 0–10.2 psi and 30–50 % O₂.",
+                    "Fuera de la zona lunar: usa 0–10.2 psi y 30–50 % O₂.",
+                  )}
             </p>
           )}
         </form>

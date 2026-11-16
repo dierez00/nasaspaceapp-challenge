@@ -5,6 +5,7 @@ import {
   type Query,
 } from "../domain/contracts";
 import { CopilotError, messageForStatus } from "../domain/errors";
+import { getLocale } from "@/shared/i18n/locale";
 
 export async function* parseSSE(
   stream: ReadableStream<Uint8Array>,
@@ -37,7 +38,10 @@ export async function* parseSSE(
         if (data) yield eventSchema.parse(JSON.parse(data));
       }
       if (done) {
-        if (buffer.trim()) throw new CopilotError("Stream incompleto.");
+        if (buffer.trim())
+          throw new CopilotError(
+            getLocale() === "en" ? "Incomplete stream." : "Stream incompleto.",
+          );
         break;
       }
     }
@@ -57,7 +61,7 @@ export class HttpCopilotGateway implements CopilotGateway {
       signal,
     });
     if (!response.ok || !response.body)
-      throw new CopilotError(messageForStatus(response.status));
+      throw new CopilotError(messageForStatus(response.status, getLocale()));
     let completed = false;
     for await (const event of parseSSE(response.body, signal)) {
       if (event.queryId !== query.queryId) continue;
@@ -70,7 +74,9 @@ export class HttpCopilotGateway implements CopilotGateway {
     }
     if (!completed)
       throw new CopilotError(
-        "La conexión terminó antes de completar la respuesta.",
+        getLocale() === "en"
+          ? "The connection closed before the answer was complete."
+          : "La conexión terminó antes de completar la respuesta.",
       );
   }
 }

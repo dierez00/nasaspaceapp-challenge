@@ -96,12 +96,18 @@ const uiSchema = z.object({
 
 const knownSteps = new Set<string>(progressSteps);
 
-/** Backend request body: the question plus the probe, if any. */
-export function backendQuestion({ text, context }: Query) {
-  const probe = context
-    ? ` (punto del mapa: ${context.pressure.toFixed(1)} psi, ${context.oxygen.toFixed(1)}% O₂, gravedad lunar)`
+/** Backend request body: the question plus the probe, if any, and the answer language. */
+export function backendQuestion({ text, context, locale }: Query) {
+  const lang = locale ?? "en";
+  const conditions = context
+    ? `${context.pressure.toFixed(1)} psi, ${context.oxygen.toFixed(1)}% O₂`
     : "";
-  return { q: `${text}${probe}`.slice(0, MAX_QUESTION) };
+  const probe = !context
+    ? ""
+    : lang === "en"
+      ? ` (map point: ${conditions}, lunar gravity)`
+      : ` (punto del mapa: ${conditions}, gravedad lunar)`;
+  return { q: `${text}${probe}`.slice(0, MAX_QUESTION), lang };
 }
 
 type Brief = z.infer<typeof briefComponent>;
@@ -254,7 +260,9 @@ async function* frames(body: ReadableStream<Uint8Array>) {
 export async function* translateBackendStream(
   body: ReadableStream<Uint8Array>,
   queryId: string,
+  locale: "en" | "es" = "en",
 ): AsyncGenerator<CopilotEvent> {
+  const en = locale === "en";
   let last: string | null = null;
   for await (const { event, data } of frames(body)) {
     if (event === "status") {
@@ -282,7 +290,11 @@ export async function* translateBackendStream(
       yield {
         type: "error",
         queryId,
-        message: message.success ? message.data.message : "El backend falló.",
+        message: message.success
+          ? message.data.message
+          : en
+            ? "The backend failed."
+            : "El backend falló.",
       };
       return;
     }
@@ -290,6 +302,8 @@ export async function* translateBackendStream(
   yield {
     type: "error",
     queryId,
-    message: "El backend cerró la respuesta antes de terminar.",
+    message: en
+      ? "The backend closed the answer before finishing."
+      : "El backend cerró la respuesta antes de terminar.",
   };
 }

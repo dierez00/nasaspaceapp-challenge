@@ -23,15 +23,25 @@ import { gravityScenarios } from "../domain/comparison";
 import { ExplorationGuide } from "./exploration-guide";
 import { ComparisonNotes } from "./comparison-notes";
 import { GravityIndicators, PhysicsCallout } from "./gravity-indicators";
+import { useLocale, useT, type Text } from "@/shared/i18n/locale";
+import { materialName } from "@/shared/i18n/materials";
 import "./laboratory.css";
+function SceneLoading() {
+  const t = useT();
+  return (
+    <div className="scene-loading">
+      {t("Preparing 3D camera…", "Preparando cámara 3D…")}
+    </div>
+  );
+}
 const LabCanvas = dynamic(() => import("./lab-canvas"), {
   ssr: false,
-  loading: () => <div className="scene-loading">Preparando cámara 3D…</div>,
+  loading: () => <SceneLoading />,
 });
-const stateLabels: Record<FlameState, string> = {
-  ignition: "Ignición",
-  propagation: "Propagación",
-  extinction: "Extinción",
+const stateLabels: Record<FlameState, Text> = {
+  ignition: { en: "Ignition", es: "Ignición" },
+  propagation: { en: "Propagation", es: "Propagación" },
+  extinction: { en: "Extinction", es: "Extinción" },
 };
 class SceneBoundary extends Component<
   { children: ReactNode; onError: () => void },
@@ -57,6 +67,8 @@ function ScenarioControls({
 }) {
   const { state, edit, dispatch, clock, reduced } = useSimulation();
   const { experiments } = useAtlas();
+  const locale = useLocale();
+  const t = useT();
   const scenario = state.scenarios[slot];
   const materials = [
     ...new Set([
@@ -64,11 +76,14 @@ function ScenarioControls({
       ...experiments.map((e) => e.material),
       "PMMA",
       "Nomex",
-      "Algodón",
+      "Cotton",
     ]),
   ];
   return (
-    <section className="scenario-controls" aria-label={`Controles ${slot}`}>
+    <section
+      className="scenario-controls"
+      aria-label={t(`Controls ${slot}`, `Controles ${slot}`)}
+    >
       <div className="control-row control-row-conditions">
         <div className="cluster cluster-material">
           <span className="slot-dot" aria-hidden="true">
@@ -82,7 +97,9 @@ function ScenarioControls({
               onChange={(event) => edit(slot, { material: event.target.value })}
             >
               {materials.map((material) => (
-                <option key={material}>{material}</option>
+                <option key={material} value={material}>
+                  {materialName(material, locale)}
+                </option>
               ))}
             </select>
           </label>
@@ -92,16 +109,31 @@ function ScenarioControls({
               dispatch({ type: "restore", slot });
               clock.restart(!reduced);
             }}
-            title="Restaurar condiciones originales"
-            aria-label={`Restaurar ${slot}`}
+            title={t(
+              "Restore original conditions",
+              "Restaurar condiciones originales",
+            )}
+            aria-label={t(`Restore ${slot}`, `Restaurar ${slot}`)}
           >
             ↶ Original
           </button>
         </div>
         {(
           [
-            { key: "pressure", label: "Presión", unit: "psi", min: 0, max: 16 },
-            { key: "oxygen", label: "Oxígeno", unit: "% O₂", min: 18, max: 50 },
+            {
+              key: "pressure",
+              label: t("Pressure", "Presión"),
+              unit: "psi",
+              min: 0,
+              max: 16,
+            },
+            {
+              key: "oxygen",
+              label: t("Oxygen", "Oxígeno"),
+              unit: "% O₂",
+              min: 18,
+              max: 50,
+            },
           ] as const
         ).map((control) => {
           const value = scenario[control.key];
@@ -124,7 +156,10 @@ function ScenarioControls({
                 <div className="condition-value">
                   <input
                     type="number"
-                    aria-label={`${control.label} numérica ${slot}`}
+                    aria-label={t(
+                      `${control.label} value ${slot}`,
+                      `${control.label} numérica ${slot}`,
+                    )}
                     min={control.min}
                     max={control.max}
                     step="0.1"
@@ -156,12 +191,17 @@ function ScenarioControls({
       <div className="control-row control-row-modes">
         <div className="cluster">
           <span className="cluster-label">
-            {shared ? "Tres gravedades · condiciones compartidas" : "Gravedad"}
+            {shared
+              ? t(
+                  "Three gravities · shared conditions",
+                  "Tres gravedades · condiciones compartidas",
+                )
+              : t("Gravity", "Gravedad")}
           </span>
           <div
             className="segmented"
             role="group"
-            aria-label={`Gravedad ${slot}`}
+            aria-label={t(`Gravity ${slot}`, `Gravedad ${slot}`)}
           >
             {(["micro", "lunar", "earth"] as const).map((gravity) => (
               <button
@@ -177,29 +217,31 @@ function ScenarioControls({
                   {gravity === "micro"
                     ? "ISS"
                     : gravity === "lunar"
-                      ? "Luna"
-                      : "Tierra"}
+                      ? t("Moon", "Luna")
+                      : t("Earth", "Tierra")}
                 </small>
               </button>
             ))}
           </div>
         </div>
         <div className="cluster">
-          <span className="cluster-label">Fase de la llama</span>
+          <span className="cluster-label">
+            {t("Flame phase", "Fase de la llama")}
+          </span>
           <div
             className="segmented"
             role="group"
-            aria-label={`Estado de llama ${slot}`}
+            aria-label={t(`Flame state ${slot}`, `Estado de llama ${slot}`)}
           >
             {(["ignition", "propagation", "extinction"] as const).map(
               (flameState) => (
                 <button
                   key={flameState}
-                  aria-label={`${stateLabels[flameState]} ${slot}`}
+                  aria-label={`${stateLabels[flameState][locale]} ${slot}`}
                   aria-pressed={scenario.flameState === flameState}
                   onClick={() => edit(slot, { flameState })}
                 >
-                  {stateLabels[flameState]}
+                  {stateLabels[flameState][locale]}
                 </button>
               ),
             )}
@@ -212,28 +254,33 @@ function ScenarioControls({
 function Playback() {
   const { clock, reduced } = useSimulation();
   const { time, playing } = usePlayback();
+  const t = useT();
   return (
     <div className="lab-playback">
       <button
         className="play-button"
-        aria-label={playing ? "Pausar simulación" : "Reproducir simulación"}
+        aria-label={
+          playing
+            ? t("Pause simulation", "Pausar simulación")
+            : t("Play simulation", "Reproducir simulación")
+        }
         onClick={() => (playing ? clock.pause() : clock.play())}
       >
         {playing ? "Ⅱ" : "▶"}
       </button>
       <button
         className="restart-button"
-        aria-label="Reiniciar simulación"
+        aria-label={t("Restart simulation", "Reiniciar simulación")}
         onClick={() => clock.restart(!reduced)}
       >
         ↻
       </button>
       <label className="sr-only" htmlFor="simulation-time">
-        Progreso de simulación
+        {t("Simulation progress", "Progreso de simulación")}
       </label>
       <input
         id="simulation-time"
-        aria-label="Progreso de simulación"
+        aria-label={t("Simulation progress", "Progreso de simulación")}
         type="range"
         min="0"
         max="8"
@@ -248,7 +295,7 @@ function Playback() {
       <output data-testid="simulation-time">
         {time.toFixed(1)} <span>/ 8.0 s ↻</span>
       </output>
-      <span className="timeline-note">Bucle de 8 s</span>
+      <span className="timeline-note">{t("8 s loop", "Bucle de 8 s")}</span>
     </div>
   );
 }
@@ -260,6 +307,7 @@ function FallbackScene({
   scenario: SimulationScenario;
 }) {
   const { time } = usePlayback();
+  const t = useT();
   const intensity = flameEnvelope(scenario.flameState, time, scenario.pressure);
   return (
     <div className="svg-chamber" data-testid={`svg-scene-${slot}`}>
@@ -276,15 +324,17 @@ function FallbackScene({
       <span>
         {intensity === 0
           ? scenario.pressure === 0
-            ? "Cámara sin gas"
-            : "Muestra apagada"
-          : "Vista ilustrativa SVG"}
+            ? t("Chamber without gas", "Cámara sin gas")
+            : t("Sample out", "Muestra apagada")
+          : t("Illustrative SVG view", "Vista ilustrativa SVG")}
       </span>
     </div>
   );
 }
 export function Laboratory() {
   const { state, dispatch, active, reduced } = useSimulation();
+  const locale = useLocale();
+  const t = useT();
   const host = useRef<HTMLDivElement>(null),
     viewA = useRef<HTMLDivElement>(null),
     viewB = useRef<HTMLDivElement>(null),
@@ -311,14 +361,20 @@ export function Laboratory() {
   return (
     <section
       className="laboratory dark-instrument"
-      aria-label="Laboratorio de combustión"
+      aria-label={t("Combustion laboratory", "Laboratorio de combustión")}
     >
       <header className="lab-heading">
         <div>
           <h2>
-            El fuego, en otra gravedad<span>.</span>
+            {t("Fire, in another gravity", "El fuego, en otra gravedad")}
+            <span>.</span>
           </h2>
-          <p>Cambia las condiciones y observa cómo responde la llama.</p>
+          <p>
+            {t(
+              "Change the conditions and watch how the flame responds.",
+              "Cambia las condiciones y observa cómo responde la llama.",
+            )}
+          </p>
         </div>
         <div className="lab-comparison-actions">
           <button
@@ -326,7 +382,7 @@ export function Laboratory() {
             aria-pressed={threeGravities}
             onClick={() => dispatch({ type: "three", on: !threeGravities })}
           >
-            Tres gravedades
+            {t("Three gravities", "Tres gravedades")}
           </button>
           <button
             className={`compare-toggle ${state.compare ? "enabled" : ""}`}
@@ -335,7 +391,9 @@ export function Laboratory() {
               dispatch({ type: state.compare ? "single" : "compare" })
             }
           >
-            {state.compare ? "✕ Cerrar A/B" : "⊕ Comparar A/B"}
+            {state.compare
+              ? t("✕ Close A/B", "✕ Cerrar A/B")
+              : t("⊕ Compare A/B", "⊕ Comparar A/B")}
           </button>
         </div>
       </header>
@@ -345,12 +403,12 @@ export function Laboratory() {
       {state.compare && (
         <div className="comparison-toolbar">
           <span>
-            <i /> Comparación sincronizada
+            <i /> {t("Synchronized comparison", "Comparación sincronizada")}
           </span>
           <div
             className="scenario-tabs"
             role="group"
-            aria-label="Escenario visible"
+            aria-label={t("Visible scenario", "Escenario visible")}
           >
             {slots.map((slot) => (
               <button
@@ -358,12 +416,12 @@ export function Laboratory() {
                 aria-pressed={state.activeSlot === slot}
                 onClick={() => dispatch({ type: "slot", slot })}
               >
-                Escenario {slot}
+                {t("Scenario", "Escenario")} {slot}
               </button>
             ))}
           </div>
           <button onClick={() => dispatch({ type: "swap" })}>
-            ⇄ Intercambiar A/B
+            {t("⇄ Swap A/B", "⇄ Intercambiar A/B")}
           </button>
         </div>
       )}
@@ -417,24 +475,30 @@ export function Laboratory() {
                       <strong>
                         {threeGravities
                           ? gravityLabels[scenario.gravity]
-                          : scenario.material}
+                          : materialName(scenario.material, locale)}
                       </strong>
                       <small>
                         {scenario.experimentId
                           ? `${scenario.experimentId} · `
                           : ""}
                         {scenario.provenance === "hypothetical"
-                          ? "Escenario hipotético"
+                          ? t("Hypothetical scenario", "Escenario hipotético")
                           : scenario.evidence === "demo"
-                            ? "Original demo"
+                            ? t("Demo original", "Original demo")
                             : scenario.experimentId
-                              ? "Condiciones originales"
-                              : "Escenario libre"}
+                              ? t(
+                                  "Original conditions",
+                                  "Condiciones originales",
+                                )
+                              : t("Free scenario", "Escenario libre")}
                       </small>
                     </div>
-                    {threeGravities && state.focusGravity === scenario.gravity && (
-                      <span className="scene-focus-badge">Destacada</span>
-                    )}
+                    {threeGravities &&
+                      state.focusGravity === scenario.gravity && (
+                        <span className="scene-focus-badge">
+                          {t("Highlighted", "Destacada")}
+                        </span>
+                      )}
                     <span
                       className={`scene-gravity ${threeGravities ? "sr-only" : ""}`}
                     >
@@ -443,15 +507,23 @@ export function Laboratory() {
                   </div>
                   <div className="scene-side-label">
                     {scenario.gravity === "micro"
-                      ? "Transporte difusivo"
+                      ? t("Diffusive transport", "Transporte difusivo")
                       : scenario.gravity === "lunar"
-                        ? "Gravedad parcial · ilustración"
-                        : "Convección ascendente"}
+                        ? t(
+                            "Partial gravity · illustration",
+                            "Gravedad parcial · ilustración",
+                          )
+                        : t("Rising convection", "Convección ascendente")}
                   </div>
                   {scenario.pressure === 0 && (
                     <div className="vacuum-notice">
-                      Cámara sin gas
-                      <span>No se representa combustión en vacío.</span>
+                      {t("Chamber without gas", "Cámara sin gas")}
+                      <span>
+                        {t(
+                          "Combustion in a vacuum is not shown.",
+                          "No se representa combustión en vacío.",
+                        )}
+                      </span>
                     </div>
                   )}
                   <div className="scene-readings">
@@ -465,7 +537,7 @@ export function Laboratory() {
                     </span>
                     <span className="scene-state">
                       <i />
-                      {stateLabels[scenario.flameState]}
+                      {stateLabels[scenario.flameState][locale]}
                     </span>
                   </div>
                 </div>
@@ -475,37 +547,48 @@ export function Laboratory() {
           <div className="scene-bottom">
             <span>
               {unsupported
-                ? "Vista SVG de respaldo"
-                : "Arrastra para orbitar · rueda para acercar"}
+                ? t("Fallback SVG view", "Vista SVG de respaldo")
+                : t(
+                    "Drag to orbit · Ctrl/⌘ + scroll to zoom",
+                    "Arrastra para orbitar · Ctrl/⌘ + rueda para acercar",
+                  )}
             </span>
             <button
-              aria-label="Restablecer cámara"
+              aria-label={t("Reset camera", "Restablecer cámara")}
               onClick={() => dispatch({ type: "camera" })}
             >
-              ⊙ Restablecer cámara
+              ⊙ {t("Reset camera", "Restablecer cámara")}
             </button>
           </div>
-          {!active && <span className="sr-only">Renderizado suspendido</span>}
+          {!active && (
+            <span className="sr-only">
+              {t("Rendering paused", "Renderizado suspendido")}
+            </span>
+          )}
         </motion.div>
       </div>
       {unsupported && (
         <div className="graphics-notice" role="status">
-          La cámara 3D no está disponible. Los controles siguen activos en SVG.
+          {t(
+            "The 3D camera is unavailable. The controls still work in SVG.",
+            "La cámara 3D no está disponible. Los controles siguen activos en SVG.",
+          )}
           <button
             onClick={() => {
               setUnsupported(false);
               setAttempt((value) => value + 1);
             }}
           >
-            Reintentar 3D
+            {t("Retry 3D", "Reintentar 3D")}
           </button>
         </div>
       )}
       {threeGravities && (
         <p className="shared-conditions">
-          {state.scenarios.A.material} · {state.scenarios.A.pressure.toFixed(1)}{" "}
-          psi · {state.scenarios.A.oxygen.toFixed(1)} % O₂ · misma fase en las
-          tres vistas
+          {materialName(state.scenarios.A.material, locale)} ·{" "}
+          {state.scenarios.A.pressure.toFixed(1)} psi ·{" "}
+          {state.scenarios.A.oxygen.toFixed(1)} % O₂ ·{" "}
+          {t("same phase in all three views", "misma fase en las tres vistas")}
         </p>
       )}
       <Playback />
@@ -522,8 +605,13 @@ export function Laboratory() {
       <ComparisonNotes />
       <footer className="lab-disclaimer">
         <p>
-          <strong>Representación cualitativa.</strong> Los controles modifican
-          la apariencia; no calculan combustión ni límites de seguridad.
+          <strong>
+            {t("Qualitative representation.", "Representación cualitativa.")}
+          </strong>{" "}
+          {t(
+            "The controls change the appearance; they do not compute combustion or safety limits.",
+            "Los controles modifican la apariencia; no calculan combustión ni límites de seguridad.",
+          )}
         </p>
       </footer>
     </section>

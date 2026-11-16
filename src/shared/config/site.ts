@@ -1,7 +1,7 @@
 export const siteConfig = {
-  name: "Atlas del Fuego Lunar",
+  name: "Lunar Fire Atlas",
   shortName: "atlas",
   description:
-    "Explorador interactivo de cómo la gravedad, la presión y el oxígeno transforman el fuego, con datos del catálogo NASA PSI.",
+    "Interactive explorer of how gravity, pressure and oxygen transform fire, with data from the NASA PSI catalog.",
   healthService: "atlas-frontend",
 } as const;

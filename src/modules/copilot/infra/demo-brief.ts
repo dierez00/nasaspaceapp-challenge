@@ -8,6 +8,7 @@ import {
   type Cell,
   type EvidenceBriefBlock,
 } from "../domain/brief";
+import type { Locale } from "@/shared/i18n/locale";
 
 /**
  * Evidence briefs computed from the catalog already in the front, so the
@@ -94,7 +95,13 @@ export function gapOf(
 }
 
 /** Default readings per audience, tied to the gravity the gap is about. */
-export function lensesFor(where: string, scope: string) {
+export function lensesFor(where: string, scope: string, locale: Locale = "en") {
+  if (locale === "en")
+    return {
+      student: `A flame depends on oxygen, pressure and gravity. ${scope} Think: what do you expect would happen ${where}?`,
+      teacher: `Activity: pose a hypothesis ${where}. Change a single variable in the simulator and observe whether the flame sustains, changes shape or goes out.`,
+      researcher: `${scope} Check the O₂ and pressure ranges in the table and compare them with each experiment's sources before extrapolating.`,
+    };
   return {
     student: `La llama depende del oxígeno, la presión y la gravedad. ${scope} Piensa: ¿qué crees que pasaría ${where}?`,
     teacher: `Actividad: plantea una hipótesis ${where}. Cambia una sola variable en el simulador y observa si la llama se sostiene, cambia de forma o se apaga.`,

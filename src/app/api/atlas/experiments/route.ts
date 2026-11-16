@@ -23,7 +23,7 @@ export async function GET(request: Request) {
     });
   } catch {
     return NextResponse.json(
-      { error: "No fue posible cargar el catálogo" },
+      { error: "Could not load the catalog" },
       { status: 502 },
     );
   }

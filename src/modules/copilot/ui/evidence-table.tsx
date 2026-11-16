@@ -7,6 +7,7 @@ import {
   sortRows,
   type Cell,
 } from "../domain/brief";
+import { useLocale, useT } from "@/shared/i18n/locale";
 
 type Sort = { index: number; direction: 1 | -1 };
 
@@ -27,6 +28,8 @@ export function EvidenceTable({
   visible?: number[];
 }) {
   const [sort, setSort] = useState<Sort | null>(null);
+  const locale = useLocale();
+  const t = useT();
   const indexes = visible ?? columns.map((_, index) => index);
   const sorted = useMemo(
     () => (sort ? sortRows(rows, sort.index, sort.direction) : rows),
@@ -49,7 +52,10 @@ export function EvidenceTable({
     <div
       className="evidence-scroll"
       role="region"
-      aria-label={`${title}, tabla con desplazamiento`}
+      aria-label={t(
+        `${title}, scrollable table`,
+        `${title}, tabla con desplazamiento`,
+      )}
       tabIndex={0}
     >
       <table className="evidence-table">
@@ -72,7 +78,7 @@ export function EvidenceTable({
                   }
                 >
                   <button type="button" onClick={() => toggle(index)}>
-                    {columnLabel(columns[index])}
+                    {columnLabel(columns[index], locale)}
                     <span aria-hidden="true" className="sort-mark">
                       {active ? (sort.direction === 1 ? "↑" : "↓") : "↕"}
                     </span>
@@ -86,7 +92,11 @@ export function EvidenceTable({
           {sorted.map((row, rowIndex) => (
             <tr key={rowIndex}>
               {indexes.map((index) => {
-                const text = formatCell(columns[index], row[index] ?? null);
+                const text = formatCell(
+                  columns[index],
+                  row[index] ?? null,
+                  locale,
+                );
                 return (
                   <td
                     key={index}
@@ -106,7 +116,9 @@ export function EvidenceTable({
           ))}
           {sorted.length === 0 && (
             <tr>
-              <td colSpan={Math.max(1, indexes.length)}>Sin filas.</td>
+              <td colSpan={Math.max(1, indexes.length)}>
+                {t("No rows.", "Sin filas.")}
+              </td>
             </tr>
           )}
         </tbody>

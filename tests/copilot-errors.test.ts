@@ -13,21 +13,30 @@ describe("copilot error mapping", () => {
     );
   });
   it("maps network failures without leaking technical text", () => {
-    const message = describeCopilotError(new TypeError("Failed to fetch"));
+    const message = describeCopilotError(
+      new TypeError("Failed to fetch"),
+      "es",
+    );
     expect(message).not.toMatch(/fetch/i);
     expect(message).toMatch(/conexión/);
+    expect(describeCopilotError(new TypeError("Failed to fetch"))).toMatch(
+      /No connection/,
+    );
   });
   it("maps unknown errors (malformed stream, schema) to a generic hint", () => {
-    expect(describeCopilotError(new SyntaxError("Unexpected token"))).toMatch(
-      /incompleta/,
-    );
-    expect(describeCopilotError("boom")).toMatch(/incompleta/);
+    expect(
+      describeCopilotError(new SyntaxError("Unexpected token"), "es"),
+    ).toMatch(/incompleta/);
+    expect(describeCopilotError("boom", "es")).toMatch(/incompleta/);
+    expect(describeCopilotError("boom")).toMatch(/incomplete/);
   });
   it("gives actionable messages by HTTP status", () => {
-    expect(messageForStatus(429)).toMatch(/demasiadas/i);
-    expect(messageForStatus(400)).toMatch(/Reformúlala/);
-    expect(messageForStatus(403)).toMatch(/acceso/);
-    expect(messageForStatus(500)).toMatch(/no está disponible/);
+    expect(messageForStatus(429, "es")).toMatch(/demasiadas/i);
+    expect(messageForStatus(400, "es")).toMatch(/Reformúlala/);
+    expect(messageForStatus(403, "es")).toMatch(/acceso/);
+    expect(messageForStatus(500, "es")).toMatch(/no está disponible/);
+    expect(messageForStatus(429)).toMatch(/too many/i);
+    expect(messageForStatus(500)).toMatch(/unavailable/);
   });
 });
 
